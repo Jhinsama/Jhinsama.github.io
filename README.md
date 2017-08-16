@@ -1,2 +1,2 @@
-# Jhinsama.github.io
-My blog
+# [Jhinsama.github.io](https://jhinsama.github.io)
+My resume
