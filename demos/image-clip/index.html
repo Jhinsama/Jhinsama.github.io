@@ -73,6 +73,8 @@
 	<img src="" class="img">
 
 	<script src="image-clip.js"></script>
+	<script src="../../public/js/exif.min.js"></script>
+	<script src="../../public/js/jquery.min.js"></script>
 
 	<script>
 
@@ -83,7 +85,7 @@ window.onload = function () {
 			w : 510,
 			h : 680
 		}
-		,image : document.getElementsByClassName("img")
+		,image : $(".img")
 	});
 
 	document.getElementById("file").addEventListener("change",function(){
