@@ -606,13 +606,8 @@
                 clipFor = this.clipFor;
                 clipSize = this.clipSize;
             }
-            if (rat > 1) {
-                cvs.width = this.size.w;
-                cvs.height = this.size.h;
-            } else {
-                cvs.width = width;
-                cvs.height = height;
-            }
+            cvs.width = width;
+            cvs.height = height;
             if (clipFor) {
                 switch (clipFor) {
                     case "min":
@@ -647,20 +642,34 @@
                     break;
                 }
             }
-            var sx, sy, dx, dy;
+            var sx, sy, dx, dy, sWidth, sHeight, dWidth, dHeight;
             sx = Math.round(msg.x*100) >= Math.round(-msg.ix*100) ? 0 : -(msg.x/rat);
             sy = Math.round(msg.y*100) >= Math.round(-msg.iy*100) ? 0 : -(msg.y/rat);
             dx = (msg.ix+msg.x)/rat*_rat;
             dx = dx < 0 ? 0 : dx;
             dy = (msg.iy+msg.y)/rat*_rat;
             dy = dy < 0 ? 0 : dy;
+            if (width > msg.w) {
+                sWidth = msg.w;
+                dWidth = sWidth / width * cvs.width;
+            } else {
+                sWidth = width;
+                dWidth = cvs.width;
+            }
+            if (height > msg.h) {
+                sHeight = msg.h;
+                dHeight = sHeight / height * cvs.height;
+            } else {
+                sHeight = height;
+                dHeight = cvs.height;
+            }
             if (preview) {
                 ctx.fillStyle = "#fff";
                 ctx.fillRect(0,0,cvs.width,cvs.height);
-                ctx.drawImage(this.clipImage,sx,sy,width,height,dx,dy,cvs.width,cvs.height);
+                ctx.drawImage(this.clipImage,sx,sy,sWidth,sHeight,dx,dy,dWidth,dHeight);
                 data = cvs.toDataURL("image/jpeg");
             } else {
-                ctx.drawImage(this.clipImage,sx,sy,width,height,dx,dy,cvs.width,cvs.height);
+                ctx.drawImage(this.clipImage,sx,sy,sWidth,sHeight,dx,dy,dWidth,dHeight);
                 data = cvs.toDataURL();
             }
             if (callback && callback instanceof Function) callback(data);
