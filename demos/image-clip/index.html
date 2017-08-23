@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta name="viewport" content='initial-scale=1, maximum-scale=5, minimum-scale=0, user-scalable=no'>
+	<script>(function(){var width=window.outerWidth,meta=document.getElementsByTagName('meta')[0];meta.content='initial-scale='+width/750+',maximum-scale=5,minimum-scale=0,user-scalable=no';window.onresize=function(){width=window.outerWidth;meta.content='initial-scale='+width/750+',maximum-scale=5,minimum-scale=0,user-scalable=no'}})();</script>
+	<meta charset="UTF-8" />
+	<title></title>
+	<style>
+		body{
+			margin: 0;
+			text-align: center;
+		}
+		#clip{
+			box-sizing: border-box;
+			width: 750px;
+			height: 750px;
+			margin: 0 auto;
+			padding: 10px;
+			border: 1px solid black;
+			background-color: #999;
+		}
+		#label{
+			display: block;
+			width: 670px;
+			padding: 30px;
+			margin: 10px auto;
+			font-size: 40px;
+			color: #fff;
+			line-height: 1;
+			background-color: #9D9DFF;
+			border-radius: 5px;
+		}
+		#file{
+			width: 0;
+			height: 0;
+			opacity: 0;
+		}
+		#img{
+			display: block;
+			max-width: 50%;
+			margin: 0 auto;
+		}
+		.img{
+			width: calc(100% / 4);
+		}
+	</style>
+</head>
+<body>
+	<div id="clip"></div>
+
+	<label for="file" id="label">选 择 图 片</label>
+	<input type="file" id="file" accept="image/png,image/gif,image/jpeg"/>
+
+	<img src="" id="img">
+	<img src="" class="img"><img src="" class="img"><img src="" class="img">
+
+	<script src="image-clip.js"></script>
+
+	<script>
+
+var a;
+window.onload = function () {
+	a = new Clip(document.getElementById("clip"),{
+		size : {
+			w : 510,
+			h : 680
+		}
+		,image : document.getElementById("img")
+	});
+
+	document.getElementById("file").addEventListener("change",function(){
+		a.start(this.files[0])
+	})
+}
+
+	</script>
+</body>
+</html>
