@@ -21,7 +21,7 @@
 		}
 		#label{
 			display: block;
-			width: 670px;
+			width: 690px;
 			padding: 30px;
 			margin: 10px auto;
 			font-size: 40px;
@@ -31,9 +31,22 @@
 			border-radius: 5px;
 		}
 		#file{
+			position: absolute;
 			width: 0;
 			height: 0;
 			opacity: 0;
+		}
+		#button, #refresh{
+			display: block;
+			width: 750px;
+			padding: 30px;
+			margin: 10px auto;
+			font-size: 40px;
+			color: #fff;
+			line-height: 1;
+			background-color: #9D9DFF;
+			border: none;
+			border-radius: 5px;
 		}
 		#img{
 			display: block;
@@ -51,8 +64,13 @@
 	<label for="file" id="label">选 择 图 片</label>
 	<input type="file" id="file" accept="image/png,image/gif,image/jpeg"/>
 
+	<button type="button" id="button">确 定 裁 剪</button>
+	<button type="button" id="refresh">重 &#x3000; &#x3000; 置</button>
+
 	<img src="" id="img">
-	<img src="" class="img"><img src="" class="img"><img src="" class="img">
+	<img src="" class="img">
+	<img src="" class="img">
+	<img src="" class="img">
 
 	<script src="image-clip.js"></script>
 
@@ -65,11 +83,22 @@ window.onload = function () {
 			w : 510,
 			h : 680
 		}
-		,image : document.getElementById("img")
+		,image : document.getElementsByClassName("img")
 	});
 
 	document.getElementById("file").addEventListener("change",function(){
 		a.start(this.files[0])
+	})
+
+	document.getElementById("button").addEventListener("click",function(){
+		a.end(function (src) {
+			document.getElementById("img").src = src;
+		})
+	})
+
+	document.getElementById("refresh").addEventListener("click",function(){
+		document.getElementById("file").value = "";
+		a.refresh();
 	})
 }
 

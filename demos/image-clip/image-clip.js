@@ -565,7 +565,8 @@
             span.style.cssText = "display:block;width:100%;height:100%;color:#f44;font-size:1.5em;position:relative;z-index:1;text-shadow:0 0 .1em #f99;";
             this.clipMain.appendChild(span);
         } else {
-            this.clipMain.removeChild(this.clipMain.getElementsByTagName("span")[0]);
+            var span = this.clipMain.getElementsByTagName("span")[0];
+            if (span) this.clipMain.removeChild(span);
         }
     }
     function Clip (box,options) {
@@ -578,7 +579,7 @@
         start : function (file) {
             if (!this.clipMain || !file || !(file instanceof File)) return;
             this.refresh();
-            if (EXIF) {
+            if (self.EXIF) {
                 var that = this;
                 info.call(this);
                 repairImage(file,function (src) {
@@ -669,6 +670,12 @@
             this.canFinish = false;
             this.clipImage.src="";
             this.clipImage.style.cssText="position:relative;z-index:-1;display:none;vertical-align:middle;";
+            if (!!this.preview) {
+                var arr = this.preview;
+                for (var i = 0; i < arr.length; i++) {
+                    arr[i].src = "";
+                }
+            }
         }
     }
     self.Clip = Clip;
