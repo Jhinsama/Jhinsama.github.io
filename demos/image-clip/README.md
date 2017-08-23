@@ -1,6 +1,6 @@
 # 图片裁切插件
 
-一个简单易用的图片裁切工具，实现了 两点触控和鼠标滚轮缩放、单点触控及鼠标拖动改变裁切位置。
+一个简单易用的图片裁切工具，实现了 **两点触控**和鼠标滚轮缩放、**单点触控**及鼠标拖动改变裁切位置。
 你可以很轻松的把他嵌入你的网页里面，并且该插件只负责裁切图片，只包含少量的css样式。
 所以呢，想要好看的界面只有靠你们自己去实现咯。。。
 
@@ -34,19 +34,14 @@
      */
 ```
 
-### 试例
+### 栗子
 
 ```html
 
-<style>
-    #clip {
-        width: 750px;
-        height: 750px;
-    }
-</style>
-<div id="clip"></div>
+<div id="clip" style="width: 750px;height: 750px;"></div>
 <input type="file" id="file" accept="image/png,image/gif,image/jpeg"/>
 <button type="button" id="confirm">裁切</button>
+<button type="button" id="refresh">清除</button>
 <img src="" id="img">
 
 ```
@@ -81,7 +76,18 @@ document.getElementById("confirm").addEventListener("click",function(){
     })
 })
 
-// 清除当前选中的图片
-a.refresh();
+// 监听清除按钮点击事件
+document.getElementById("refresh").addEventListener("click",function(){
+    document.getElementById("file").value = "";
+    // 清除当前选中的图片
+    a.refresh();
+})
 
 ```
+
+### 结语
+
+emmm ~~
+我的语文就没及格过，所以凑合着看吧
+至于如果有BUG或者建议，哪天我闲着无聊再改吧
+以上。。。
