@@ -479,8 +479,8 @@
                 switch (count) {
                     case 1:
                         var ide = ides[0];
-                        msg.x = touches[ide]._x;
-                        msg.y = touches[ide]._y;
+                        if (typeof touches[ide]._x == "number") msg.x = touches[ide]._x;
+                        if (typeof touches[ide]._y == "number") msg.y = touches[ide]._y;
                     break;
                     case 2:
                         msg.sr = msg.cw / msg.w;
