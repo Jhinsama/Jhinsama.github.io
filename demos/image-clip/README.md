@@ -90,5 +90,5 @@ document.getElementById("refresh").addEventListener("click",function(){
 emmm ~~
 我的语文就没及格过，所以凑合着看吧  
 至于如果有BUG或者建议，哪天我闲着无聊再改吧  
-还有就是，页面右上角的start点一下咯  
+还有就是，页面右上角的star点一下咯  
 以上。。。
