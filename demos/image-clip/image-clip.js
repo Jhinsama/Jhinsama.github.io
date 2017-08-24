@@ -79,7 +79,7 @@
         this.clipMain = document.createElement("div");
         this.clipMain.style.cssText = "position:relative;width:100%;height:100%;overflow:hidden;text-align:center;z-index:1;";
         this.clipWindow = document.createElement("div");
-        this.clipWindow.style.cssText = "position:absolute;top:50%;left:50%;width:"+x+"px;height:"+y+"px;margin:-"+(Max+y/2)+"px -"+(Max+x/2)+"px;border:"+Max+"px solid "+(this.color?this.color:"rgba(66,66,66,.8)")+";line-height:"+y+"px;";
+        this.clipWindow.style.cssText = "position:absolute;top:50%;left:50%;width:"+x+"px;height:"+y+"px;margin:-"+(Max+y/2)+"px -"+(Max+x/2)+"px;border:"+Max+"px solid "+(this.color?this.color:"rgba(66,66,66,.8)")+";line-height:"+y+"px;box-sizing:content-box;";
         this.clipImage = document.createElement("img");
         this.clipImage.style.cssText = "position:relative;z-index:-2;display:none;vertical-align:middle;";
         this.clipImage.onload = loadEnd.bind(this);
