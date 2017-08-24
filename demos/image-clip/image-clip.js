@@ -592,6 +592,7 @@
         },
         end : function (callback,preview) {
             if (!this.canFinish) return;
+            if (!preview) this.canFinish = false;
             var cvs = document.createElement("canvas"),
                 ctx = cvs.getContext("2d"),
                 msg = this.clipImageData,
@@ -673,6 +674,7 @@
                 data = cvs.toDataURL();
             }
             if (callback && callback instanceof Function) callback(data);
+            if (!preview) this.canFinish = true;
         },
         refresh : function () {
             if (!this.clipMain) return;
