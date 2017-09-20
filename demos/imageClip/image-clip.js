@@ -308,7 +308,7 @@
         var x = e.clientX, y = e.clientY,mouseMove,mouseUp;
         var _x, _y, msg = this.clipImageData;
         mouseMove = function (ev) {
-            ev = event || window.event;
+            ev = ev || window.event;
             var X = ev.clientX, Y = ev.clientY,o;
             _x = X - x + msg.x;
             _y = Y - y + msg.y;
