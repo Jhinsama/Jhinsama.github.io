@@ -215,8 +215,8 @@ new Image().src = "folder.png";
         }
         dom.iner.html(content);
         var detalis = "";
-        detalis += folderCount ? (folderCount + "个文件夹&emsp;") : "";
-        detalis += fileCount ? (fileCount + "个文件") : "";
+        detalis += folderCount ? ("<div>Folder: " + folderCount + "</div>") : "";
+        detalis += fileCount ? ("<div>File: " + fileCount + "</div>") : "";
         detalis = detalis ? detalis : "空荡荡的";
         dom.deta.html(detalis);
     }
@@ -298,7 +298,7 @@ new Image().src = "folder.png";
         if (w.sessionStorage) {
             path = w.sessionStorage.getItem("path") || "/";
         }
-        testPath("/");
+        testPath(path);
         dom.prev.click(prev);
         dom.next.click(next);
         dom.mepr.click(prev);
