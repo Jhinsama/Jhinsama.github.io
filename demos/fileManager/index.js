@@ -19,7 +19,7 @@ new Image().src = "folder.png";
         menu : $("#menu"),
         open : $(".menu-item.open"),
         dolo : $(".menu-item.download")
-    };
+    }
 
     var data = {
         pathListDOM : {
@@ -28,7 +28,7 @@ new Image().src = "folder.png";
         pathHistory : [],
         wWidth : w.innerWidth,
         wHeight : w.innerHeight
-    };
+    }
 
     var state = {
         loading : false,
@@ -36,7 +36,7 @@ new Image().src = "folder.png";
         path : "",
         index : -1,
         history : false
-    };
+    }
 
     function prev () {
         console.log("prev");
@@ -296,6 +296,13 @@ new Image().src = "folder.png";
     function init () {
         var path = "/";
         if (w.sessionStorage) {
+            var pathHistory = w.sessionStorage.getItem("pathHistory");
+            if (pathHistory) {
+                data.pathHistory = JSON.parse(pathHistory);
+                state.history = true;
+            }
+            var index = w.sessionStorage.getItem("pathHistoryIndex");
+            if (index) state.index = parseInt(index);
             path = w.sessionStorage.getItem("path") || "/";
         }
         testPath(path);
@@ -334,7 +341,11 @@ new Image().src = "folder.png";
             }
         });
         w.onunload = function () {
-            if (w.sessionStorage) w.sessionStorage.setItem("path", state.path);
+            if (w.sessionStorage) {
+                w.sessionStorage.setItem("path", state.path);
+                w.sessionStorage.setItem("pathHistory", JSON.stringify(data.pathHistory));
+                w.sessionStorage.setItem("pathHistoryIndex", state.index);
+            }
         }
     }
 
