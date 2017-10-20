@@ -39,7 +39,6 @@ new Image().src = "folder.png";
     }
 
     function prev () {
-        console.log("prev");
         if (state.loading) return false;
         state.loading = true;
         state.index--;
@@ -52,7 +51,6 @@ new Image().src = "folder.png";
     }
 
     function next () {
-        console.log("next");
         if (state.loading) return false;
         state.loading = true;
         state.index++;
@@ -66,7 +64,6 @@ new Image().src = "folder.png";
     }
 
     function refresh () {
-        console.log("refresh");
         if (state.loading) return false;
         state.loading = true;
 
@@ -77,7 +74,6 @@ new Image().src = "folder.png";
     }
 
     function testPath (path) {
-        console.log("testPath");
         if (path == "/") return setPath(u, "/", true);
         var keys = [];
         for (var key in data.pathListDom) {
@@ -112,7 +108,6 @@ new Image().src = "folder.png";
     }
 
     function setPath (event, path, show) {
-        console.log("setPath");
         if (state.loading) return false;
         state.loading = true;
         path = path ? path : ($(this).parent("li").data("path") || "/");
@@ -158,7 +153,6 @@ new Image().src = "folder.png";
     }
 
     function setPathHistory (path) {
-        console.log("setPathHistory");
         var len = data.pathHistory.length;
         if (state.index + 1 < len) {
             data.pathHistory.splice(state.index + 1, len - state.index - 1);
@@ -171,7 +165,6 @@ new Image().src = "folder.png";
     }
 
     function createPathList (path, reload) {
-        console.log("createPathList");
         var li = data.pathListDOM[path];
         var ul = li.children(".file-list");
         if (ul.length == 0) {
@@ -193,7 +186,6 @@ new Image().src = "folder.png";
     }
 
     function createPathContent (path) {
-        console.log("createPathContent");
         var folderCount = 0, fileCount = 0;
         var content = "";
         for (var i = 0; i < d[path].length; i++) {
@@ -222,7 +214,6 @@ new Image().src = "folder.png";
     }
 
     function pathFocus (event) {
-        console.log("pathFocus");
         event = event || w.event;
         if (document.all) {
             w.event.returnValue = false;
@@ -234,7 +225,6 @@ new Image().src = "folder.png";
     }
 
     function enterFolder (event) {
-        console.log("enterFolder");
         event = event || w.event;
         if (document.all) {
             w.event.returnValue = false;
@@ -249,7 +239,6 @@ new Image().src = "folder.png";
     }
 
     function contextMenu (event) {
-        console.log("contextMenu");
         event = event || w.event;
         var target = $(event.target);
         if (target.closest(".folder-inner").length > 0) {
@@ -263,7 +252,6 @@ new Image().src = "folder.png";
     }
 
     function showContextMenu (event) {
-        console.log("showContextMenu");
         var x = event.clientX, y = event.clientY;
         dom.menu.css("visibility", "hidden");
         var target = $(event.target).closest(".child");
