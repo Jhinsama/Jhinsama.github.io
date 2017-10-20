@@ -1,0 +1,421 @@
+/* 重置 */
+    html *{margin:0;padding:0;box-sizing:border-box;user-select:none;}
+    html, body{height:100%;min-width:750px;min-height:750px;color:#333;overflow:hidden;}
+    ul{list-style:none;}
+    a{text-decoration:none;color:inherit;}
+    a:hover{text-decoration:none;}
+    hr{border:none;border-top:1px solid #efefef;}
+/* **** */
+body{
+    position: relative;
+    padding-top: 50px;
+    font-size: 14px;
+    line-height: 1;
+    overflow: auto;
+}
+/* 头部 */
+    #header{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 50px;
+        padding: 0 100px;
+        font-size: 25px;
+        line-height: 49px;
+        text-align: center;
+        border-bottom: 1px solid #dfdfdf;
+    }
+    .con-btn{
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 40px;
+        margin: auto;
+        line-height: 1;
+        text-align: left;
+    }
+    .con-prev, .con-next{
+        display: inline-block;
+        position: relative;
+        width: 20px;
+        height: 12px;
+        margin: 14px 30px;
+        background: #999;
+    }
+    .con-next{
+        float: right;
+    }
+    .con-prev:before, .con-next:after{
+        content: "";
+        display: block;
+        position: absolute;
+        top: 50%;
+        width: 12px;
+        height: 24px;
+        margin: -12px 0;
+        border-top: 12px solid transparent;
+        border-bottom: 12px solid transparent;
+        box-sizing: border-box;
+    }
+    .con-prev:before{
+        right: 18px;
+        border-right: 12px solid #999;
+    }
+    .con-next:after{
+        left: 18px;
+        border-left: 12px solid #999;
+    }
+    .con-prev:hover, .con-next:hover{
+        background: #666;
+    }
+    .con-prev:hover:before{
+        border-right: 12px solid #666;
+    }
+    .con-next:hover:after{
+        border-left: 12px solid #666;
+    }
+    .path-box{
+        display: inline-block;
+        max-width: 100%;
+        height: 100%;
+        line-height: 1;
+        vertical-align: top;
+        overflow: hidden;
+    }
+    .path{
+        display: inline-block;
+        padding: 12px 0;
+        float: right;
+    }
+/* **** */
+#main{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding-left: 200px;
+}
+#body-left{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200px;
+    height: 100%;
+    padding: 15px 0 15px 10px;
+    border-right: 1px solid #dfdfdf;
+    overflow: hidden;
+}
+/* 路径 */
+    .file-list{
+        padding-left: 10px;
+    }
+    .file-list a{
+        position: relative;
+        display: inline-block;
+        width: 100%;
+        padding: 5px 0 5px 5px;
+        white-space:nowrap;
+    }
+    .file-list a.folder:before{
+        content: "";
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: -3px;
+        width: 4px;
+        height: 6px;
+        margin: -3px -2px;
+        border-top: 3px solid #fff;
+        border-left: 4px solid #333;
+        border-bottom: 3px solid #fff;
+        background-color: #000;
+        box-sizing: border-box;
+        -webkit-backface-visibility:hidden;
+           -moz-backface-visibility:hidden;
+            -ms-backface-visibility:hidden;
+                backface-visibility:hidden;
+        -webkit-transition: 300ms;
+           -moz-transition: 300ms;
+            -ms-transition: 300ms;
+             -o-transition: 300ms;
+                transition: 300ms;
+    }
+    .file-list .active > a.folder:before{
+        -webkit-transform: rotate(45deg);
+           -moz-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+             -o-transform: rotate(45deg);
+                transform: rotate(45deg);
+    }
+    .file-list .on > a{
+        color: #5b9bd1;
+    }
+    .file-list a:hover:after, .file-list .on > a:after{
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -15px;
+        width: 200px;
+        height: 100%;
+        border: 1px solid #efefef;
+        border-radius: 5px;
+        z-index: -1;
+        box-sizing: border-box;
+        box-shadow: inset 0 0px 15px #efefef;
+    }
+    li > .file-list{
+        display: none;
+    }
+    li.active > .file-list{
+        display: block;
+    }
+/* **** */
+#body-right{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding-bottom: 80px;
+    box-shadow: inset 0 0px 10px #ccc;
+}
+/* 界面 */
+    .folder-inner{
+        position: relative;
+        width: 100%;
+        height: 100%;
+        font-size: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+    .child-box{
+        display: inline-block;
+        width: 200px;
+        height: 228px;
+        padding: 25px 20px;
+        font-size: 14px;
+        text-align: center;
+        float: left;
+    }
+    .child{
+        display: block;
+        width: 100%;
+        height: 100%;
+        padding: 0 5px;
+        overflow: hidden;
+    }
+    .child:focus{
+        position: relative;
+        height: auto;
+        min-height: 100%;
+        overflow: visible;
+        outline: 2px solid #0f0;
+        z-index: 1;
+    }
+    .child-icon{
+        width: 130px;
+        height: 130px;
+        margin: 0 auto;
+        -webkit-background-image: url('folder.png');
+        background-image: url('folder.png');
+        -webkit-background-size: 1000% 300%;
+        background-size: 1000% 300%;
+    }
+    .child-name{
+        margin-top: 10px;
+        line-height: 1.5;
+        word-wrap: break-word;
+    }
+/* **** */
+/* 图标 */
+    .child-icon.icon-folder{
+        -webkit-background-position: 0% 0%;
+        background-position: 0% 0%;
+    }
+    .child-icon.icon-word{
+        -webkit-background-position: -130px 0;
+        background-position: -130px 0;
+    }
+    .child-icon.icon-excel{
+        -webkit-background-position: -260px 0;
+        background-position: -260px 0;
+    }
+    .child-icon.icon-pp{
+        -webkit-background-position: -390px 0;
+        background-position: -390px 0;
+    }
+    .child-icon.icon-txt{
+        -webkit-background-position: -520px 0;
+        background-position: -520px 0;
+    }
+    .child-icon.icon-other{
+        -webkit-background-position: -650px 0;
+        background-position: -650px 0;
+    }
+    .child-icon.icon-zip{
+        -webkit-background-position: -780px 0;
+        background-position: -780px 0;
+    }
+    .child-icon.icon-code{
+        -webkit-background-position: -910px 0;
+        background-position: -910px 0;
+    }
+    .child-icon.icon-link{
+        -webkit-background-position: -1040px 0;
+        background-position: -1040px 0;
+    }
+    .child-icon.icon-tag{
+        -webkit-background-position: -1170px 0;
+        background-position: -1170px 0;
+    }
+    .child-icon.icon-img{
+        -webkit-background-position: 0 -130px;
+        background-position: 0 -130px;
+    }
+    .child-icon.icon-video{
+        -webkit-background-position: -130px -130px;
+        background-position: -130px -130px;
+    }
+    .child-icon.icon-audio{
+        -webkit-background-position: -260px -130px;
+        background-position: -260px -130px;
+    }
+    .child-icon.icon-ps{
+        -webkit-background-position: -390px -130px;
+        background-position: -390px -130px;
+    }
+    .child-icon.icon-pdf{
+        -webkit-background-position: -520px -130px;
+        background-position: -520px -130px;
+    }
+    .child-icon.icon-pr{
+        -webkit-background-position: -650px -130px;
+        background-position: -650px -130px;
+    }
+    .child-icon.icon-ai{
+        -webkit-background-position: -780px -130px;
+        background-position: -780px -130px;
+    }
+    .child-icon.icon-id{
+        -webkit-background-position: -910px -130px;
+        background-position: -910px -130px;
+    }
+    .child-icon.icon-set{
+        -webkit-background-position: -1040px -130px;
+        background-position: -1040px -130px;
+    }
+    .child-icon.icon-font{
+        -webkit-background-position: -1170px -130px;
+        background-position: -1170px -130px;
+    }
+    .child-icon.icon-note{
+        -webkit-background-position: 0 -260px;
+        background-position: 0 -260px;
+    }
+    .child-icon.icon-data{
+        -webkit-background-position: -130px -260px;
+        background-position: -130px -260px;
+    }
+/* **** */
+.details{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 80px;
+    padding: 10px 20px;
+    border-top: 1px solid #dfdfdf;
+}
+.tips{
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    color: #999;
+    font-size: 12px;
+    z-index: -1;
+}
+/* 右键 */
+    #menu{
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-size: 16px;
+        background: #fff;
+        border: 1px solid #efefef;
+        border-radius: 5px;
+        box-shadow: 2px 2px 5px #efefef;
+        z-index: 10;
+        overflow: hidden;
+        visibility: hidden;
+    }
+    .menu-item{
+        width: 150px;
+        padding: 17px 10px;
+        font-family: "宋体";
+    }
+    .menu-item:hover, .menu-head > div:hover{
+        color: #fff;
+        background: #5b9bd1;
+    }
+    .menu-item.open, .menu-item.download{
+        display: none;
+    }
+    #menu.open .menu-item.open{
+        display: block;
+    }
+    #menu.download .menu-item.download{
+        display: block;
+    }
+    .menu-head{
+        font-size: 0;
+    }
+    .menu-head > div{
+        display: inline-block;
+        width: 50px;
+        vertical-align: top;
+    }
+    .menu-prev > div, .menu-next > div{
+        position: relative;
+        width: 16px;
+        height: 10px;
+        margin: 20px 17px;
+        background: #999;
+    }
+    .menu-prev > div:before, .menu-next > div:after{
+        content: "";
+        display: block;
+        position: absolute;
+        top: 50%;
+        width: 10px;
+        height: 18px;
+        margin: -10px 0;
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+        box-sizing: border-box;
+    }
+    .menu-prev > div:before{
+        right: 12px;
+        border-right: 10px solid #999;
+    }
+    .menu-next > div:after{
+        left: 12px;
+        border-left: 10px solid #999;
+    }
+    .menu-prev:hover > div, .menu-next:hover > div{
+        background: #fff;
+    }
+    .menu-prev:hover > div:before, .menu-next:hover > div:after{
+        border-left-color: #fff;
+        border-right-color: #fff;
+    }
+    .menu-refresh > div{
+        width: 22px;
+        height: 22px;
+        margin: 14px;
+        border: 5px solid #999;
+        border-radius: 50%;
+    }
+    .menu-refresh:hover > div{
+        border: 5px solid #fff;
+    }
+/* **** */

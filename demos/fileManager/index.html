@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content='initial-scale=1, maximum-scale=5, minimum-scale=0, user-scalable=no'>
+    <script>(function(){var width=window.outerWidth,meta=document.getElementsByTagName('meta')[0];meta.content='initial-scale='+width/750+',maximum-scale=5,minimum-scale=0,user-scalable=no';window.onresize=function(){width=window.outerWidth;meta.content='initial-scale='+width/750+',maximum-scale=5,minimum-scale=0,user-scalable=no'}})();</script>
+    <meta charset="UTF-8" />
+    <title>文件管理</title>
+    <link rel="stylesheet" type="text/css" href="index.css">
+</head>
+<body>
+    <div id="header">
+        <div class="con-btn">
+            <div class="con-prev"></div>
+            <div class="con-next"></div>
+        </div>
+        <div class="path-box">
+            <span class="path"></span>
+        </div>
+    </div>
+    <div id="main">
+        <div id="body-left">
+            <ul class="file-list">
+                <li id="grand" class="active on">
+                    <a class="folder" href="javascript:void(0)">根目录</a>
+                </li>
+            </ul>
+        </div>
+        <div id="body-right">
+            <div class="folder-inner">
+                <!-- <div class="child-box">
+                    <a class="child folder" href="javascript:void(0)">
+                        <div class="child-icon icon-folder"></div>
+                        <div class="child-name">
+                            文件夹
+                        </div>
+                    </a>
+                </div>
+                <div class="child-box">
+                    <a class="child" href="javascript:void(0)">
+                        <div class="child-icon icon-word"></div>
+                        <div class="child-name">
+                            Word文档
+                        </div>
+                    </a>
+                </div>
+                <div class="child-box">
+                    <a class="child" href="javascript:void(0)">
+                        <div class="child-icon icon-excel"></div>
+                        <div class="child-name">
+                            Excel表格
+                        </div>
+                    </a>
+                </div>
+                <div class="child-box">
+                    <a class="child" href="javascript:void(0)">
+                        <div class="child-icon icon-pp"></div>
+                        <div class="child-name">
+                            PowerPoint演示文档
+                        </div>
+                    </a>
+                </div>
+                <div class="child-box">
+                    <a class="child" href="javascript:void(0)">
+                        <div class="child-icon icon-txt"></div>
+                        <div class="child-name">
+                            文本文档
+                        </div>
+                    </a>
+                </div>
+                <div class="child-box">
+                    <a class="child" href="javascript:void(0)">
+                        <div class="child-icon icon-other"></div>
+                        <div class="child-name">
+                            未知类型
+                        </div>
+                    </a>
+                </div>
+                <div class="child-box">
+                    <a class="child" href="javascript:void(0)">
+                        <div class="child-icon icon-zip"></div>
+                        <div class="child-name">
+                            压缩包
+                        </div>
+                    </a>
+                </div>
+                <div class="child-box">
+                    <a class="child" href="javascript:void(0)">
+                        <div class="child-icon icon-code"></div>
+                        <div class="child-name">
+                            代码
+                        </div>
+                    </a>
+                </div>
+                <div class="child-box">
+                    <a class="child" href="javascript:void(0)">
+                        <div class="child-icon icon-link"></div>
+                        <div class="child-name">
+                            链接
+                        </div>
+                    </a>
+                </div>
+                <div class="child-box">
+                    <a class="child" href="javascript:void(0)">
+                        <div class="child-icon icon-tag"></div>
+                        <div class="child-name">
+                            书签
+                        </div>
+                    </a>
+                </div>
+                <div class="child-box">
+                    <a class="child" href="javascript:void(0)">
+                        <div class="child-icon icon-img"></div>
+                        <div class="child-name">
+                            图片
+                        </div>
+                    </a>
+                </div>
+                <div class="child-box">
+                    <a class="child" href="javascript:void(0)">
+                        <div class="child-icon icon-video"></div>
+                        <div class="child-name">
+                            视频
+                        </div>
+                    </a>
+                </div>
+                <div class="child-box">
+                    <a class="child" href="javascript:void(0)">
+                        <div class="child-icon icon-audio"></div>
+                        <div class="child-name">
+                            音频
+                        </div>
+                    </a>
+                </div>
+                <div class="child-box">
+                    <a class="child" href="javascript:void(0)">
+                        <div class="child-icon icon-ps"></div>
+                        <div class="child-name">
+                            PSD
+                        </div>
+                    </a>
+                </div>
+                <div class="child-box">
+                    <a class="child" href="javascript:void(0)">
+                        <div class="child-icon icon-pdf"></div>
+                        <div class="child-name">
+                            PDF
+                        </div>
+                    </a>
+                </div>
+                <div class="child-box">
+                    <a class="child" href="javascript:void(0)">
+                        <div class="child-icon icon-pr"></div>
+                        <div class="child-name">
+                            Pr
+                        </div>
+                    </a>
+                </div>
+                <div class="child-box">
+                    <a class="child" href="javascript:void(0)">
+                        <div class="child-icon icon-ai"></div>
+                        <div class="child-name">
+                            Ai
+                        </div>
+                    </a>
+                </div>
+                <div class="child-box">
+                    <a class="child" href="javascript:void(0)">
+                        <div class="child-icon icon-id"></div>
+                        <div class="child-name">
+                            Id
+                        </div>
+                    </a>
+                </div>
+                <div class="child-box">
+                    <a class="child" href="javascript:void(0)">
+                        <div class="child-icon icon-set"></div>
+                        <div class="child-name">
+                            配置文件
+                        </div>
+                    </a>
+                </div>
+                <div class="child-box">
+                    <a class="child" href="javascript:void(0)">
+                        <div class="child-icon icon-font"></div>
+                        <div class="child-name">
+                            字体
+                        </div>
+                    </a>
+                </div>
+                <div class="child-box">
+                    <a class="child" href="javascript:void(0)">
+                        <div class="child-icon icon-note"></div>
+                        <div class="child-name">
+                            笔记
+                        </div>
+                    </a>
+                </div>
+                <div class="child-box">
+                    <a class="child" href="javascript:void(0)">
+                        <div class="child-icon icon-data"></div>
+                        <div class="child-name">
+                            数据
+                        </div>
+                    </a>
+                </div> -->
+            </div>
+            <div class="details"></div>
+            <div class="tips">键盘的 ← 和 → 可控制后退和前进</div>
+        </div>
+    </div>
+    <div id="menu">
+        <div class="menu-head">
+            <div class="menu-prev"><div></div></div>
+            <div class="menu-refresh"><div></div></div>
+            <div class="menu-next"><div></div></div>
+        </div>
+        <hr>
+        <div class="menu-item open">
+            <a href="javascript:void(0)">打&ensp;开</a>
+        </div>
+        <div class="menu-item download">
+            <a href="javascript:void(0)">下&ensp;载</a>
+        </div>
+    </div>
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js" type="text/javascript"></script>
+    <script src="data.js" type="text/javascript"></script>
+    <script src="index.js" type="text/javascript"></script>
+</body>
+</html>
