@@ -1,6 +1,6 @@
 /* 重置 */
-    html *{margin:0;padding:0;box-sizing:border-box;user-select:none;}
-    html, body{height:100%;min-width:750px;min-height:750px;color:#333;overflow:hidden;}
+    html *{margin:0;padding:0;box-sizing:border-box;}
+    html, body{height:100%;min-width:820px;min-height:600px;color:#333;overflow:hidden;}
     ul{list-style:none;}
     a{text-decoration:none;color:inherit;}
     a:hover{text-decoration:none;}
@@ -12,6 +12,7 @@ body{
     font-size: 14px;
     line-height: 1;
     overflow: auto;
+    user-select:none;
 }
 /* 头部 */
     #header{
@@ -204,13 +205,16 @@ body{
         padding: 0 5px;
         overflow: hidden;
     }
-    .child:focus{
+    .child:focus, .child.focus{
         position: relative;
         height: auto;
         min-height: 100%;
         overflow: visible;
         outline: 2px solid #0f0;
         z-index: 1;
+    }
+    .child.focus, .child.focus:focus{
+        height: 100%;
     }
     .child-icon{
         width: 130px;
@@ -337,7 +341,7 @@ body{
 }
 /* 右键 */
     #menu{
-        position: absolute;
+        position: fixed;
         top: 0;
         left: 0;
         font-size: 16px;
@@ -420,3 +424,14 @@ body{
         border: 5px solid #fff;
     }
 /* **** */
+#temp{
+    position: fixed;
+    top: 100%;
+    left: 100%;
+    width: 0;
+    height: 0;
+    background: #00C4FF;
+    z-index: 5;
+    filter: alpha(opacity=20);
+    opacity: .2;
+}

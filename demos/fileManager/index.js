@@ -5,6 +5,7 @@ new Image().src = "folder.png";
 (function (w, d, u) {
 
     var dom = {
+        docu : $(document),
         path : $(".path"),
         prev : $(".con-prev"),
         next : $(".con-next"),
@@ -18,7 +19,8 @@ new Image().src = "folder.png";
         deta : $(".details"),
         menu : $("#menu"),
         open : $(".menu-item.open"),
-        dolo : $(".menu-item.download")
+        dolo : $(".menu-item.download"),
+        temp : $("#temp")
     }
 
     var data = {
@@ -27,15 +29,24 @@ new Image().src = "folder.png";
         },
         pathHistory : [],
         wWidth : w.innerWidth,
-        wHeight : w.innerHeight
+        wHeight : w.innerHeight,
+        details : "",
+        x : u,
+        y : u,
+        inerW : w.innerWidth - 200
     }
 
     var state = {
         loading : false,
+        click : false,
+        input : false,
         enter : false,
+        shift : false,
+        ctrl : false,
         path : "",
         index : -1,
-        history : false
+        history : false,
+        mouseDown : false
     }
 
     function prev () {
@@ -206,14 +217,17 @@ new Image().src = "folder.png";
             }
         }
         dom.iner.html(content);
-        var detalis = "";
-        detalis += folderCount ? ("<div>Folder: " + folderCount + "</div>") : "";
-        detalis += fileCount ? ("<div>File: " + fileCount + "</div>") : "";
-        detalis = detalis ? detalis : "空荡荡的";
-        dom.deta.html(detalis);
+        var details = "";
+        details += folderCount ? ("<div>Folder: " + folderCount + "</div>") : "";
+        details += fileCount ? ("<div>File: " + fileCount + "</div>") : "";
+        details = details ? details : "空荡荡的";
+        data.details = details;
+        dom.deta.html(details);
     }
 
-    function pathFocus (event) {
+    function pathClick (event) {
+        if (state.click) return;
+        state.click = true;
         event = event || w.event;
         if (document.all) {
             w.event.returnValue = false;
@@ -222,6 +236,7 @@ new Image().src = "folder.png";
         }
         if (state.enter) return setPath(u, $(this).data("path"));
         this.focus();
+        setTimeout(function () {state.click = false;}, 500);
     }
 
     function enterFolder (event) {
@@ -281,7 +296,115 @@ new Image().src = "folder.png";
         dom.menu.css("visibility", "visible");
     }
 
-    function init () {
+    function pathFocus (event) {
+        event = event || w.event;
+        dom.deta.html("");
+    }
+
+    function pathBlur (event) {
+        event = event || w.event;
+        dom.deta.html(data.details);
+    }
+
+    function defaultClick (event) {
+        event = event || w.event;
+        dom.menu.css("visibility", "hidden");
+    }
+
+    function keyDown (event) {
+        event = event || w.event;
+        switch (event.keyCode) {
+            case 13:
+                state.enter = true;
+            break;
+            case 16:
+                state.shift = true;
+            break;
+            case 17:
+                state.ctrl = true;
+            break;
+        }
+    }
+
+    function keyUp (event) {
+        event = event || w.event;
+        switch (event.keyCode) {
+            case 8:
+                if (!state.input) prev();
+            break;
+            case 13:
+                state.enter = false;
+            break;
+            case 16:
+                state.shift = false;
+            break;
+            case 17:
+                state.ctrl = false;
+            break;
+            case 37:
+                if (!state.input) prev();
+            break;
+            case 39:
+                if (!state.input) next();
+            break;
+        }
+    }
+
+    function mouseDown (event) {
+        state.mouseDown = true;
+        event = event || w.event;
+        data.x = event.clientX;
+        data.y = event.clientY;
+        dom.temp.css({
+            "top" : data.y + "px",
+            "left" : data.x + "px",
+            "width" : 0,
+            "height" : 0
+        });
+        if ($(event.target).closest(".child").length > 0) return false;
+    }
+
+    function mouseMove (event) {
+        if (!state.mouseDown) return;
+        event = event || window.event;
+        var x = event.clientX, y = event.clientY;
+        var _x, _y;
+        if (x > data.x) {
+            if (x > data.wWidth) x = data.wWidth;
+            _x = x - data.x;
+            dom.temp.css("width", _x + "px");
+        } else {
+            if (x < 200) x = 200;
+            _x = x - data.x;
+            dom.temp.css({
+                "width" : - _x + "px",
+                "left" : x + "px"
+            });
+        }
+        if (y > data.y) {
+            if (y > data.wHeight - 80) y = data.wHeight - 80;
+            _y = y - data.y;
+            dom.temp.css("height", _y + "px");
+        } else {
+            if (y < 50) y = 50;
+            _y = y - data.y;
+            dom.temp.css({
+                "height" : - _y + "px",
+                "top" : y + "px"
+            });
+        }
+    }
+
+    function mouseUp (event) {
+        if (!state.mouseDown) return;
+        state.mouseDown = false;
+        dom.temp.css({
+            "width" : 0,
+            "height" : 0
+        });
+    }
+
+    function storage () {
         var path = "/";
         if (w.sessionStorage) {
             var pathHistory = w.sessionStorage.getItem("pathHistory");
@@ -294,47 +417,48 @@ new Image().src = "folder.png";
             path = w.sessionStorage.getItem("path") || "/";
         }
         testPath(path);
+    }
+
+    function unLoad () {
+        if (w.sessionStorage) {
+            w.sessionStorage.setItem("path", state.path);
+            w.sessionStorage.setItem("pathHistory", JSON.stringify(data.pathHistory));
+            w.sessionStorage.setItem("pathHistoryIndex", state.index);
+        }
+    }
+
+    function reSize() {
+        data.wWidth = w.innerWidth;
+        data.wHeight = w.innerHeight;
+        data.inerW = w.innerWidth - 200;
+    }
+
+    function init () {
+        storage();
         dom.prev.click(prev);
         dom.next.click(next);
         dom.mepr.click(prev);
         dom.mene.click(next);
         dom.relo.click(refresh);
-        dom.bole.on("click", "a", setPath);
-        dom.iner.on("click", ".child", pathFocus);
-        dom.iner.on("dblclick", ".child", enterFolder);
         dom.open.click(enterFolder);
         dom.dolo.click(enterFolder);
+        dom.docu.click(defaultClick);
+        dom.bole.on("click", "a", setPath);
+        dom.iner.on("click", ".child", pathClick);
+        dom.iner.on("dblclick", ".child", enterFolder);
+        dom.iner.on("focus", ".child", pathFocus);
+        dom.iner.on("blur", ".child", pathBlur);
+        dom.docu.bind("contextmenu", contextMenu);
+        dom.docu.keydown(keyDown);
+        dom.docu.keyup(keyUp);
+        // dom.iner.mousedown(mouseDown);
+        // dom.docu.mousemove(mouseMove);
+        // dom.docu.mouseup(mouseUp);
+        dom.docu.bind("dragstart", function () {return false;});
+        dom.docu.bind("selectstart", function () {return false;});
 
-        $(document).bind("contextmenu", contextMenu);
-        $(document).click(function (event) {
-            event = event || w.event;
-            dom.menu.css("visibility", "hidden");
-        });
-        $(document).keydown(function (event) {
-            event = event || w.event;
-            if (event.keyCode == 13) state.enter = true;
-        });
-        $(document).keyup(function (event) {
-            event = event || w.event;
-            switch (event.keyCode) {
-                case 13:
-                    enter = false;
-                break;
-                case 37:
-                    prev();
-                break;
-                case 39:
-                    next();
-                break;
-            }
-        });
-        w.onunload = function () {
-            if (w.sessionStorage) {
-                w.sessionStorage.setItem("path", state.path);
-                w.sessionStorage.setItem("pathHistory", JSON.stringify(data.pathHistory));
-                w.sessionStorage.setItem("pathHistoryIndex", state.index);
-            }
-        }
+        w.onunload = unLoad;
+        w.onresize = reSize;
     }
 
     init();
