@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta content="email=no" name="format-detection" />
+    <title>时间选择器</title>
+    <link rel="stylesheet" type="text/css" href="index.min.css">
+</head>
+<body>
+    <br /><br /><br />
+    <br /><br /><br />
+    <br /><br /><br />
+    <input type="text" class="datepicker">
+    <input type="text" class="datepicker">
+    <input class="input">
+    <input class="input">
+    <br /><br /><br />
+    <script src="index.js" type="text/javascript"></script>
+    <script type="text/javascript">
+var app = new datePicker();
+app.set(document.getElementsByClassName("input"), {
+    min : "",
+    max : "now",
+    range : true
+});
+    </script>
+</body>
+</html>
