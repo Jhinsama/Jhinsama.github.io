@@ -1,4 +1,5 @@
 (function (w, u) {
+    "use strict";
     if (!!w.datePicker) return;
     function eventListener (target, type, handle, remove) {
         if (remove) {
@@ -265,18 +266,29 @@
             var year = date.getFullYear();
             var month = date.getMonth();
             var change = false;
-            if (year != this.currentYear) {
-                this.currentYear = year;
-                this._mosaicObj(year);
-                change = true;
-            }
-            if (month != this.currentMonth) {
-                this.currentMonth = month;
-                this.yearBox.setAttribute("data-month", month);
-                change = true;
-            }
-            if (change) {
-                this.ymBtn.innerHTML = this.currentYear + "年" + (this.currentMonth < 9 ? ("0" + (this.currentMonth + 1)) : (this.currentMonth + 1)) + "月";
+
+
+            if (!this.dateCache) {
+                if (year != this.currentYear) {
+                    this.currentYear = year;
+                    this._mosaicObj(year);
+                    change = true;
+                }
+                if (month != this.currentMonth) {
+                    this.currentMonth = month;
+                    this.yearBox.setAttribute("data-month", month);
+                    change = true;
+                }
+                if (change) {
+                    this.ymBtn.innerHTML = this.currentYear + "年" + (this.currentMonth < 9 ? ("0" + (this.currentMonth + 1)) : (this.currentMonth + 1)) + "月";
+                }
+                if (input.datePickerData.range) {
+                    removeClass(this.lastWeek, "un");
+                    removeClass(this.lastMonth, "un");
+                } else {
+                    addClass(this.lastWeek, "un");
+                    addClass(this.lastMonth, "un");
+                }
             }
 
 
@@ -291,21 +303,39 @@
                 this.datePicker.style.left = oL + "px";
                 this.point.style.left = "10%";
             }
-            if (input.datePickerData.range) {
-                removeClass(this.lastWeek, "un");
-                removeClass(this.lastMonth, "un");
-            } else {
-                addClass(this.lastWeek, "un");
-                addClass(this.lastMonth, "un");
-            }
         },
         _inputFocus : function (input) {
             input.blur();
+            this._inputBlur(input);
             this.input = input;
             this._initPicker(input);
             this.datePicker.style.display = "block";
             w.scrollTo(0, input.offsetTop - 5);
             return false;
+        },
+        _inputBlur : function (input) {
+            if (this.dateCache) {
+                if (this.dateCache.start && this.dateCache.end) {
+                    if (this.dateCache.start != input && this.dateCache.end != input) {
+                        var str;
+                        if (this.dateCache.on == "start") {
+                            var max = this.dateCache.end.datePickerData.max;
+                            if (max == "now") {
+                                var date = new Date();
+                                str = this._mosaicStr(date.getFullYear(), date.getMonth(), date.getDate());
+                            } else {
+                                str = max.replace(".", this.join).replace(".", this.join).replace(".", " ").replace(".", ":").replace(".", ":");
+                            }
+                            this.dateCache.end.value = str;
+                        } else {
+                            var min = this.dateCache.end.datePickerData.min;
+                        }
+                        this.dateCache = u;
+                    }
+                } else {
+                    if (input != this.input) this.dateCache = u;
+                }
+            }
         },
         _disableEvent : function (event) {
             event = event || w.event;
@@ -320,11 +350,15 @@
             var hide = true;
             if (b) {
                 for (var i = 0; i < this.inputs.length; i++) {
-                    if (this.inputs[i] === b) hide = false;
+                    if (this.inputs[i] === b) {
+                        hide = false;
+                        break;
+                    }
                 }
             }
             if (!a && hide) {
                 this.datePicker.style.display = "none";
+                this._inputBlur();
             }
         },
         _touchStart : function (target) {
@@ -504,6 +538,7 @@
                     }
                     this.datePicker.style.display = "none";
                 }
+                this.dateCache = u;
             } else {
                 if (closest(event.target, ".-date-picker-date")) {
                     var btn = closest(event.target, ".-date-picker-date");
@@ -512,17 +547,78 @@
                     } else if (hasClass(btn, "next")) {
                         this.next();
                     } else {
+                        if (hasClass(btn, "un")) return false;
                         var year = this.currentYear;
                         var month = this.currentMonth + 1;
                         var day = ~~btn.innerText;
-                        if (!this.input.datePickerData.range) {
-                            this.input.value = year + this.join + (month < 9 ? ("0" + month) : month) + this.join + (day < 10 ? ("0" + day) : day);
+                        var bind = this.input.datePickerData.bind;
+                        var range = this.input.datePickerData.range;
+                        if (!range) {
+                            this.input.value = this._mosaicStr(year, month, day);
                             this.datePicker.style.display = "none";
+                        } else {
+                            var str = this._mosaicStr(year, month, day);
+                            if (bind && range == "start" || range == "end") {
+                                if (this.dateCache) {
+                                    var result = this._sortDay(this.dateCache.str, str);
+                                    this.dateCache.start.value = result.min;
+                                    this.dateCache.end.value = result.max;
+                                    this.datePicker.style.display = "none";
+                                    this.dateCache = u;
+                                } else {
+                                    this.input.value = str;
+                                    this.dateCache = { str : str };
+                                    var input;
+                                    for (var i = 0; i < this.inputs.length; i++) {
+                                        if (this.inputs[i].datePickerData.bind == bind && this.inputs[i].datePickerData.range != range) {
+                                            input = this.inputs[i];
+                                            break;
+                                        }
+                                    }
+                                    if (input) {
+                                        if (range == "start") {
+                                            this.dateCache.start = this.input;
+                                            this.dateCache.end = input;
+                                        } else {
+                                            this.dateCache.end = this.input;
+                                            this.dateCache.start = input;
+                                        }
+                                        this.dateCache.on = range;
+                                        initEvent(input, "focus");
+                                    } else {
+                                        this.datePicker.style.display = "none";
+                                    }
+                                }
+                            } else {
+                                if (this.dateCache) {
+                                    var result = this._sortDay(this.dateCache.str, str);
+                                    str = result.min + " / " + result.max;
+                                    this.dateCache = u;
+                                    this.input.value = str;
+                                    this.datePicker.style.display = "none";
+                                } else {
+                                    this.dateCache = { str : str };
+                                    this.input.value = str;
+                                }
+                            }
                         }
                     }
                 }
             }
             return false;
+        },
+        _sortDay : function (a, b) {
+            var max, min;
+            var _a = new Date(a.replace(this.join, "/").replace(this.join, "/"));
+            var _b = new Date(b.replace(this.join, "/").replace(this.join, "/"));
+            if (_a > _b) {
+                max = a;
+                min = b;
+            } else {
+                min = a;
+                max = b;
+            }
+            return {max : max, min : min}
         },
         _testDay : function (year, month, day) {
             if (day < 1) {
@@ -717,8 +813,18 @@
             }
             return str;
         },
-        _mosaicStr : function (year, month, day) {
-            return year + this.join + (month < 9 ? ("0" + (month + 1)) : (month + 1)) + this.join + (day < 10 ? ("0" + day) : day);
+        _mosaicStr : function (year, month, day, hours, minute, second) {
+            var str;
+            str = year + this.join + (month < 9 ? ("0" + (month + 1)) : (month + 1)) + this.join + (day < 10 ? ("0" + day) : day);
+            if (hours != u) {
+                str += " ";
+                str += hours;
+                str += ":";
+                str += minute ? (minute < 10 ? ("0" + minute) : minute) : "00" ;
+                str += ":";
+                str += second ? (second < 10 ? ("0" + second) : second) : "00" ;
+            }
+            return str;
         }
     }
     w.datePicker = datePicker;
