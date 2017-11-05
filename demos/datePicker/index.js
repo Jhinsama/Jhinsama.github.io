@@ -103,55 +103,71 @@
             return !element.dispatchEvent(evt);
         }
     }
-
-
-
-
-
-
-
     function datePicker () {
         this.join = "-";
         this.wW = w.innerWidth;
         this.wH = w.innerHeight;
         this.touchState = {};
         this.inputs = Array.prototype.slice.call(getElementsByClassName(document, "datepicker"),0);
+        this.maxID = new Date().getTime();
         this._init();
     }
     datePicker.prototype = {
         set : function (input, options) {
+            var obj = (options instanceof Object);
             if (input instanceof HTMLElement) {
                 if (input.nodeName.toLowerCase() == "input") {
                     var repeat = false;
                     for (var i = 0; i < this.inputs.length; i++) {
-                        if (this.inputs[i] === input) repeat = true;
+                        if (this.inputs[i] === input) {
+                            repeat = true;
+                            break;
+                        }
                     }
                     if (!repeat) {
                         eventListener(input, "focus", this._inputFocus.bind(this, input));
                         this.inputs.push(input);
                         input.type = "text";
-                        input.datePickerData = (options instanceof Object) ? options : {};
+                        if (obj) {
+                            input.datePickerData = {
+                                range : options.range || null,
+                                min: options.min || null,
+                                max: options.max || null,
+                                bind: options.bind || null
+                            }
+                        }
                     } else {
-
+                        
                     }
                 } else {
                     console.dir(input);
                 }
             } else {
                 try {
-                    for (var i = 0; i < input.length; i++) {
+                    var len = input.length;
+                    for (var i = 0; i < len; i++) {
                         var p = input[i];
                         if (p instanceof HTMLElement) {
                             if (p.nodeName.toLowerCase() == "input") {
                                 var repeat = false;
                                 for (var l = 0; l < this.inputs.length; l++) {
-                                    if (this.inputs[l] === p) repeat = true;
+                                    if (this.inputs[l] === p) {
+                                        repeat = true;
+                                        break;
+                                    }
                                 }
                                 if (!repeat) {
                                     eventListener(p, "focus", this._inputFocus.bind(this, p));
                                     this.inputs.push(p);
                                     p.type = "text";
-                                    p.datePickerData = (options instanceof Object) ? options : {};
+                                    if (obj) {
+                                        p.datePickerData = {
+                                            range : options.range || null,
+                                            min: options.min || null,
+                                            max: options.max || null,
+                                            bind: options.bind || null
+                                        }
+                                    }
                                 } else {
 
                                 }
@@ -223,7 +239,7 @@
             document.getElementsByTagName("head")[0].appendChild(styleEl);
             this.datePicker = document.createElement("div");
             this.datePicker.className = "-date-picker";
-            this.datePicker.innerHTML = "<div class='-date-picker-point'><div class='-rotate45'></div></div><div class='-date-picker-main'><div class='-date-picker-foot'><div><div class='-date-picker-ym -d-p-middle'><button id='-date-picker-ym'></button><span class='-dpcymt -rotate45'></span></div></div></div><div class='-date-picker-day'><div><div class='-date-picker-title'><span class='-d-p-middle'>日</span><span class='-d-p-middle'>一</span><span class='-d-p-middle'>二</span><span class='-d-p-middle'>三</span><span class='-d-p-middle'>四</span><span class='-d-p-middle'>五</span><span class='-d-p-middle'>六</span></div><div class='-date-picker-prev'><div class='-rotate45'></div></div><div class='-date-picker-box'><div id='-date-picker-year'></div></div><div class='-date-picker-next'><div class='-rotate45'></div></div></div></div><div class='-date-picker-btn'><div><div><button class='-date-picker-btn-tday'>今&emsp;天</button></div><div><button class='-date-picker-btn-ystday'>昨&emsp;天</button></div><div><button class='-date-picker-btn-lsweek'>上一周</button></div><div><button class='-date-picker-btn-lsmonth'>上一月</button></div></div></div></div>";
+            this.datePicker.innerHTML = "<div class='-date-picker-point'><div class='-rotate45'></div></div><div class='-date-picker-main'><div class='-date-picker-foot'><div><div class='-date-picker-ym -d-p-middle'><button id='-date-picker-ym'>" + this.currentYear + "年" + (this.currentMonth < 9 ? ("0" + (this.currentMonth + 1)) : (this.currentMonth + 1)) + "月</button><span class='-dpcymt -rotate45'></span></div></div></div><div class='-date-picker-day'><div><div class='-date-picker-title'><span class='-d-p-middle'>日</span><span class='-d-p-middle'>一</span><span class='-d-p-middle'>二</span><span class='-d-p-middle'>三</span><span class='-d-p-middle'>四</span><span class='-d-p-middle'>五</span><span class='-d-p-middle'>六</span></div><div class='-date-picker-prev'><div class='-rotate45'></div></div><div class='-date-picker-box'><div id='-date-picker-year' data-month='" + this.currentMonth + "' style='-webkit-transition:300ms;-moz-transition:300ms;-ms-transition:300ms;-o-transition:300ms;transition:300ms;'></div></div><div class='-date-picker-next'><div class='-rotate45'></div></div></div></div><div class='-date-picker-btn'><div><div><button class='-date-picker-btn-tday'>今&emsp;天</button></div><div><button class='-date-picker-btn-ystday'>昨&emsp;天</button></div><div><button class='-date-picker-btn-lsweek'>上一周</button></div><div><button class='-date-picker-btn-lsmonth'>上一月</button></div></div></div></div>";
             document.body.appendChild(this.datePicker);
             this.datePickerW = this.datePicker.offsetWidth;
             this.datePickerH = this.datePicker.offsetHeight;
@@ -234,11 +250,8 @@
             this.point = getElementsByClassName(this.datePicker, "-date-picker-point")[0];
             this.yearMonth = getElementsByClassName(this.datePicker, "-date-picker-ym")[0];
             this.ymBtn = document.getElementById("-date-picker-ym");
-            this.ymBtn.innerHTML = this.currentYear + "年" + (this.currentMonth < 9 ? ("0" + (this.currentMonth + 1)) : (this.currentMonth + 1)) + "月";
             this.box = getElementsByClassName(this.datePicker, "-date-picker-box")[0];
             this.yearBox = document.getElementById("-date-picker-year");
-            this.yearBox.setAttribute("data-month", this.currentMonth);
-            this.yearBox.style.cssText = "-webkit-transition:300ms;-moz-transition:300ms;-ms-transition:300ms;-o-transition:300ms;transition:300ms;";
             this.prevEl = getElementsByClassName(this.datePicker, "-date-picker-prev")[0];
             this.nextEl = getElementsByClassName(this.datePicker, "-date-picker-next")[0];
             this.today = getElementsByClassName(this.datePicker, "-date-picker-btn-tday")[0];
@@ -247,7 +260,7 @@
             this.lastMonth = getElementsByClassName(this.datePicker, "-date-picker-btn-lsmonth")[0];
             return this;
         },
-        _initPicker : function () {
+        _initPicker : function (input) {
             var date = new Date();
             var year = date.getFullYear();
             var month = date.getMonth();
@@ -265,10 +278,10 @@
             if (change) {
                 this.ymBtn.innerHTML = this.currentYear + "年" + (this.currentMonth < 9 ? ("0" + (this.currentMonth + 1)) : (this.currentMonth + 1)) + "月";
             }
-        },
-        _inputFocus : function (input) {
-            input.blur();
-            this.input = input;
+
+
+
+
             var oT = input.offsetTop, oH = input.offsetHeight, oL = input.offsetLeft, oW = input.offsetWidth;
             this.datePicker.style.top = oT + oH + "px";
             if (oL + this.datePickerW > this.wW) {
@@ -278,11 +291,6 @@
                 this.datePicker.style.left = oL + "px";
                 this.point.style.left = "10%";
             }
-
-
-
-
-
             if (input.datePickerData.range) {
                 removeClass(this.lastWeek, "un");
                 removeClass(this.lastMonth, "un");
@@ -290,13 +298,13 @@
                 addClass(this.lastWeek, "un");
                 addClass(this.lastMonth, "un");
             }
-
-
-
-
-            this._initPicker();
+        },
+        _inputFocus : function (input) {
+            input.blur();
+            this.input = input;
+            this._initPicker(input);
             this.datePicker.style.display = "block";
-            w.scrollTo(0, oT - 5);
+            w.scrollTo(0, input.offsetTop - 5);
             return false;
         },
         _disableEvent : function (event) {
@@ -366,49 +374,134 @@
                     this.next();
                 } else if (target === this.today) {
                     var date = new Date();
-                    var year = date.getFullYear();
-                    var month = date.getMonth();
-                    var day = date.getDate();
-                    this.input.value = year + this.join + (month < 9 ? ("0" + (month + 1)) : (month + 1)) + this.join + (day < 10 ? ("0" + day) : day);
-                    if (this.range) {
-
+                    this.input.value = this._mosaicStr(date.getFullYear(), date.getMonth(), date.getDate());
+                    var bind = this.input.datePickerData.bind;
+                    var range = this.input.datePickerData.range;
+                    if (bind && range == "start" || range == "end") {
+                        var input;
+                        for (var i = 0; i < this.inputs.length; i++) {
+                            if (this.inputs[i].datePickerData.bind == bind && this.inputs[i].datePickerData.range != range) {
+                                input = this.inputs[i];
+                                break;
+                            }
+                        }
+                        if (input) input.value = this.input.value;
                     }
                     this.datePicker.style.display = "none";
                 } else if (target === this.yesterday) {
                     var date = new Date();
-                    var year = date.getFullYear();
-                    var month = date.getMonth();
-                    var day = date.getDate() - 1;
-                    if (day < 1) {
-                        month--;
-                        if (month < 0) {
-                            month == 11;
-                            year--;
-                        }
-                        if (month == 0 || month == 2 || month == 4 || month == 6 || month == 7 || month == 9 || month == 11) {
-                            day = 31;
-                        } else if (month == 3 || month == 5 || month == 8 || month == 10) {
-                            day = 30;
-                        } else {
-                            if (year % 4 == 0) {
-                                day = 29;
-                            } else {
-                                day = 28;
+                    var result = this._testDay(date.getFullYear(), date.getMonth(), date.getDate() - 1);
+                    this.input.value = this._mosaicStr(result.year, result.month, result.day);
+                    var bind = this.input.datePickerData.bind;
+                    var range = this.input.datePickerData.range;
+                    if (bind && range == "start" || range == "end") {
+                        var input;
+                        for (var i = 0; i < this.inputs.length; i++) {
+                            if (this.inputs[i].datePickerData.bind == bind && this.inputs[i].datePickerData.range != range) {
+                                input = this.inputs[i];
+                                break;
                             }
                         }
-                    }
-                    this.input.value = year + this.join + (month < 9 ? ("0" + (month + 1)) : (month + 1)) + this.join + (day < 10 ? ("0" + day) : day);
-                    if (this.range) {
-
+                        if (input) input.value = this.input.value;
                     }
                     this.datePicker.style.display = "none";
                 } else if (target === this.lastWeek) {
                     if (hasClass(target, 'un')) return false;
-                    console.log("上一周");
+                    var start, end, result;
+                    var date = new Date();
+                    var week = date.getDay() || 7;
+                    var year = date.getFullYear();
+                    var month = date.getMonth();
+                    var day = date.getDate() - week;
+                    if (day < 0) {
+                        result = this._testDay(year, month, day);
+                        start = {
+                            year : result.year,
+                            month : result.month,
+                            day : result.day - 6
+                        }
+                        end = {
+                            year : result.year,
+                            month : result.month,
+                            day : result.day
+                        }
+                    } else {
+                        end = {
+                            year : year,
+                            month : month,
+                            day : day
+                        }
+                        result = this._testDay(date.getFullYear(), date.getMonth(), day - 6);
+                        start = {
+                            year : result.year,
+                            month : result.month,
+                            day : result.day
+                        }
+                    }
+                    var bind = this.input.datePickerData.bind;
+                    var range = this.input.datePickerData.range;
+                    if (bind && range == "start" || range == "end") {
+                        var input;
+                        for (var i = 0; i < this.inputs.length; i++) {
+                            if (this.inputs[i].datePickerData.bind == bind && this.inputs[i].datePickerData.range != range) {
+                                input = this.inputs[i];
+                                break;
+                            }
+                        }
+                        if (input) {
+                            if (range == "start") {
+                                this.input.value = this._mosaicStr(start.year, start.month, start.day);
+                                input.value =  this._mosaicStr(end.year, end.month, end.day);
+                            } else {
+                                input.value = this._mosaicStr(start.year, start.month, start.day);
+                                this.input.value =  this._mosaicStr(end.year, end.month, end.day);
+                            }
+                        } else {
+                            this.input.value = this._mosaicStr(start.year, start.month, start.day)  + " / " + this._mosaicStr(end.year, end.month, end.day);
+                        }
+                    } else {
+                        this.input.value = this._mosaicStr(start.year, start.month, start.day)  + " / " + this._mosaicStr(end.year, end.month, end.day);
+                    }
                     this.datePicker.style.display = "none";
                 } else if (target === this.lastMonth) {
                     if (hasClass(target, 'un')) return false;
-                    console.log("上一月");
+                    var start, end;
+                    var date = new Date();
+                    var result = this._testDay(date.getFullYear(), date.getMonth(), 0);
+                    start = {
+                        year : result.year,
+                        month : result.month,
+                        day : 1
+                    }
+                    end = {
+                        year : result.year,
+                        month : result.month,
+                        day : result.day
+                    }
+                    var bind = this.input.datePickerData.bind;
+                    var range = this.input.datePickerData.range;
+                    if (bind && range == "start" || range == "end") {
+                        var input;
+                        for (var i = 0; i < this.inputs.length; i++) {
+                            if (this.inputs[i].datePickerData.bind == bind && this.inputs[i].datePickerData.range != range) {
+                                input = this.inputs[i];
+                                break;
+                            }
+                        }
+                        if (input) {
+                            if (range == "start") {
+                                this.input.value = this._mosaicStr(start.year, start.month, start.day);
+                                input.value =  this._mosaicStr(end.year, end.month, end.day);
+                            } else {
+                                input.value = this._mosaicStr(start.year, start.month, start.day);
+                                this.input.value =  this._mosaicStr(end.year, end.month, end.day);
+                            }
+                        } else {
+                            this.input.value = this._mosaicStr(start.year, start.month, start.day)  + " / " + this._mosaicStr(end.year, end.month, end.day);
+                        }
+                    } else {
+                        this.input.value = this._mosaicStr(start.year, start.month, start.day)  + " / " + this._mosaicStr(end.year, end.month, end.day);
+                    }
                     this.datePicker.style.display = "none";
                 }
             } else {
@@ -422,7 +515,7 @@
                         var year = this.currentYear;
                         var month = this.currentMonth + 1;
                         var day = ~~btn.innerText;
-                        if (!this.range) {
+                        if (!this.input.datePickerData.range) {
                             this.input.value = year + this.join + (month < 9 ? ("0" + month) : month) + this.join + (day < 10 ? ("0" + day) : day);
                             this.datePicker.style.display = "none";
                         }
@@ -430,6 +523,27 @@
                 }
             }
             return false;
+        },
+        _testDay : function (year, month, day) {
+            if (day < 1) {
+                month--;
+                if (month < 0) {
+                    month = 11;
+                    year--;
+                }
+                if (month == 0 || month == 2 || month == 4 || month == 6 || month == 7 || month == 9 || month == 11) {
+                    day += 31;
+                } else if (month == 3 || month == 5 || month == 8 || month == 10) {
+                    day += 30;
+                } else {
+                    if (year % 4 == 0) {
+                        day += 29;
+                    } else {
+                        day += 28;
+                    }
+                }
+            }
+            return {year : year, month : month, day : day}
         },
         _mouseWheel : function () {
             if (this.scroll) return false;
@@ -455,8 +569,41 @@
             return false;
         },
         _initInputs : function () {
+            var obj = {}, del = [];
             for (var i = 0; i < this.inputs.length; i++) {
-                this.inputs[i].datePickerData = {};
+                if (this.inputs[i].nodeName.toLowerCase() == "input") {
+                    this.inputs[i].datePickerData = {
+                        range : this.inputs[i].getAttribute("range"),
+                        max : this.inputs[i].getAttribute("max"),
+                        min : this.inputs[i].getAttribute("min"),
+                        bind : this.inputs[i].getAttribute("bind")
+                    }
+                    var bind = this.inputs[i].datePickerData.bind;
+                    if (bind) {
+                        var min = this.inputs[i].datePickerData.min;
+                        var max = this.inputs[i].datePickerData.max;
+                        if (!obj[bind]) obj[bind] = {
+                            inputs: [],
+                            min: null,
+                            max: null
+                        };
+                        if (max) obj[bind].max = max;
+                        if (min) obj[bind].min =  min;
+                        obj[bind].inputs.push(this.inputs[i]);
+                    }
+                } else {
+                    del.push(i);
+                }
+            }
+            for (var key in obj) {
+                var inputs = obj[key].inputs;
+                for (var i = 0; i < inputs.length; i++) {
+                    inputs[i].datePickerData.min = obj[key].min;
+                    inputs[i].datePickerData.max = obj[key].max;
+                }
+            }
+            for (var i = 0; i < del.length; i++) {
+                this.inputs.splice(i, 1);
             }
         },
         _initEvent : function () {
@@ -569,6 +716,9 @@
                 }
             }
             return str;
+        },
+        _mosaicStr : function (year, month, day) {
+            return year + this.join + (month < 9 ? ("0" + (month + 1)) : (month + 1)) + this.join + (day < 10 ? ("0" + day) : day);
         }
     }
     w.datePicker = datePicker;

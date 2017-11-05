@@ -17,9 +17,9 @@ gulp.task("localhost", function () {
 });
 
 gulp.task("watch", function () {
-    gulp.watch("index.html", function () {
+    gulp.watch("*.html", function () {
         gulp
-            .src("index.html")
+            .src("*.html")
             .pipe(connect.reload());
     });
     gulp.watch("index.css", function () {
