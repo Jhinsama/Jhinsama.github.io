@@ -104,6 +104,21 @@
             return !element.dispatchEvent(evt);
         }
     }
+    function elementOffset (element) {
+        var offsetObj = {
+            top: element.offsetTop,
+            left: element.offsetLeft,
+            width: element.offsetWdith,
+            height: element.offsetHeight
+        };
+        element = element.offsetParent;
+        while (element != null) {
+            offsetObj.top += element.offsetTop;
+            offsetObj.left += element.offsetLeft;
+            element = element.offsetParent;
+        }
+        return offsetObj;
+    }
     function datePicker () {
         this.join = "-";
         this.wW = w.innerWidth;
@@ -111,6 +126,7 @@
         this.touchState = {};
         this.inputs = Array.prototype.slice.call(getElementsByClassName(document, "datepicker"),0);
         this.maxID = new Date().getTime();
+        this.scrollEl = w;
         this._init();
     }
     datePicker.prototype = {
@@ -138,7 +154,7 @@
                             }
                         }
                     } else {
-                        
+
                     }
                 } else {
                     console.dir(input);
@@ -293,8 +309,8 @@
 
 
 
-
-            var oT = input.offsetTop, oH = input.offsetHeight, oL = input.offsetLeft, oW = input.offsetWidth;
+            var offset = elementOffset(input);
+            var oT = offset.top, oH = offset.height, oL = offset.left, oW = offset.width;
             this.datePicker.style.top = oT + oH + "px";
             if (oL + this.datePickerW > this.wW) {
                 this.datePicker.style.left = this.wW - this.datePickerW + "px";
@@ -303,14 +319,26 @@
                 this.datePicker.style.left = oL + "px";
                 this.point.style.left = "10%";
             }
+
+            return offset;
         },
         _inputFocus : function (input) {
             input.blur();
             this._inputBlur(input);
             this.input = input;
-            this._initPicker(input);
+            var offset = this._initPicker(input);
             this.datePicker.style.display = "block";
-            w.scrollTo(0, input.offsetTop - 5);
+
+            var oT = offset.top, oH = offset.height, top;
+            var o = this.wH - this.datePickerH - oH;
+            if (this.scrollEl === w) {
+                top = oT - o;
+                w.scrollTo(0, top);
+            } else {
+                top = this.wH - this.datePickerH + this.scrollEl.scrollTop;
+                this.scrollEl.scrollTop = top;
+            }
+
             return false;
         },
         _inputBlur : function (input) {
@@ -320,7 +348,7 @@
                         var str;
                         if (this.dateCache.on == "start") {
                             var max = this.dateCache.end.datePickerData.max;
-                            if (max == "now") {
+                            if (max == "now" || !max) {
                                 var date = new Date();
                                 str = this._mosaicStr(date.getFullYear(), date.getMonth(), date.getDate());
                             } else {
@@ -329,6 +357,12 @@
                             this.dateCache.end.value = str;
                         } else {
                             var min = this.dateCache.end.datePickerData.min;
+                            if (!min) {
+                                str = this._mosaicStr(2008, 0, 1);
+                            } else {
+                                str = min.replace(".", this.join).replace(".", this.join).replace(".", " ").replace(".", ":").replace(".", ":");
+                            }
+                            this.dateCache.start.value = str;
                         }
                         this.dateCache = u;
                     }
