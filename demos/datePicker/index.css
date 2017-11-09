@@ -1,4 +1,4 @@
-button{
+.-date-picker button{
     padding: 0;
     background: transparent;
     border: none;
@@ -6,7 +6,7 @@ button{
     -webkit-appearance: none;
        -moz-appearance: none;
 }
-button:focus{
+.-date-picker button:focus{
     outline: none;
 }
 .-d-p-middle{
@@ -75,13 +75,14 @@ button:focus{
     box-shadow: 2px 2px 3px #dfdfdf;
     z-index: 0;
 }
-.-date-picker-foot, .-date-picker-btn{
+.-date-picker-foot, .-date-picker-btn, .-d-p-select-head{
     position: relative;
     width: 100%;
     padding: 15% 0 0;
     border-bottom: 1px solid #efefef;
+    background: #fff;
 }
-.-date-picker-foot>div, .-date-picker-btn>div{
+.-date-picker-foot>div, .-date-picker-btn>div, .-d-p-select-head>div, .-d-p-select-year-month>div{
     position: absolute;
     top: 0;
     left: 0;
@@ -92,6 +93,7 @@ button:focus{
     position: relative;
     width: 100%;
     padding: 50%;
+    background: #fff;
 }
 .-date-picker-day>div{
     position: absolute;
@@ -138,12 +140,6 @@ button:focus{
     color: red;
     text-align: center;
     font-size: 14px;
-}
-.-date-picker-prev, .-date-picker-next{
-    position: relative;
-    width: 100%;
-    height: 9.7%;
-    cursor: pointer;
 }
 .-date-picker-box{
     width: 100%;
@@ -300,6 +296,33 @@ button:focus{
 .-date-picker-date.on{
     background: rgba(92,196,239,.1);
 }
+.-date-picker-prev, .-date-picker-next, .-d-p-s-year-prev, .-d-p-s-year-next{
+    position: relative;
+    width: 100%;
+    height: 9.7%;
+    cursor: pointer;
+}
+.-date-picker-prev>div, .-date-picker-next>div, .-d-p-s-year-prev>div, .-d-p-s-year-next>div{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    border: 3px solid #ddd;
+}
+.-date-picker-prev:hover>div, .-date-picker-next:hover>div, .-d-p-s-year-prev:hover>div, .-d-p-s-year-next:hover>div{
+    border: 3px solid red;
+}
+.-date-picker-prev>div, .-date-picker-prev:hover>div, .-d-p-s-year-prev>div, .-d-p-s-year-prev:hover>div{
+    margin: -3px -6px 0;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+}
+.-date-picker-next>div, .-date-picker-next:hover>div, .-d-p-s-year-next>div, .-d-p-s-year-next:hover>div{
+    margin: -9px -6px 0;
+    border-top-color: transparent;
+    border-left-color: transparent;
+}
 .-date-picker-btn{
     font-size: 0;
 }
@@ -323,35 +346,137 @@ button:focus{
     background: #efefef;
     border: 1px solid #999;
 }
-.-date-picker-prev>div, .-date-picker-next>div{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 12px;
-    height: 12px;
-    border: 3px solid #ddd;
-}
-.-date-picker-prev:hover>div, .-date-picker-next:hover>div{
-    border: 3px solid red;
-}
-.-date-picker-prev>div, .-date-picker-prev:hover>div{
-    margin: -3px -6px 0;
-    border-right-color: transparent;
-    border-bottom-color: transparent;
-}
-.-date-picker-next>div, .-date-picker-next:hover>div{
-    margin: -9px -6px 0;
-    border-top-color: transparent;
-    border-left-color: transparent;
-}
-
 .-date-picker-select{
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    overflow: hidden;
+    z-index: -1;
+}
+.-date-picker.-show .-date-picker-select{
+    z-index: 1;
+}
+.-d-p-select-year-month{
+    position: relative;
+    width: 100%;
+    padding: 115% 0 0;
     background: #fff;
+    font-size: 0;
+}
+.-d-p-select-year-month>div, .-d-p-select-head>div{
+    margin-left: -100%;
+    -webkit-transition: margin 300ms;
+       -moz-transition: margin 300ms;
+        -ms-transition: margin 300ms;
+         -o-transition: margin 300ms;
+            transition: margin 300ms;
+}
+.-date-picker.show .-d-p-select-year-month{
+    -webkit-animation: animate 300ms linear;
+            animation: animate 300ms linear;
+}
+.-d-p-s-year-box, .-d-p-select-year-range, .-d-p-select-year-touch{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.-d-p-select-year-touch{
+    font-size: 0;
+    overflow: hidden;
+}
+.-d-p-select-year-touch>div{
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    z-index: 1;
+}
+.-d-p-select-year-range{
+    font-size: 22px;
+    line-height: 1.5;
+}
+.-d-p-select-year-touch{
+    left: 100%;
+}
+.-date-picker.-show.-year .-d-p-select-year-month>div, .-date-picker.-show.-year .-d-p-select-head>div{
+    margin-left: 0;
+}
+.-d-p-s-y-box{
+    width: 100%;
+    height: 80.6%;
+    overflow: hidden;
+}
+#-d-p-s-y-box{
+    width: 100%;
+    height: 100%;
+}
+.-d-p-s-month-box{
+    position: absolute;
+    top: 0;
+    left: 100%;
+    width: 100%;
+    height: 100%;
+    padding: 5% 0 8%;
+}
+.-d-p-s-month, .-d-p-s-year{
+    display: inline-block;
+    width: 33.3333333333%;
+    height: 25%;
+    font-size: 20px;
+    line-height: 1;
+    text-align: center;
+    font-weight: 500;
+    cursor: pointer;
+}
+.-d-p-s-month:hover, .-d-p-s-year:hover{
+    background: rgba(92,196,239,.1);
+}
+.-d-p-s-m-en{
+    margin-top: 8px;
+    color: red;
+    font-size: 14px;
+}
+.-d-p-s-year.un{
+    color: #ddd;
+}
+.-d-p-s-year.in{
+    color: red;
+}
+.-d-p-select-left, .-d-p-select-right{
+    width: 40%;
+    height: 100%;
+    background: -webkit-gradient(linear, left top, right top, from(#fff), to(rgba(255,255,255,.3)));
+    background: -webkit-linear-gradient(top left, #fff, rgba(255,255,255,.3));
+    background: -moz-linear-gradient(top left, #fff, rgba(255,255,255,.3));
+    background: -o-linear-gradient(top left, #fff, rgba(255,255,255,.3));
+    background: linear-gradient(top left, #fff, rgba(255,255,255,.3));
+}
+.-d-p-select-right{
+    background: -webkit-gradient(linear, left top, right top, from(rgba(255,255,255,.3)), to(#fff));
+    background: -webkit-linear-gradient(top left, rgba(255,255,255,.3), #fff);
+    background: -moz-linear-gradient(top left, rgba(255,255,255,.3), #fff);
+    background: -o-linear-gradient(top left, rgba(255,255,255,.3), #fff);
+    background: linear-gradient(top left, rgba(255,255,255,.3), #fff);
+}
+.-d-p-select-year-touch>.-d-p-select-box{
+    position: relative;
+    width: 20%;
+    height: 100%;
+    z-index: 0;
+}
+#-d-p-select-year{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    white-space: nowrap;
+}
+.-d-p-s-y{
+    width: 100%;
+    height: 100%;
+    font-size: 20px;
 }
 
 
@@ -361,5 +486,22 @@ button:focus{
     .-date-picker{
         width: 100%;
         min-width: 280px;
+    }
+}
+
+@keyframes animate {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+@-webkit-keyframes animate {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
     }
 }

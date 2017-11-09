@@ -1,21 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <meta http-equiv="Cache-Control" content="no-siteapp" />
-    <meta name="format-detection" content="telephone=no" />
-    <meta content="email=no" name="format-detection" />
+    <meta charset='UTF-8' />
+    <meta name='viewport' content='initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no'>
+    <meta http-equiv='Cache-Control' content='no-siteapp' />
+    <meta name='format-detection' content='telephone=no' />
+    <meta content='email=no' name='format-detection' />
     <title>时间选择器</title>
-    <link rel="stylesheet" type="text/css" href="index.min.css">
+    <link rel='stylesheet' type='text/css' href='index.css'>
+    <link rel='stylesheet' type='text/css' href='https://cdn.bootcss.com/animate.css/3.5.2/animate.min.css'>
 </head>
 
 <body>
 
 
 
-    <div class="-date-picker" style="top: 0;">
+    <div class='-date-picker -show ' style='top: 0;'>
         <div class='-date-picker-point'>
             <div class='-rotate45'></div>
         </div>
@@ -58,20 +59,164 @@
                     <div><button class='-date-picker-btn-lsmonth'>上一月</button></div>
                 </div>
             </div>
-            <div class="-date-picker-select">
-                <div class="-d-p-select-head">
-                    <div class="-d-p-select-prev"></div>
-                    <div class="-d-p-select-box">
-                        <div id="-d-p-select-year">
-
+            <div class='-date-picker-select'>
+                <div class='-d-p-select-head'>
+                    <div>
+                        <div class='-d-p-select-year-touch'>
+                            <div class='-d-p-select-left'></div>
+                            <div class='-d-p-select-box'>
+                                <div id='-d-p-select-year'>
+                                    <div class='-d-p-s-y' date-year='2008'>2008</div>
+                                    <div class='-d-p-s-y' date-year='2009'>2009</div>
+                                    <div class='-d-p-s-y' date-year='2010'>2010</div>
+                                    <div class='-d-p-s-y' date-year='2011'>2011</div>
+                                    <div class='-d-p-s-y' date-year='2012'>2012</div>
+                                    <div class='-d-p-s-y' date-year='2013'>2013</div>
+                                    <div class='-d-p-s-y' date-year='2014'>2014</div>
+                                    <div class='-d-p-s-y' date-year='2015'>2015</div>
+                                    <div class='-d-p-s-y' date-year='2016'>2016</div>
+                                    <div class='-d-p-s-y' date-year='2017'>2017</div>
+                                    <div class='-d-p-s-y' date-year='2018'>2018</div>
+                                    <div class='-d-p-s-y' date-year='2019'>2019</div>
+                                    <div class='-d-p-s-y' date-year='2020'>2020</div>
+                                    <div class='-d-p-s-y' date-year='2021'>2021</div>
+                                    <div class='-d-p-s-y' date-year='2022'>2022</div>
+                                    <div class='-d-p-s-y' date-year='2023'>2023</div>
+                                    <div class='-d-p-s-y' date-year='2024'>2024</div>
+                                    <div class='-d-p-s-y' date-year='2025'>2025</div>
+                                    <div class='-d-p-s-y' date-year='2026'>2026</div>
+                                    <div class='-d-p-s-y' date-year='2027'>2027</div>
+                                </div>
+                            </div>
+                            <div class='-d-p-select-right'></div>
+                        </div>
+                        <button class='-d-p-select-year-range'>
+                            2009 - 2018
+                        </button>
+                    </div>
+                </div>
+                <div class='-d-p-select-year-month'>
+                    <div>
+                        <div class='-d-p-s-year-box'>
+                            <div class='-d-p-s-year-prev '><div class='-rotate45'></div></div>
+                                <div class='-d-p-s-y-box'>
+                                    <div id='-d-p-s-y-box'>
+                                        <button class='-d-p-s-year un' date-year='2008'>2008</button>
+                                        <button class='-d-p-s-year' date-year='2009'>2009</button>
+                                        <button class='-d-p-s-year' date-year='2010'>2010</button>
+                                        <button class='-d-p-s-year' date-year='2011'>2011</button>
+                                        <button class='-d-p-s-year' date-year='2012'>2012</button>
+                                        <button class='-d-p-s-year' date-year='2013'>2013</button>
+                                        <button class='-d-p-s-year' date-year='2014'>2014</button>
+                                        <button class='-d-p-s-year' date-year='2015'>2015</button>
+                                        <button class='-d-p-s-year' date-year='2016'>2016</button>
+                                        <button class='-d-p-s-year' date-year='2017'>2017</button>
+                                        <button class='-d-p-s-year' date-year='2018'>2018</button>
+                                        <button class='-d-p-s-year un' date-year='2019'>2019</button>
+                                        <button class='-d-p-s-year un' date-year='2020'>2020</button>
+                                        <button class='-d-p-s-year un' date-year='2021'>2021</button>
+                                        <button class='-d-p-s-year un' date-year='2022'>2022</button>
+                                        <button class='-d-p-s-year un' date-year='2023'>2023</button>
+                                        <button class='-d-p-s-year un' date-year='2024'>2024</button>
+                                        <button class='-d-p-s-year un' date-year='2025'>2025</button>
+                                        <button class='-d-p-s-year un' date-year='2026'>2026</button>
+                                        <button class='-d-p-s-year un' date-year='2027'>2027</button>
+                                    </div>
+                                </div>
+                            <div class='-d-p-s-year-next'><div class='-rotate45'></div></div>
+                        </div>
+                        <div class='-d-p-s-month-box'>
+                            <div class='-d-p-s-month' date-month='1'>
+                                <div class='-d-p-middle'>
+                                    一月
+                                    <div class='-d-p-s-m-en'>Jan</div>
+                                </div>
+                            </div>
+                            <div class='-d-p-s-month' date-month='2'>
+                                <div class='-d-p-middle'>
+                                    二月
+                                    <div class='-d-p-s-m-en'>Fed</div>
+                                </div>
+                            </div>
+                            <div class='-d-p-s-month' date-month='3'>
+                                <div class='-d-p-middle'>
+                                    三月
+                                    <div class='-d-p-s-m-en'>Mar</div>
+                                </div>
+                            </div>
+                            <div class='-d-p-s-month' date-month='4'>
+                                <div class='-d-p-middle'>
+                                    四月
+                                    <div class='-d-p-s-m-en'>Apr</div>
+                                </div>
+                            </div>
+                            <div class='-d-p-s-month' date-month='5'>
+                                <div class='-d-p-middle'>
+                                    五月
+                                    <div class='-d-p-s-m-en'>May</div>
+                                </div>
+                            </div>
+                            <div class='-d-p-s-month' date-month='6'>
+                                <div class='-d-p-middle'>
+                                    六月
+                                    <div class='-d-p-s-m-en'>Jun</div>
+                                </div>
+                            </div>
+                            <div class='-d-p-s-month' date-month='7'>
+                                <div class='-d-p-middle'>
+                                    七月
+                                    <div class='-d-p-s-m-en'>Jul</div>
+                                </div>
+                            </div>
+                            <div class='-d-p-s-month' date-month='8'>
+                                <div class='-d-p-middle'>
+                                    八月
+                                    <div class='-d-p-s-m-en'>Aug</div>
+                                </div>
+                            </div>
+                            <div class='-d-p-s-month' date-month='9'>
+                                <div class='-d-p-middle'>
+                                    九月
+                                    <div class='-d-p-s-m-en'>Sep</div>
+                                </div>
+                            </div>
+                            <div class='-d-p-s-month' date-month='10'>
+                                <div class='-d-p-middle'>
+                                    十月
+                                    <div class='-d-p-s-m-en'>Oct</div>
+                                </div>
+                            </div>
+                            <div class='-d-p-s-month' date-month='11'>
+                                <div class='-d-p-middle'>
+                                    十一月
+                                    <div class='-d-p-s-m-en'>Nov</div>
+                                </div>
+                            </div>
+                            <div class='-d-p-s-month' date-month='12'>
+                                <div class='-d-p-middle'>
+                                    十二月
+                                    <div class='-d-p-s-m-en'>Dec</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="-d-p-select-next"></div>
                 </div>
-                <div class="-d-p-select-month"></div>
             </div>
         </div>
     </div>
+
+    <script>
+        // var show = false;
+        // show = true;
+        // var m = document.querySelector('.-date-picker');
+        // if (show) setInterval(function () {
+        //     if (m.className == '-date-picker -show') {
+        //         m.className = '-date-picker -show -year';
+        //     } else {
+        //         m.className = '-date-picker -show';
+        //     }
+        // },2000)
+    </script>
 
 </body>
 
