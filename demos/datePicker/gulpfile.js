@@ -12,7 +12,7 @@ var connect = require('gulp-connect');
 gulp.task("localhost", function () {
     connect.server({
         livereload: true,
-        port: 3001
+        port: 2017
     });
 });
 

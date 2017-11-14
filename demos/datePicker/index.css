@@ -373,7 +373,7 @@
          -o-transition: margin 300ms;
             transition: margin 300ms;
 }
-.-date-picker.show .-d-p-select-year-month{
+.-date-picker.-show .-d-p-select-year-month{
     -webkit-animation: animate 300ms linear;
             animation: animate 300ms linear;
 }
@@ -434,6 +434,9 @@
 .-d-p-s-month:hover, .-d-p-s-year:hover{
     background: rgba(92,196,239,.1);
 }
+.-d-p-s-month.un{
+    color: #999;
+}
 .-d-p-s-m-en{
     margin-top: 8px;
     color: red;
@@ -448,18 +451,18 @@
 .-d-p-select-left, .-d-p-select-right{
     width: 40%;
     height: 100%;
-    background: -webkit-gradient(linear, left top, right top, from(#fff), to(rgba(255,255,255,.3)));
-    background: -webkit-linear-gradient(top left, #fff, rgba(255,255,255,.3));
-    background: -moz-linear-gradient(top left, #fff, rgba(255,255,255,.3));
-    background: -o-linear-gradient(top left, #fff, rgba(255,255,255,.3));
-    background: linear-gradient(top left, #fff, rgba(255,255,255,.3));
+    background: -webkit-gradient(linear, left top, right top, from(#fff), to(rgba(255,255,255,0)));
+    background: -webkit-linear-gradient(top left, #fff, rgba(255,255,255,0));
+    background: -moz-linear-gradient(top left, #fff, rgba(255,255,255,0));
+    background: -o-linear-gradient(top left, #fff, rgba(255,255,255,0));
+    background: linear-gradient(top left, #fff, rgba(255,255,255,0));
 }
 .-d-p-select-right{
-    background: -webkit-gradient(linear, left top, right top, from(rgba(255,255,255,.3)), to(#fff));
-    background: -webkit-linear-gradient(top left, rgba(255,255,255,.3), #fff);
-    background: -moz-linear-gradient(top left, rgba(255,255,255,.3), #fff);
-    background: -o-linear-gradient(top left, rgba(255,255,255,.3), #fff);
-    background: linear-gradient(top left, rgba(255,255,255,.3), #fff);
+    background: -webkit-gradient(linear, left top, right top, from(rgba(255,255,255,0)), to(#fff));
+    background: -webkit-linear-gradient(top left, rgba(255,255,255,0), #fff);
+    background: -moz-linear-gradient(top left, rgba(255,255,255,0), #fff);
+    background: -o-linear-gradient(top left, rgba(255,255,255,0), #fff);
+    background: linear-gradient(top left, rgba(255,255,255,0), #fff);
 }
 .-d-p-select-year-touch>.-d-p-select-box{
     position: relative;

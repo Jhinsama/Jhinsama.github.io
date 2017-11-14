@@ -240,6 +240,37 @@
             this.ymBtn.innerHTML = this.currentYear + "年" + (this.currentMonth < 9 ? ("0" + (this.currentMonth + 1)) : (this.currentMonth + 1)) + "月";
             return true;
         },
+        _prev : function (n) {
+            if (this.yearRangePosition == 0) {
+                if (n) {
+                    this.yearBtnBox.style.cssText = "-webkit-transition:300ms;-moz-transition:300ms;-ms-transition:300ms;-o-transition:300ms;transition:300ms;-webkit-transform: translateY(-"+this.yearRangePosition+"%) translateZ(0);-moz-transform: translateY(-"+this.yearRangePosition+"%) translateZ(0);-ms-transform: translateY(-"+this.yearRangePosition+"%) translateZ(0);-o-transform: translateY(-"+this.yearRangePosition+"%) translateZ(0);transform: translateY(-"+this.yearRangePosition+"%) translateZ(0);";
+                } else {
+                    return false;
+                }
+            }
+            var n = n || 1;
+            var c = this.yearRangePosition - n;
+            c = c < 0 ? 0 : c;
+            this.yearRangePosition = c;
+            c = c * 25;
+            this.yearBtnBox.style.cssText = "-webkit-transition:300ms;-moz-transition:300ms;-ms-transition:300ms;-o-transition:300ms;transition:300ms;-webkit-transform: translateY(-"+c+"%) translateZ(0);-moz-transform: translateY(-"+c+"%) translateZ(0);-ms-transform: translateY(-"+c+"%) translateZ(0);-o-transform: translateY(-"+c+"%) translateZ(0);transform: translateY(-"+c+"%) translateZ(0);";
+        },
+        _next : function (n) {
+            var m = this.yearBtns.length / 3 - 4;
+            if (this.yearRangePosition == m) {
+                if (n) {
+                    this.yearBtnBox.style.cssText = "-webkit-transition:300ms;-moz-transition:300ms;-ms-transition:300ms;-o-transition:300ms;transition:300ms;-webkit-transform: translateY(-"+this.yearRangePosition+"%) translateZ(0);-moz-transform: translateY(-"+this.yearRangePosition+"%) translateZ(0);-ms-transform: translateY(-"+this.yearRangePosition+"%) translateZ(0);-o-transform: translateY(-"+this.yearRangePosition+"%) translateZ(0);transform: translateY(-"+this.yearRangePosition+"%) translateZ(0);";
+                } else {
+                    return false;
+                }
+            }
+            var n = n || 1;
+            var c = this.yearRangePosition + n;
+            c = c > m ? m : c;
+            this.yearRangePosition = c;
+            c = c * 25;
+            this.yearBtnBox.style.cssText = "-webkit-transition:300ms;-moz-transition:300ms;-ms-transition:300ms;-o-transition:300ms;transition:300ms;-webkit-transform: translateY(-"+c+"%) translateZ(0);-moz-transform: translateY(-"+c+"%) translateZ(0);-ms-transform: translateY(-"+c+"%) translateZ(0);-o-transform: translateY(-"+c+"%) translateZ(0);transform: translateY(-"+c+"%) translateZ(0);";
+        },
         _init : function () {
             this._initInputs();
             var date = new Date();
@@ -296,6 +327,8 @@
             this.yearPrev = getElementsByClassName(this.datePicker, "-d-p-s-year-prev")[0];
             this.yearNext = getElementsByClassName(this.datePicker, "-d-p-s-year-next")[0];
             this.yearBtnBox = document.getElementById("-d-p-s-y-box");
+            this.monthBtnBox = getElementsByClassName(this.datePicker, "-d-p-s-month-box")[0];
+            this.monthBtns = getElementsByClassName(this.datePicker, "-d-p-s-month");
             return this;
         },
         _initPicker : function (input) {
@@ -374,6 +407,7 @@
                 } else {
                     max = (date.getFullYear() + 2 +".12.31");
                 }
+                if (min == "now") min = (date.getFullYear()+"."+(date.getMonth()+1)+"."+date.getDate());
                 min = min.replace(/\D/g, ".").replace(".", "/").replace(".", "/").replace(".", " ").replace(".", ":").replace(".", ":");
                 max = max.replace(/\D/g, ".").replace(".", "/").replace(".", "/").replace(".", " ").replace(".", ":").replace(".", ":");
                 date = new Date(min);
@@ -452,39 +486,92 @@
                 this._inputBlur();
             }
         },
-        _touchStart : function (target) {
+        _TouchS : function (target) {
             var event = event || w.event;
             this.touchState.startX = this.touchState.moveX = event.touches[0].clientX;
             this.touchState.startY = this.touchState.moveY = event.touches[0].clientY;
-            if (target === this.box) this.boxH = this.box.offsetHeight;
+            if (target === this.box) return this.boxH = this.box.offsetHeight;
+            if (target === this.yearTouch) return this.touchState.touchPosition = u;
+            if (target === this.yearBtnBox) return this.touchState.touchPosition = u;
         },
-        _touchMove : function (target) {
+        _TouchM : function (target) {
             var event = event || w.event;
+            var x = event.touches[0].clientX;
             var y = event.touches[0].clientY;
+            this.touchState.moveX = x;
             this.touchState.moveY = y;
             if (target === this.box) {
                 var translateY = this.currentMonth * this.boxH + this.touchState.startY - y;
                 this.yearBox.style.cssText = "-webkit-transform: translateY("+(-translateY)+"px) translateZ(0);-moz-transform: translateY("+(-translateY)+"px) translateZ(0);-ms-transform: translateY("+(-translateY)+"px) translateZ(0);-o-transform: translateY("+(-translateY)+"px) translateZ(0);transform: translateY("+(-translateY)+"px) translateZ(0);";
+            } else if (target === this.yearTouch) {
+                var left = this.yearTouchPosition + (this.touchState.startX - x) / this.yearTouchInner.offsetWidth;
+                this.touchState.touchPosition = left;
+                left = left * 100;
+                this.yearTouchInner.style.cssText = "-webkit-transform: translateZ(0);-moz-transform: translateZ(0);-ms-transform: translateZ(0);-o-transform: translateZ(0);transform: translateZ(0);left: -"+left+"%;";
+            } else {
+                var translateY = this.yearRangePosition + (this.touchState.startY - y) / this.yearBtnBox.offsetHeight * 4;
+                this.touchState.touchPosition = translateY;
+                translateY = translateY * 25;
+                this.yearBtnBox.style.cssText = "-webkit-transform: translateY("+(-translateY)+"%) translateZ(0);-moz-transform: translateY("+(-translateY)+"%) translateZ(0);-ms-transform: translateY("+(-translateY)+"%) translateZ(0);-o-transform: translateY("+(-translateY)+"%) translateZ(0);transform: translateY("+(-translateY)+"%) translateZ(0);";
             }
         },
-        _touchEnd : function (target) {
+        _TouchE : function (target) {
             if (target === this.box) {
                 var _y = this.touchState.moveY - this.touchState.startY;
                 var m = (Math.abs(_y) >= (this.boxH / 4) ? true : false);
                 if (_y > 0) {
-                    if (m) {
-                        this.prev();
-                    } else {
-                        this.yearBox.style.cssText = "-webkit-transition:300ms;-moz-transition:300ms;-ms-transition:300ms;-o-transition:300ms;transition:300ms;";
-                    }
+                    this.yearBox.style.cssText = "-webkit-transition:300ms;-moz-transition:300ms;-ms-transition:300ms;-o-transition:300ms;transition:300ms;";
+                    if (m) this.prev();
                 } else if (_y < 0) {
-                    if (m) {
-                        this.next();
+                    this.yearBox.style.cssText = "-webkit-transition:300ms;-moz-transition:300ms;-ms-transition:300ms;-o-transition:300ms;transition:300ms;";
+                    if (m) this.next();
+                }
+            } else if (target === this.yearTouch) {
+                var p = this.touchState.touchPosition;
+                if (p) {
+                    if (p % 1 < 0.5) {
+                        p = ~~p;
                     } else {
-                        this.yearBox.style.cssText = "-webkit-transition:300ms;-moz-transition:300ms;-ms-transition:300ms;-o-transition:300ms;transition:300ms;";
+                        p = ~~p + 1;
+                    }
+                    this._setYTP(p);
+                }
+            } else {
+                var p = this.touchState.touchPosition;
+                if (p) {
+                    if (p % 1 < 0.5) {
+                        p = ~~p;
+                    } else {
+                        p = ~~p + 1;
                     }
                 }
+                p = p - this.yearRangePosition;
+                if (p < 0) {
+                    this._prev(~p + 1);
+                } else {
+                    this._next(p);
+                }
             }
+        },
+        _setYTP : function (p) {
+            var c = this.max.year - this.min.year + 4;
+            p = p < 4 ? 4 : (p > c ? c : p);
+            this.yearTouchInner.style.cssText = "-webkit-transition:300ms;-moz-transition:300ms;-ms-transition:300ms;-o-transition:300ms;transition:300ms;-webkit-transform: translateZ(0);-moz-transform: translateZ(0);-ms-transform: translateZ(0);-o-transform: translateZ(0);transform: translateZ(0);left: -"+p+"00%;";
+            if (p == 4) {
+                for (var i = 0; i < this.min.month; i++) {
+                    addClass(this.monthBtns[i], 'un');
+                }
+            } else if (p == c) {
+                for (var i = this.max.month + 1; i < 12; i++) {
+                    addClass(this.monthBtns[i], 'un');
+                }
+            } else if (this.yearTouchPosition == 4 || this.yearTouchPosition == c) {
+                for (var i = 0; i < 12; i++) {
+                    removeClass(this.monthBtns[i], 'un');
+                }
+            }
+            this.yearTouchPosition = p;
+            this.cacheYear = this.min.year + p - 4;
         },
         _click : function (target) {
             var event = event || w.event;
@@ -495,13 +582,18 @@
                 var min = this.min.year - 4;
                 var max = this.max.year + 4;
                 for (var i = min; i <= max; i++) {
-                    str += "<button class='-d-p-s-y'>";
+                    if (i < min + 4 || i > max - 4) {
+                        str += "<button class='-d-p-s-y' style='color:#999'>";
+                    } else {
+                        str += "<button class='-d-p-s-y'>";
+                    }
                     str += i;
                     str += "</button>";
                 }
                 this.yearTouchInner.innerHTML = str;
                 var c = this.currentYear - min;
                 this.yearTouchInner.style.left = "-"+c+"00%";
+                this.yearTouchPosition = c;
                 addClass(this.datePicker, "-show");
             } else if (target === this.prevEl) {
                 this.prev();
@@ -594,10 +686,10 @@
                             this.input.value =  this._mosaicStr(end.year, end.month, end.day);
                         }
                     } else {
-                        this.input.value = this._mosaicStr(start.year, start.month, start.day)  + " / " + this._mosaicStr(end.year, end.month, end.day);
+                        this.input.value = this._mosaicStr(start.year, start.month, start.day)  +  (this.join == "/" ? " - " : " / ")  + this._mosaicStr(end.year, end.month, end.day);
                     }
                 } else {
-                    this.input.value = this._mosaicStr(start.year, start.month, start.day)  + " / " + this._mosaicStr(end.year, end.month, end.day);
+                    this.input.value = this._mosaicStr(start.year, start.month, start.day)  +  (this.join == "/" ? " - " : " / ")  + this._mosaicStr(end.year, end.month, end.day);
                 }
                 this.datePicker.style.display = "none";
                 this.dateCache = u;
@@ -635,15 +727,16 @@
                             this.input.value =  this._mosaicStr(end.year, end.month, end.day);
                         }
                     } else {
-                        this.input.value = this._mosaicStr(start.year, start.month, start.day)  + " / " + this._mosaicStr(end.year, end.month, end.day);
+                        this.input.value = this._mosaicStr(start.year, start.month, start.day)  +  (this.join == "/" ? " - " : " / ")  + this._mosaicStr(end.year, end.month, end.day);
                     }
                 } else {
-                    this.input.value = this._mosaicStr(start.year, start.month, start.day)  + " / " + this._mosaicStr(end.year, end.month, end.day);
+                    this.input.value = this._mosaicStr(start.year, start.month, start.day)  +  (this.join == "/" ? " - " : " / ")  + this._mosaicStr(end.year, end.month, end.day);
                 }
                 this.datePicker.style.display = "none";
                 this.dateCache = u;
             } else if (target === this.yearTouch) {
                 this.yearRange.innerText = this.min.year + "-" + this.max.year;
+                var year = this.cacheYear || this.currentYear;
                 var str = "";
                 var min = this.min.year - 4, max = this.max.year + 4;
                 var c = max - min;
@@ -661,7 +754,7 @@
                     str += "<button class='-d-p-s-year";
                     if (i < this.min.year || i > this.max.year) {
                         str += " un";
-                    } else if (i == this.currentYear) {
+                    } else if (i == year) {
                         str += " in";
                     }
                     str += "' date-year='";
@@ -671,14 +764,20 @@
                     str += "</button>";
                 }
                 var  m = (max - min + 1) / 3 - 4;
-                c = ~~((this.currentYear - min) / 3) - 1;
+                c = ~~((year - min) / 3) - 1;
                 c = c > m ? m : c;
+                this.yearRangePosition = c;
                 c = c * 25;
                 this.yearBtnBox.style.cssText = "-webkit-transform: translateY(-"+c+"%) translateZ(0);-moz-transform: translateY(-"+c+"%) translateZ(0);-ms-transform: translateY(-"+c+"%) translateZ(0);-o-transform: translateY(-"+c+"%) translateZ(0);transform: translateY(-"+c+"%) translateZ(0);";
                 this.yearBtnBox.innerHTML = str;
                 addClass(this.datePicker, "-year");
+                this.yearBtns = getElementsByClassName(this.yearBtnBox, "-d-p-s-year");
             } else if (target === this.yearRange) {
                 this._back();
+            } else if (target === this.yearPrev) {
+                this._prev();
+            } else if (target === this.yearNext) {
+                this._next();
             }
             return false;
         },
@@ -686,8 +785,8 @@
             event = event || w.event;
             event.preventDefault();
             event.stopPropagation();
-            if (closest(event.target, ".-date-picker-date")) {
-                var btn = closest(event.target, ".-date-picker-date");
+            var btn;
+            if (btn = closest(event.target, ".-date-picker-date")) {
                 if (hasClass(btn, "prev")) {
                     this.prev();
                 } else if (hasClass(btn, "next")) {
@@ -695,7 +794,7 @@
                 } else {
                     if (hasClass(btn, "un")) return false;
                     var year = this.currentYear;
-                    var month = this.currentMonth + 1;
+                    var month = this.currentMonth;
                     var day = ~~btn.innerText;
                     var bind = this.input.datePickerData.bind;
                     var range = this.input.datePickerData.range;
@@ -738,7 +837,7 @@
                         } else {
                             if (this.dateCache) {
                                 var result = this._sortDay(this.dateCache.str, str);
-                                str = result.min + " / " + result.max;
+                                str = result.min + (this.join == "/" ? " - " : " / ") + result.max;
                                 this.dateCache = u;
                                 this.input.value = str;
                                 this.datePicker.style.display = "none";
@@ -749,10 +848,24 @@
                         }
                     }
                 }
-            } else if (closest(event.target, ".-d-p-s-year")) {
-
-            } else if (closest(event.target, ".-d-p-s-month")) {
-
+            } else if (btn = closest(event.target, ".-d-p-s-year")) {
+                if (hasClass(btn, "un")) return false;
+                var year = ~~btn.innerText;
+                var p = year - this.min.year + 4;
+                this._setYTP(p);
+                this._back();
+            } else if (btn = closest(event.target, ".-d-p-s-month")) {
+                if (hasClass(btn, "un")) return false;
+                var year = this.yearTouchPosition + this.min.year - 4;
+                var month = ~~btn.getAttribute("date-month") - 1;
+                if (year != this.currentYear) {
+                    this._mosaicObj(year);
+                    this.currentYear = year;
+                }
+                this.currentMonth = month;
+                this.yearBox.setAttribute("data-month", month);
+                this.ymBtn.innerHTML = this.currentYear + "年" + (this.currentMonth < 9 ? ("0" + (this.currentMonth + 1)) : (this.currentMonth + 1)) + "月";
+                removeClass(this.datePicker, "-show");
             }
         },
         _sortDay : function (a, b) {
@@ -789,7 +902,7 @@
             }
             return {year : year, month : month, day : day}
         },
-        _mouseWheel : function () {
+        _mouseWheel : function (target) {
             if (this.scroll) return false;
             this.scroll = true;
             var event = event || w.event;
@@ -798,15 +911,39 @@
             var detail = event.detail, wheelDelta = event.wheelDelta;
             if (detail) {
                 if (detail > 0) {
-                    this.next();
+                    if (target == this.box) {
+                        this.next();
+                    } else if (target == this.yearBtnBox) {
+                        this._next();
+                    } else {
+                        this._setYTP(this.yearTouchPosition + 1);
+                    }
                 } else {
-                    this.prev();
+                    if (target == this.box) {
+                        this.prev();
+                    } else if (target == this.yearBtnBox) {
+                        this._prev();
+                    } else {
+                        this._setYTP(this.yearTouchPosition - 1);
+                    }
                 }
             } else {
                 if (wheelDelta > 0) {
-                    this.prev();
+                    if (target == this.box) {
+                        this.prev();
+                    } else if (target == this.yearBtnBox) {
+                        this._prev();
+                    } else {
+                        this._setYTP(this.yearTouchPosition - 1);
+                    }
                 } else {
-                    this.next();
+                    if (target == this.box) {
+                        this.next();
+                    } else if (target == this.yearBtnBox) {
+                        this._next();
+                    } else {
+                        this._setYTP(this.yearTouchPosition + 1);
+                    }
                 }
             }
             delete this.scroll;
@@ -857,6 +994,8 @@
             }
             eventListener(this.datePicker, "touchmove", this._disableEvent);
             eventListener(this.yearBox, "click", this.__click.bind(this));
+            eventListener(this.yearBtnBox, "click", this.__click.bind(this));
+            eventListener(this.monthBtnBox, "click", this.__click.bind(this));
             eventListener(this.yearMonth, "click", this._click.bind(this, this.yearMonth));
             eventListener(this.prevEl, "click", this._click.bind(this, this.prevEl));
             eventListener(this.nextEl, "click", this._click.bind(this, this.nextEl));
@@ -866,17 +1005,31 @@
             eventListener(this.lastMonth, "click", this._click.bind(this, this.lastMonth));
             eventListener(this.yearTouch, "click", this._click.bind(this, this.yearTouch));
             eventListener(this.yearRange, "click", this._click.bind(this, this.yearRange));
+            eventListener(this.yearPrev, "click", this._click.bind(this, this.yearPrev));
+            eventListener(this.yearNext, "click", this._click.bind(this, this.yearNext));
             eventListener(document, "touchstart", this._defaultTouch.bind(this));
             eventListener(document, "mousedown", this._defaultTouch.bind(this));
             eventListener(w, "resize", this._reSize.bind(this));
-            eventListener(this.box, "touchstart", this._touchStart.bind(this, this.box));
-            eventListener(this.box, "touchmove", this._touchMove.bind(this, this.box));
-            eventListener(this.box, "touchend", this._touchEnd.bind(this, this.box));
-            eventListener(this.box, "touchcancel", this._touchEnd.bind(this, this.box));
+            eventListener(this.box, "touchstart", this._TouchS.bind(this, this.box));
+            eventListener(this.box, "touchmove", this._TouchM.bind(this, this.box));
+            eventListener(this.box, "touchend", this._TouchE.bind(this, this.box));
+            eventListener(this.box, "touchcancel", this._TouchE.bind(this, this.box));
+            eventListener(this.yearTouch, "touchstart", this._TouchS.bind(this, this.yearTouch));
+            eventListener(this.yearTouch, "touchmove", this._TouchM.bind(this, this.yearTouch));
+            eventListener(this.yearTouch, "touchend", this._TouchE.bind(this, this.yearTouch));
+            eventListener(this.yearTouch, "touchcancel", this._TouchE.bind(this, this.yearTouch));
+            eventListener(this.yearBtnBox, "touchstart", this._TouchS.bind(this, this.yearBtnBox));
+            eventListener(this.yearBtnBox, "touchmove", this._TouchM.bind(this, this.yearBtnBox));
+            eventListener(this.yearBtnBox, "touchend", this._TouchE.bind(this, this.yearBtnBox));
+            eventListener(this.yearBtnBox, "touchcancel", this._TouchE.bind(this, this.yearBtnBox));
             if (/.*Firefox.*/.test(navigator.userAgent)) {
-                eventListener(this.box, "DOMMouseScroll", this._mouseWheel.bind(this));
+                eventListener(this.box, "DOMMouseScroll", this._mouseWheel.bind(this, this.box));
+                eventListener(this.yearTouch, "DOMMouseScroll", this._mouseWheel.bind(this, this.yearTouch));
+                eventListener(this.yearBtnBox, "DOMMouseScroll", this._mouseWheel.bind(this, this.yearBtnBox));
             } else {
-                eventListener(this.box, "mousewheel", this._mouseWheel.bind(this));
+                eventListener(this.box, "mousewheel", this._mouseWheel.bind(this, this.box));
+                eventListener(this.yearTouch, "mousewheel", this._mouseWheel.bind(this, this.yearTouch));
+                eventListener(this.yearBtnBox, "mousewheel", this._mouseWheel.bind(this, this.yearBtnBox));
             }
             eventListener(w, "blur", function () {
                 // self.datePicker.style.display = "none";
