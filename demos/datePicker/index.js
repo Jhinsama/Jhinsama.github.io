@@ -127,6 +127,7 @@
         this.inputs = Array.prototype.slice.call(getElementsByClassName(document, "datepicker"),0);
         this.maxID = new Date().getTime();
         this.scrollEl = w;
+        this.changeBtn = [];
         this._init();
     }
     datePicker.prototype = {
@@ -385,18 +386,6 @@
             input.blur();
             this._inputBlur(input);
             this.input = input;
-            var offset = this._initPicker(input);
-            this.datePicker.style.display = "block";
-
-            var oT = offset.top, oH = offset.height, top;
-            var o = this.wH - this.datePickerH - oH;
-            if (this.scrollEl === w) {
-                top = oT - o;
-                w.scrollTo(0, top);
-            } else {
-                top = this.wH - this.datePickerH + this.scrollEl.scrollTop;
-                this.scrollEl.scrollTop = top;
-            }
 
             if (!this.dateCache) {
                 var date = new Date();
@@ -428,6 +417,20 @@
                     minute : date.getMinutes(),
                     second : date.getSeconds()
                 };
+            }
+
+
+            var offset = this._initPicker(input);
+            this.datePicker.style.display = "block";
+
+            var oT = offset.top, oH = offset.height, top;
+            var o = this.wH - this.datePickerH - oH;
+            if (this.scrollEl === w) {
+                top = oT - o;
+                w.scrollTo(0, top);
+            } else {
+                top = this.wH - this.datePickerH + this.scrollEl.scrollTop;
+                this.scrollEl.scrollTop = top;
             }
 
             return false;
