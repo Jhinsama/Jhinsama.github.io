@@ -1073,8 +1073,8 @@
             }
             eventListener(this.box, "mouseover", this._mouseO.bind(this));
             eventListener(w, "blur", function () {
-                // self.datePicker.style.display = "none";
-                // self._inputBlur();
+                self.datePicker.style.display = "none";
+                self._inputBlur();
             });
         },
         _mosaicObj : function (year) {
@@ -1098,6 +1098,34 @@
                 var btns = getElementsByClassName(monthBox, "-date-picker-date");
                 this.active.btn = btns[this.active.index];
                 addClass(this.active.btn, "active");
+            }
+            if (this.min || this.max) {
+                if (this.min.year == year) {
+                    var monthBox = getElementsByClassName(this.yearBox, "-date-picker-month")[this.min.month];
+                    var btns = getElementsByClassName(monthBox, "-date-picker-date");
+                    for (var i = 0; i < btns.length; i++) {
+                        if (!hasClass(btns[i], "un")) {
+                            if (~~btns[i].innerText < this.min.day) {
+                                addClass(btns[i], "un");
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (this.max.year == year) {
+                    var monthBox = getElementsByClassName(this.yearBox, "-date-picker-month")[this.max.month];
+                    var btns = getElementsByClassName(monthBox, "-date-picker-date");
+                    for (var i = btns.length - 1; i > -1; i--) {
+                        if (!hasClass(btns[i], "un")) {
+                            if (~~btns[i].innerText > this.max.day) {
+                                addClass(btns[i], "un");
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+                }
             }
         },
         _mosaicMonth : function (year, month) {
@@ -1157,7 +1185,7 @@
                     str += (i + start + 1);
                     str += "</button>";
                 } else {
-                    if (i == nowDay &&month == nowMonth &&  year == nowYear) {
+                    if (i == nowDay && month == nowMonth &&  year == nowYear) {
                         str += "<button class='-date-picker-date in'>";
                     } else {
                         str += "<button class='-date-picker-date'>";
