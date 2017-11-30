@@ -85,12 +85,41 @@
         return has;
     }
     function closest(el, selector) {
-        var matchesSelector = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector || el.msMatchesSelector;
-        while (el) {
-            if (matchesSelector.call(el, selector)) {
-                break;
+        if (selector instanceof HTMLElement) {
+            while (el) {
+                if (el == selector) break;
+                el = el.parentElement;
             }
-            el = el.parentElement;
+        } else {
+            var arr = selector.split("");
+            if (arr[0] == ".") {
+                selector = selector.replace(".", "");
+                while (el) {
+                    if (el.className) {
+                        arr = el.className.split(" ");
+                        var has = false;
+                        for (var i = 0; i < arr.length; i++) {
+                            if (arr[i] == selector) {
+                                has = true;
+                                break;
+                            }
+                        }
+                        if (has) break;
+                    }
+                    el = el.parentElement;
+                }
+            } else if (arr[0] == "#") {
+                selector = selector.replace("#", "");
+                while (el) {
+                    if (el.id == selector) break;
+                    el = el.parentElement;
+                }
+            } else {
+                while (el) {
+                    if (el.nodeName.toLowerCase() == selector) break;
+                    el = el.parentElement;
+                }
+            }
         }
         return el;
     }
@@ -108,7 +137,7 @@
         var offsetObj = {
             top: element.offsetTop,
             left: element.offsetLeft,
-            width: element.offsetWdith,
+            width: element.offsetWidth,
             height: element.offsetHeight
         };
         element = element.offsetParent;
@@ -455,6 +484,7 @@
                                 str = max.replace(".", this.join).replace(".", this.join).replace(".", " ").replace(".", ":").replace(".", ":");
                             }
                             this.dateCache.end.value = str;
+                            if (this.callback) this.callback({max: str, min: this.dateCache.str});
                         } else {
                             var min = this.dateCache.end.datePickerData.min;
                             if (!min) {
@@ -463,6 +493,7 @@
                                 str = min.replace(".", this.join).replace(".", this.join).replace(".", " ").replace(".", ":").replace(".", ":");
                             }
                             this.dateCache.start.value = str;
+                            if (this.callback) this.callback({max: this.dateCache.str, min: str});
                         }
                         this.dateCache = u;
 
@@ -839,6 +870,7 @@
                         if (bind && range == "start" || range == "end") {
                             if (this.dateCache) {
                                 var result = this._sortDay(this.dateCache.str, str);
+                                if (this.callback) this.callback(result);
                                 this.dateCache.start.value = result.min;
                                 this.dateCache.end.value = result.max;
                                 this.datePicker.style.display = "none";
@@ -870,6 +902,7 @@
                         } else {
                             if (this.dateCache) {
                                 var result = this._sortDay(this.dateCache.str, str);
+                                if (this.callback) this.callback(result);
                                 str = result.min + (this.join == "/" ? " - " : " / ") + result.max;
                                 this.dateCache = u;
                                 this.input.value = str;
@@ -1072,10 +1105,10 @@
                 eventListener(this.yearBtnBox, "mousewheel", this._mouseWheel.bind(this, this.yearBtnBox));
             }
             eventListener(this.box, "mouseover", this._mouseO.bind(this));
-            eventListener(w, "blur", function () {
-                self.datePicker.style.display = "none";
-                self._inputBlur();
-            });
+            // eventListener(w, "blur", function () {
+            //     self.datePicker.style.display = "none";
+            //     self._inputBlur();
+            // });
         },
         _mosaicObj : function (year) {
             var str = "<div class='-prev-year'>上一年</div>";
