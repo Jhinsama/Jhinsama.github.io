@@ -504,6 +504,7 @@
                     }
                 } else {
                     if (input != this.input) {
+                        if (this.callback) this.callback(this.dateCache.str);
                         this.dateCache = u;
 
                         removeClass(this.active.btn, 'active');
@@ -841,8 +842,30 @@
             if (btn = closest(event.target, ".-date-picker-date")) {
                 if (hasClass(btn, "prev")) {
                     this.prev();
+                    var day = btn.innerText;
+                    var monthBox = getElementsByClassName(this.yearBox, "-date-picker-month")[this.currentMonth];
+                    var btns = getElementsByClassName(monthBox, "-date-picker-date");
+                    var btn;
+                    for (var i = 0; i < btns.length; i++) {
+                        if (btns[i].innerText == day && !hasClass(btns[i], "un")) {
+                            btn = btns[i];
+                            break;
+                        }
+                    }
+                    if (btn) initEvent(btn, "click");
                 } else if (hasClass(btn, "next")) {
                     this.next();
+                    var day = btn.innerText;
+                    var monthBox = getElementsByClassName(this.yearBox, "-date-picker-month")[this.currentMonth];
+                    var btns = getElementsByClassName(monthBox, "-date-picker-date");
+                    var btn;
+                    for (var i = 0; i < btns.length; i++) {
+                        if (btns[i].innerText == day && !hasClass(btns[i], "un")) {
+                            btn = btns[i];
+                            break;
+                        }
+                    }
+                    if (btn) initEvent(btn, "click");
                 } else {
                     if (hasClass(btn, "un")) return false;
                     var year = this.currentYear;
@@ -1105,10 +1128,10 @@
                 eventListener(this.yearBtnBox, "mousewheel", this._mouseWheel.bind(this, this.yearBtnBox));
             }
             eventListener(this.box, "mouseover", this._mouseO.bind(this));
-            // eventListener(w, "blur", function () {
-            //     self.datePicker.style.display = "none";
-            //     self._inputBlur();
-            // });
+            eventListener(w, "blur", function () {
+                self.datePicker.style.display = "none";
+                self._inputBlur();
+            });
         },
         _mosaicObj : function (year) {
             var str = "<div class='-prev-year'>上一年</div>";
