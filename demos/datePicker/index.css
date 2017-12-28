@@ -45,6 +45,7 @@
     user-select: none;
     cursor: default;
     overflow: hidden;
+    transition: top, left 100ms;
 }
 .-date-picker-point{
     position: absolute;

@@ -18,7 +18,7 @@
     <br />
     <input type="text" class="datepicker" range="start" bind="570">
     至
-    <input type="text" class="datepicker" range="end" bind="570" min="2000.05.01" max="2020.05.01">
+    <input type="text" class="datepicker" range="end" bind="570" min="2017.05.01" max="2020.05.01">
     <br />
     <input type="text" class="datepicker" range="end" bind="520">
     <br />
@@ -33,11 +33,11 @@ var app = new DatePicker();
 // app.join = "/";
 app.set(document.getElementsByClassName("input"), {
     min : "2017.01.01",
-    max : "now"
+    max : "now",
+    range: true,
+    bind: 2017
 });
-app.callback = function (val) {
-    console.log(val);
-}
+app.get(function (val) { console.log(val) });
     </script>
 </body>
 </html>

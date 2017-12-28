@@ -8,15 +8,13 @@
     <meta name='format-detection' content='telephone=no' />
     <meta content='email=no' name='format-detection' />
     <title>时间选择器</title>
-    <link rel='stylesheet' type='text/css' href='index.css'>
-    <link rel='stylesheet' type='text/css' href='https://cdn.bootcss.com/animate.css/3.5.2/animate.min.css'>
+    <link rel='stylesheet' type='text/css' href='index.min.css'>
 </head>
 
 <body>
 
 
-
-    <div class='-date-picker -show ' style='top: 0;'>
+    <div class='-date-picker' style='position:relative;top:0;left:0;'>
         <div class='-date-picker-point'>
             <div class='-rotate45'></div>
         </div>
@@ -24,7 +22,7 @@
             <div class='-date-picker-foot'>
                 <div>
                     <div class='-date-picker-ym -d-p-middle'>
-                        <button id='-date-picker-ym'>2017年11月</button>
+                        <button id='-date-picker-ym'>2017年01月</button>
                         <span class='-dpcymt -rotate45'></span>
                     </div>
                 </div>
@@ -44,7 +42,56 @@
                         <div class='-rotate45'></div>
                     </div>
                     <div class='-date-picker-box'>
-                        <div id='-date-picker-year'></div>
+                        <div id="-date-picker-year" data-month="0" style="-webkit-transition:300ms;-moz-transition:300ms;-ms-transition:300ms;-o-transition:300ms;transition:300ms;">
+                            <div class="-prev-year">上一年</div>
+                            <div class="-date-picker-month">
+                                <div class="-before">1</div>
+                                <div class="-after">1</div>
+                                <button class="-date-picker-date un prev">25</button>
+                                <button class="-date-picker-date un prev">26</button>
+                                <button class="-date-picker-date un prev">27</button>
+                                <button class="-date-picker-date un prev">28</button>
+                                <button class="-date-picker-date un prev">29</button>
+                                <button class="-date-picker-date un prev">30</button>
+                                <button class="-date-picker-date un prev">31</button>
+                                <button class="-date-picker-date">&ensp;1</button>
+                                <button class="-date-picker-date">&ensp;2</button>
+                                <button class="-date-picker-date">&ensp;3</button>
+                                <button class="-date-picker-date">&ensp;4</button>
+                                <button class="-date-picker-date">&ensp;5</button>
+                                <button class="-date-picker-date">&ensp;6</button>
+                                <button class="-date-picker-date">&ensp;7</button>
+                                <button class="-date-picker-date">&ensp;8</button>
+                                <button class="-date-picker-date">&ensp;9</button>
+                                <button class="-date-picker-date">10</button>
+                                <button class="-date-picker-date">11</button>
+                                <button class="-date-picker-date">12</button>
+                                <button class="-date-picker-date">13</button>
+                                <button class="-date-picker-date">14</button>
+                                <button class="-date-picker-date">15</button>
+                                <button class="-date-picker-date">16</button>
+                                <button class="-date-picker-date">17</button>
+                                <button class="-date-picker-date">18</button>
+                                <button class="-date-picker-date">19</button>
+                                <button class="-date-picker-date">20</button>
+                                <button class="-date-picker-date">21</button>
+                                <button class="-date-picker-date">22</button>
+                                <button class="-date-picker-date">23</button>
+                                <button class="-date-picker-date">24</button>
+                                <button class="-date-picker-date">25</button>
+                                <button class="-date-picker-date">26</button>
+                                <button class="-date-picker-date">27</button>
+                                <button class="-date-picker-date">28</button>
+                                <button class="-date-picker-date">29</button>
+                                <button class="-date-picker-date">30</button>
+                                <button class="-date-picker-date">31</button>
+                                <button class="-date-picker-date un next">&ensp;1</button>
+                                <button class="-date-picker-date un next">&ensp;2</button>
+                                <button class="-date-picker-date un next">&ensp;3</button>
+                                <button class="-date-picker-date un next">&ensp;4</button>
+                            </div>
+                            <div class="-next-year">下一年</div>
+                        </div>
                     </div>
                     <div class='-date-picker-next'>
                         <div class='-rotate45'></div>
@@ -60,39 +107,26 @@
                 </div>
             </div>
             <div class='-date-picker-select'>
-                <div class='-d-p-select-head'>
+                <div class="-d-p-select-head">
                     <div>
-                        <div class='-d-p-select-year-touch'>
-                            <div class='-d-p-select-left'></div>
-                            <div class='-d-p-select-box'>
-                                <div id='-d-p-select-year'>
-                                    <div class='-d-p-s-y' date-year='2008'>2008</div>
-                                    <div class='-d-p-s-y' date-year='2009'>2009</div>
-                                    <div class='-d-p-s-y' date-year='2010'>2010</div>
-                                    <div class='-d-p-s-y' date-year='2011'>2011</div>
-                                    <div class='-d-p-s-y' date-year='2012'>2012</div>
-                                    <div class='-d-p-s-y' date-year='2013'>2013</div>
-                                    <div class='-d-p-s-y' date-year='2014'>2014</div>
-                                    <div class='-d-p-s-y' date-year='2015'>2015</div>
-                                    <div class='-d-p-s-y' date-year='2016'>2016</div>
-                                    <div class='-d-p-s-y' date-year='2017'>2017</div>
-                                    <div class='-d-p-s-y' date-year='2018'>2018</div>
-                                    <div class='-d-p-s-y' date-year='2019'>2019</div>
-                                    <div class='-d-p-s-y' date-year='2020'>2020</div>
-                                    <div class='-d-p-s-y' date-year='2021'>2021</div>
-                                    <div class='-d-p-s-y' date-year='2022'>2022</div>
-                                    <div class='-d-p-s-y' date-year='2023'>2023</div>
-                                    <div class='-d-p-s-y' date-year='2024'>2024</div>
-                                    <div class='-d-p-s-y' date-year='2025'>2025</div>
-                                    <div class='-d-p-s-y' date-year='2026'>2026</div>
-                                    <div class='-d-p-s-y' date-year='2027'>2027</div>
+                        <div class="-d-p-select-year-touch">
+                            <div class="-d-p-select-left"></div>
+                            <div class="-d-p-select-box">
+                                <div id="-d-p-select-year" style="left: -400%;">
+                                    <button class="-d-p-s-y" style="color:#999">2013</button>
+                                    <button class="-d-p-s-y" style="color:#999">2014</button>
+                                    <button class="-d-p-s-y" style="color:#999">2015</button>
+                                    <button class="-d-p-s-y" style="color:#999">2016</button>
+                                    <button class="-d-p-s-y">2017</button>
+                                    <button class="-d-p-s-y" style="color:#999">2018</button>
+                                    <button class="-d-p-s-y" style="color:#999">2019</button>
+                                    <button class="-d-p-s-y" style="color:#999">2020</button>
+                                    <button class="-d-p-s-y" style="color:#999">2021</button>
                                 </div>
                             </div>
-                            <div class='-d-p-select-right'></div>
+                            <div class="-d-p-select-right"></div>
                         </div>
-                        <button class='-d-p-select-year-range'>
-                            2009 - 2018
-                        </button>
+                        <button class="-d-p-select-year-range">2013-2021</button>
                     </div>
                 </div>
                 <div class='-d-p-select-year-month'>
@@ -202,20 +236,31 @@
                     </div>
                 </div>
             </div>
+            <div class="-date-picker-hms">
+
+            </div>
         </div>
     </div>
 
+    <div onclick="def()">default</div>
+    <div onclick="hms()">time</div>
+    <div onclick="show()">month</div>
+    <div onclick="year()">year</div>
+
     <script>
-        // var show = false;
-        // show = true;
-        // var m = document.querySelector('.-date-picker');
-        // if (show) setInterval(function () {
-        //     if (m.className == '-date-picker -show') {
-        //         m.className = '-date-picker -show -year';
-        //     } else {
-        //         m.className = '-date-picker -show';
-        //     }
-        // },2000)
+        var box = document.getElementsByClassName("-date-picker")[0];
+        function def () {
+            box.className = "-date-picker";
+        }
+        function hms () {
+            box.className = "-date-picker -hms";
+        }
+        function show () {
+            box.className = "-date-picker -show";
+        }
+        function year () {
+            box.className = "-date-picker -show -year";
+        }
     </script>
 
 </body>

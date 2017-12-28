@@ -3,7 +3,7 @@
 // sass compile
 var gulp = require('gulp');
 var prettify = require('gulp-prettify');
-var minifyCss = require("gulp-minify-css");
+var cleanCss = require("gulp-clean-css");
 var rename = require("gulp-rename");
 var uglify = require("gulp-uglify");
 var rtlcss = require("gulp-rtlcss");
@@ -25,7 +25,7 @@ gulp.task("watch", function () {
     gulp.watch("index.css", function () {
         gulp
             .src("index.css")
-            .pipe(minifyCss())
+            .pipe(cleanCss())
             .pipe(rename({suffix: '.min'}))
             .pipe(gulp.dest("./"))
             .pipe(connect.reload());

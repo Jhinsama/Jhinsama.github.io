@@ -584,6 +584,7 @@ var commoditys = [
         num--;
         num = num < 0 ? 0 : num;
         typeData.ware[ware].dom.find(".num").text(num);
+        if (num < 1) typeData.ware[ware].dom.find(".control-num").removeClass('on');
         pre(ware, num);
     });
 
