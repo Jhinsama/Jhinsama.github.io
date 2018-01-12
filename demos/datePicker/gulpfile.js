@@ -22,17 +22,17 @@ gulp.task("watch", function () {
             .src("*.html")
             .pipe(connect.reload());
     });
-    gulp.watch("index.css", function () {
+    gulp.watch(["*.css", "!*.min.css"], function () {
         gulp
-            .src("index.css")
+            .src(["*.css", "!*.min.css"])
             .pipe(cleanCss())
             .pipe(rename({suffix: '.min'}))
             .pipe(gulp.dest("./"))
             .pipe(connect.reload());
     });
-    gulp.watch("index.js", function () {
+    gulp.watch(["*.js", "!*.min.js", "!gulpfile.js"], function () {
         gulp
-            .src("index.js")
+            .src(["*.js", "!*.min.js", "!gulpfile.js"])
             .pipe(uglify())
             .pipe(rename({suffix: '.min'}))
             .pipe(gulp.dest("./"))

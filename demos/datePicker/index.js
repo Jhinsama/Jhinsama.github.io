@@ -154,7 +154,7 @@
             if (els[i] === element) return i;
         }
     }
-    function DatePicker (option) {
+    function DatePicker (format) {
         this.join = "-";
         this.wW = w.innerWidth;
         this.wH = w.innerHeight;
@@ -163,12 +163,12 @@
         this.maxID = new Date().getTime();
         this.scrollEl = w;
         this.btnArr = {};
-        this._init();
-        this.format = "YYYY-MM-DD hh:mm:ss";
+        this._init(format);
         return this.api;
     }
     DatePicker.prototype = {
-        _init : function () {
+        _init : function (format) {
+            this._setFormat(format);
             this._initInputs();
             var date = new Date();
             this.currentYear = date.getFullYear();
@@ -191,7 +191,7 @@
                 inputs = [input];
             } else {
                 console.log("传入的元素不是输入框");
-                return;
+                return this.api;
             }
             var repeat;
             for (var i = 0; i < inputs.length; i++) {
@@ -231,8 +231,12 @@
                     console.log(input, "不是输入框");
                 }
             }
+            return this.api;
         },
-        setCB : function (cb) { if (cb instanceof Function) this.callback = cb },
+        setCB : function (cb) {
+            if (cb instanceof Function) this.callback = cb;
+            return this.api;
+        },
         prev : function () {
             var month = this.currentMonth - 1;
             if (month < 0) {
@@ -455,6 +459,7 @@
             var change = false;
 
             if (!this.dateCache) {
+                if (this.active) this.active = u;
                 if (year != this.currentYear) {
                     this.currentYear = year;
                     change = true;
@@ -786,14 +791,22 @@
             p = p < 4 ? 4 : (p > c ? c : p);
             this.yearTouchInner.style.cssText = "-webkit-transition:300ms;-moz-transition:300ms;-ms-transition:300ms;-o-transition:300ms;transition:300ms;-webkit-transform: translateZ(0);-moz-transform: translateZ(0);-ms-transform: translateZ(0);-o-transform: translateZ(0);transform: translateZ(0);left: -"+p+"00%;";
             if (p == 4) {
-                for (var i = 0; i < this.min.month; i++) {
-                    addClass(this.monthBtns[i], 'un');
+                for (var i = 0; i < 12; i++) {
+                    if (i < this.min.month) {
+                        addClass(this.monthBtns[i], 'un');
+                    } else {
+                        removeClass(this.monthBtns[i], 'un');
+                    }
                 }
             } else if (p == c) {
-                for (var i = this.max.month + 1; i < 12; i++) {
-                    addClass(this.monthBtns[i], 'un');
+                for (var i = 0; i < 12; i++) {
+                    if (i > this.max.month) {
+                        addClass(this.monthBtns[i], 'un');
+                    } else {
+                        removeClass(this.monthBtns[i], 'un');
+                    }
                 }
-            } else if (this.yearTouchPosition == 4 || this.yearTouchPosition == c) {
+            } else {
                 for (var i = 0; i < 12; i++) {
                     removeClass(this.monthBtns[i], 'un');
                 }
@@ -1015,7 +1028,6 @@
                         this.input.value = this._mosaicStr(year, month, day);
                         this.datePicker.style.display = "none";
                     } else {
-
                         if (!this.dateCache) {
                             this.active = {
                                 year : year,
@@ -1073,13 +1085,11 @@
                                 this.input.value = str;
                             }
                         }
-
                         if (!this.dateCache) {
                             removeClass(this.active.btn, 'active');
                             this.active = u;
                             this.btnArr = {};
                         }
-
                     }
                 }
             } else if (btn = closest(event.target, ".-d-p-s-year")) {
@@ -1147,10 +1157,19 @@
                 eventListener(this.yearBtnBox, "mousewheel", this._mouseWheel.bind(this, this.yearBtnBox));
             }
             eventListener(this.box, "mouseover", this._mouseO.bind(this));
-            eventListener(w, "blur", function () {
-                self.datePicker.style.display = "none";
-                self._inputBlur();
-            });
+            // eventListener(w, "blur", function () {
+            //     self.datePicker.style.display = "none";
+            //     self._inputBlur();
+            // });
+        },
+        _setFormat : function (str) {
+            if (typeof str != "string") return this.format = "YYYY-MM-DD";
+            if (str.match(/\d/) == null && str.match(/YYYY(?!Y)/) != null && str.match(/MM(?!M)/) != null && str.match(/DD(?!D)/) != null) {
+                this.format = str;
+                if (str.match(/hh(?!h)/) != null) this.hasDate = true;
+            } else {
+                this.format = "YYYY-MM-DD";
+            }
         },
         _sortDay : function (a, b) {
             var max, min;
@@ -1202,16 +1221,15 @@
             }
             str += "<div class='-next-year'>下一年</div>";
             this.yearBox.innerHTML = str;
+            var monthBox = getElementsByClassName(this.yearBox, "-date-picker-month"), btns;
             if (this.active && year == this.active.year) {
-                var monthBox = getElementsByClassName(this.yearBox, "-date-picker-month")[this.active.month];
-                var btns = getElementsByClassName(monthBox, "-date-picker-date");
+                btns = getElementsByClassName(monthBox[this.active.month], "-date-picker-date");
                 this.active.btn = btns[this.active.index];
                 addClass(this.active.btn, "active");
             }
             if (this.min || this.max) {
                 if (this.min.year == year) {
-                    var monthBox = getElementsByClassName(this.yearBox, "-date-picker-month")[this.min.month];
-                    var btns = getElementsByClassName(monthBox, "-date-picker-date");
+                    btns = getElementsByClassName(monthBox[this.min.month], "-date-picker-date");
                     for (var i = 0; i < btns.length; i++) {
                         if (!hasClass(btns[i], "un")) {
                             if (~~btns[i].innerText < this.min.day) {
@@ -1223,8 +1241,7 @@
                     }
                 }
                 if (this.max.year == year) {
-                    var monthBox = getElementsByClassName(this.yearBox, "-date-picker-month")[this.max.month];
-                    var btns = getElementsByClassName(monthBox, "-date-picker-date");
+                    btns = getElementsByClassName(monthBox[this.max.month], "-date-picker-date");
                     for (var i = btns.length - 1; i > -1; i--) {
                         if (!hasClass(btns[i], "un")) {
                             if (~~btns[i].innerText > this.max.day) {
@@ -1238,42 +1255,33 @@
             }
         },
         _mosaicMonth : function (year, month) {
-            var leap = false;
-            if (year % 4 == 0) leap = true;
-            var length = 0;
+            var leap = year % 4 == 0 ? true : false;
             var str = "<div class='-date-picker-month'><div class='-before'>"+month+"</div><div class='-after'>"+month+"</div>";
-            var day = new Date(year + "/" + month + "/1").getDay();
-            day = day == 0 ? 7 : day;
-            if (month == 1 || month == 2 || month == 4 || month == 6 || month == 9 || month == 11) {
-                str += this._mosaicDate(year, month, day, 31 - day);
-            } else if (month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
-                str += this._mosaicDate(year, month, day, 30 - day);
-            } else {
-                if (leap) {
-                    str += this._mosaicDate(year, month, day, 29 - day);
+            var len = new Date(year + "/" + month + "/1").getDay() || 7;
+            var num, preNum;
+            if (month == 1) {
+                num = preNum = 31;
+            } else if (month == 2) {
+                num = leap ? 29 : 28;
+                preNum = 31;
+            } else if (month == 3) {
+                num = 31;
+                preNum = leap ? 29 : 28;
+            } else if (month == 4 || month == 4 || month == 9 || month == 11) {
+                num = 30;
+                preNum = 31;
+            } else if (month == 5 || month == 7 || month == 10 || month == 12) {
+                num = 31;
+                preNum = 30;
                 } else {
-                    str += this._mosaicDate(year, month, day, 28 - day);
-                }
+                num = 31;
+                preNum = 31;
             }
-            length += day;
-            if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12){
-                str += this._mosaicDate(year, month, 31);
-                length += 31;
-            } else if (month == 4 || month == 6  || month == 9 || month == 11) {
-                str += this._mosaicDate(year, month, 30);
-                length += 30;
-            } else {
-                if (leap) {
-                    str += this._mosaicDate(year, month, 29);
-                    length += 29;
-                } else {
-                    str += this._mosaicDate(year, month, 28);
-                    length += 28;
-                }
-            }
-            var len = 42 - length;
-            str += this._mosaicDate(year, month, len);
-            str += "</div>"
+            str += this._mosaicDate(year, month, len, preNum - len);
+            str += this._mosaicDate(year, month, num);
+            len += num;
+            str += this._mosaicDate(year, month, 42 - len);
+            str += "</div>";
             return str;
         },
         _mosaicDate : function (year, month, len, start) {
@@ -1284,25 +1292,24 @@
             var str = "";
             start = start || 0;
             for (var i = 0; i < len; i++) {
+                str += "<button class='-date-picker-date";
                 if (start > 0 || len < 28) {
+                    str += " un";
                     if (start > 0) {
-                        str += "<button class='-date-picker-date un prev'>";
+                        str += " prev";
                     } else {
-                        str += "<button class='-date-picker-date un next'>";
+                        str += " next";
                     }
+                    str += "'>";
                     if (i + start < 9) str += "&ensp;";
                     str += (i + start + 1);
-                    str += "</button>";
                 } else {
-                    if (i == nowDay && month == nowMonth &&  year == nowYear) {
-                        str += "<button class='-date-picker-date in'>";
-                    } else {
-                        str += "<button class='-date-picker-date'>";
-                    }
+                    if (i == nowDay && month == nowMonth &&  year == nowYear) str += " in";
+                    str += "'>";
                     if (i < 9) str += "&ensp;";
                     str += (i + 1);
-                    str += "</button>";
                 }
+                str += "</button>";
             }
             return str;
         },
@@ -1320,7 +1327,7 @@
             return str;
         },
         _resetStr : function (str) {
-            var defStr = this.format.replace(/YYYY/, 0).replace(/MM/, 1).replace(/DD/, 2).replace(/hh/, 3).replace(/mm/, 4).replace(/ss/, 5).replace(/\D/g, " ");
+            var defStr = this.format.replace(/YYYY(?!Y)/, 0).replace(/MM(?!M)/, 1).replace(/DD(?!D)/, 2).replace(/hh(?!h)/, 3).replace(/mm(?!m)/, 4).replace(/ss(?!s)/, 5).replace(/\D/g, " ");
             var defArr = defStr.split(" ");
             var arr = str.replace(/\D/g, " ").split(" ");
             var newArr = [];
