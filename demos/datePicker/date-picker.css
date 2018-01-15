@@ -291,12 +291,15 @@
 .-date-picker-date:hover{
     background: rgba(92,196,239,.1);
 }
-.-date-picker-date.un, .-date-picker-date.un.active{
+.-date-picker-date.un{
     color: #ddd;
 }
 .-date-picker-date.active{
     color: #fff;
     background: rgb(92,196,239);
+}
+.-date-picker-date.un.active{
+    background: rgba(92,196,239,.5);
 }
 .-date-picker-date.on{
     background: rgba(92,196,239,.1);

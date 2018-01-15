@@ -14,45 +14,24 @@
      }
     function addClass (target, className) {
         if (!target.className) return target.className = className;
-        var classNames = target.className.split(" ");
-        var repeat = false;
-        for (var i = 0; i < classNames.length; i++) {
-            if (classNames[i] === className) repeat = true;
-        }
-        if (repeat) return;
-        target.className += " " + className;
+        if (!hasClass(target, className)) target.className += " " + className;
      }
     function removeClass (target, className) {
-        if (!target.className || target.className == className) return target.className = "";
-        var classNames = target.className.split(" ");
-        for (var i = 0; i < classNames.length; i++) {
-            if (classNames[i] === className) {
-                classNames.splice(i, 1);
-                target.className = classNames.join(" ");
-            }
+        if (!target.className) return;
+        if (hasClass (target, className)) {
+            var regexp = new RegExp("(^|\\s+)" + className + "(\\s+|$)");
+            target.className = target.className.replace(regexp, "");
         }
      }
     function toggleClass (target, className) {
-        if (!target.className) return target.className = className;
-        var classNames = target.className.split(" ");
-        var repeat = false;
-        for (var i = 0; i < classNames.length; i++) {
-            if (classNames[i] === className) {
-                repeat = true;
-                classNames.splice(i, 1);
-            }
-        }
-        if (!repeat) classNames.push(className);
-        target.className = classNames.join(" ");
+        if (hasClass(target, className)) return removeClass(target, className);
+        addClass(target, className);
      }
     function hasClass (target, className) {
         if (!target.className) return false;
-        var has = false;
-        var classNames = target.className.split(" ");
-        for (var i = 0; i < classNames.length; i++) {
-            if (classNames[i] === className) has = true;
-        }
-        return has;
+        var regexp = new RegExp("(^|\\s+)" + className + "(\\s+|$)");
+        if (regexp.test(target.className)) return true;
+        return false;
      }
     function createEl (nodeName) {
         return d.createElement(nodeName);
@@ -102,16 +81,11 @@
         if (target.getElementsByClassName) {
             return target.getElementsByClassName(className);
         } else {
-            var result = [];
-            var tags = target.getElementsByTagName("*");
+            var result = [],
+                regexp = new RegExp("(^|\\s+)" + className + "(\\s+|$)"),
+                tags = target.getElementsByTagName("*");
             for (var i = 0; i < tags.length; i++) {
-                var classNames = tags[i].className.split(" ");
-                for (var l = 0; l < classNames.length; l++) {
-                    if (classNames[l] === className) {
-                        result.push(tags[i]);
-                        break;
-                    }
-                }
+                if (regexp.test(tags[i].className)) result.push(tags[i]);
             }
             return result;
         }
@@ -126,18 +100,9 @@
             var arr = selector.split("");
             if (arr[0] == ".") {
                 selector = selector.replace(".", "");
+                var regexp = new RegExp("(^|\\s+)" + selector + "(\\s+|$)");
                 while (el) {
-                    if (el.className) {
-                        arr = el.className.split(" ");
-                        var has = false;
-                        for (var i = 0; i < arr.length; i++) {
-                            if (arr[i] == selector) {
-                                has = true;
-                                break;
-                            }
-                        }
-                        if (has) break;
-                    }
+                    if (el.className && regexp.test(el.className)) break;
                     el = el.parentElement;
                 }
             } else if (arr[0] == "#") {
@@ -186,6 +151,7 @@
         this.month = ["一","二","三","四","五","六","七","八","九","十","十一","十二"];
         this.week = ["日","一","二","三","四","五","六"];
         this.day = [31,[28,29],31,30,31,30,31,31,30,31,30,31];
+        this.type = 3;
         this.isFF = /.*Firefox.*/.test(navigator.userAgent);    // 判断火狐浏览器
         this.doms = {};                                         // 存储获取的元素
         this.datas = {};                                        // 存储输入框参数
@@ -553,6 +519,7 @@
         // 隐藏选择器
         hidePicker: function () {
             display(this.doms.box, "none");
+            this.state.cY = 0;
             this.state.date = u;
             this.state.focus = u;
             this.maxDate = u;
@@ -644,6 +611,7 @@
         showPicker: function (el) {
             if (!el || !el.bindId) return;
             el.blur();
+            if (!this.check[el.bindId]) this.check[el.bindId] = {};
             this.endSelect();
             this.state.focus = this.datas[el.bindId];
             this.state.date = this.getDate();
@@ -668,15 +636,14 @@
 
             if (format.D || format.h || format.m || format.s) {
                 className(div, "-date-picker");
-                if (date.Y != state.Y || date.M != state.M) {
-                    this.setCurrent(date.Y, date.M);
-                }
+                this.setCurrent(date.Y, date.M);
                 if (format.h || format.m || format.s) {
                     display([el.hour, el.minute, el.second, el.confirm], "inline-block");
                     display([el.today, el.yesterday, el.lastweek, el.lastmonth], "none");
                     el.hourBtn.innerText = date.hs;
                     el.minuteBtn.innerText = date.ms;
                     el.secondBtn.innerText = date.ss;
+                    this.type = 4;
                 } else {
                     display([el.hour, el.minute, el.second, el.confirm], "none");
                     display([el.today, el.yesterday, el.lastweek, el.lastmonth], "inline-block");
@@ -697,12 +664,15 @@
                             }
                         }
                     }
+                    this.type = 3;
                 }
             } else {
                 if (format.M) {
                     this.showMonthBox();
+                    this.type = 2;
                 } else {
                     this.showYearBox();
+                    this.type = 1;
                 }
             }
 
@@ -866,10 +836,10 @@
         // 设置当前年月
         setCurrent: function (Y, M) {
             if (!this.state.step[1]) this.createDayBox();
-            this.showMonth(Y, M);
             this.state.Y = Y;
             this.state.M = M;
             this.setBtnMsg(Y, M);
+            this.showMonth(Y, M);
             this.doms.year.setAttribute("data-month", M - 1);
             this.showMonth(Y, M + 1);
             this.showMonth(Y, M - 1);
@@ -877,10 +847,22 @@
         // 显示当前月份
         showMonth: function (Y, M) {
             if (M < 1 || M > 12) return false;
-            if (!this.state.doneMonth || Y != this.state.Y) this.state.doneMonth = {};
-            if (!this.state.doneMonth[M]) {
-                this.doms.months[M - 1].innerHTML = this.mosaicMonth(Y, M);
-                this.state.doneMonth[M] = true;
+            var months = this.doms.months,
+                state = this.state,
+                focus = state.focus,
+                el = focus.el,
+                id = el.bindId,
+                _id = el.bindElId,
+                check = this.check[id] || {}, 
+                // _check = this.check[_id] || {},
+                btns, D, un;
+            months[M - 1].innerHTML = this.mosaicMonth(Y, M);
+            btns = getClassEl(months[M - 1], "-date-picker-date");
+            if (Y == state.Y && M == state.M) state.btns = btns;
+            for (var i = 0; i < 42; i++) {
+                D = ~~btns[i].innerText;
+                un = hasClass(btns[i], "un");
+                if (Y == check.Y && M == check.M && check.D == D && !un) addClass(btns[i], "active");
             }
          },
         // 拼接月份
@@ -1277,7 +1259,7 @@
                     var btn = closest(e.target, ".-date-picker-date");
                     if (!btn) return false;
                     var txt = btn.innerText;
-                    if (btn.className == "-date-picker-date un") {
+                    if (hasClass(btn, "un")) {
                         var skip = btn.getAttribute("data-skip");
                         if (skip) {
                             var M = this.state.M;
@@ -1287,7 +1269,7 @@
                                 var btns = getClassEl(this.doms.months[M], "-date-picker-date");
                                 var checked;
                                 for (var i = 0; i < 42; i++) {
-                                    if (btns[i].className == "-date-picker-date" && btns[i].innerText == txt) {
+                                    if (!hasClass(btns[i], "un") && btns[i].innerText == txt) {
                                         checked = btns[i];
                                         break;
                                     }
@@ -1297,18 +1279,36 @@
                         }
                     } else {
                         var state = this.state,
-                            Y = state.Y,
-                            M = state.M,
                             D = ~~txt,
-                            focus = state.focus;
-                        var val = this.mosaicDateStr({
-                            Y: Y, M: M, D: D, h: 0, m: 0, s: 0
-                        }, focus.format);
-                        focus.el.value = val;
-                        this.hidePicker();
+                            focus = state.focus,
+                            id = focus.el.bindId,
+                            check = this.check[id];
+                        check.Y = state.Y;
+                        check.M = state.M;
+                        check.D = D;
+                        addClass(btn, "active");
+                        if (this.type == 3) {
+                            var val, obj,
+                                str = this.mosaicDateStr({
+                                    Y: check.Y,
+                                    M: check.M,
+                                    D: D
+                                }, focus.format);
+                            focus.el.value = str;
+                            if (focus.range) {
+                                if (focus.el.bindElId) {
 
-                        this.api.value = val;
-                        if (this.api.callback) this.api.callback({val: val});
+                                } else {
+
+                                }
+                            } else {
+                                val = str;
+                                obj = {value: str};
+                                this.hidePicker();
+                            }
+                            this.api.value = str;
+                            this.callback(obj);
+                        }
                     }
                 break;
                 case el.prevYear:
@@ -1321,12 +1321,11 @@
                     var btn = closest(e.target, ".-d-p-s-month");
                     if (!btn || btn.className == "-d-p-s-month un") return false;
                     var M = ~~btn.getAttribute("data-month"),
-                        foc = this.state.focus,
-                        fom = foc.format;
-                    if (fom.D || fom.h || fom.m || fom.s) {
+                        foc = this.state.focus;
+                    if (this.type > 2) {
                         this.setCurrent(this.state.cY, M);
                     } else {
-                        foc.el.value = this.mosaicDateStr({Y: this.state.cY, M: M}, fom);
+                        foc.el.value = this.mosaicDateStr({Y: this.state.cY, M: M}, foc.format);
                     }
                     this.back();
                 break;
@@ -1334,12 +1333,11 @@
                     var btn = closest(e.target, ".-d-p-s-year");
                     if (!btn || btn.className == "-d-p-s-year un") return false;
                     var Y = ~~btn.getAttribute("data-year"),
-                        foc = this.state.focus,
-                        fom = foc.format;
-                    if (fom.M) {
+                        foc = this.state.focus;
+                    if (this.type > 1) {
                         this.setMonthBox(Y);
                     } else {
-                        foc.el.value = this.mosaicDateStr({Y: Y}, fom);
+                        foc.el.value = this.mosaicDateStr({Y: Y}, foc.format);
                     }
                     this.back();
                 break;
@@ -1350,24 +1348,32 @@
         back: function () {
             var div = this.doms.box,
                 str = div.className,
-                fom = this.state.focus.format;
+                typ = this.type;
             switch (str) {
                 case "-date-picker -month":
-                    if (fom.D || fom.h || fom.m || fom.s) {
+                    if (typ > 2) {
                         className(div, "-date-picker");
+                        this.state.cY = 0;
                     } else {
                         this.hidePicker();
                     }
-                    this.state.cY = 0;
                 break;
                 case "-date-picker -year":
-                    if (fom.M) {
+                    if (typ > 1) {
                         className(div, "-date-picker -month");
                     } else {
                         this.hidePicker();
                     }
                 break;
+                case "-date-picker":
+                    this.hidePicker();
+                break;
             }
+         },
+        // 回调
+        callback: function (data) {
+            if (this.api.callback instanceof Function)
+            this.api.callback(data);
          }
 
 
