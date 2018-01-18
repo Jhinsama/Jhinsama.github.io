@@ -18,10 +18,8 @@
      }
     function removeClass (target, className) {
         if (!target.className) return;
-        if (hasClass (target, className)) {
-            var regexp = new RegExp("(^|\\s+)" + className + "(\\s+|$)");
-            target.className = target.className.replace(regexp, "");
-        }
+        var regexp = new RegExp("(^|\\s+)" + className + "((?=\\s)|$)");
+        target.className = target.className.replace(regexp, "");
      }
     function toggleClass (target, className) {
         if (hasClass(target, className)) return removeClass(target, className);
@@ -29,9 +27,8 @@
      }
     function hasClass (target, className) {
         if (!target.className) return false;
-        var regexp = new RegExp("(^|\\s+)" + className + "(\\s+|$)");
-        if (regexp.test(target.className)) return true;
-        return false;
+        var regexp = new RegExp("(^|\\s+)" + className + "((?=\\s)|$)");
+        return regexp.test(target.className);
      }
     function createEl (nodeName) {
         return d.createElement(nodeName);
@@ -82,7 +79,7 @@
             return target.getElementsByClassName(className);
         } else {
             var result = [],
-                regexp = new RegExp("(^|\\s+)" + className + "(\\s+|$)"),
+                regexp = new RegExp("(^|\\s+)" + className + "((?=\\s)|$)"),
                 tags = target.getElementsByTagName("*");
             for (var i = 0; i < tags.length; i++) {
                 if (regexp.test(tags[i].className)) result.push(tags[i]);
