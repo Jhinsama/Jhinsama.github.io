@@ -1,6 +1,5 @@
 'use strict';
 
-// sass compile
 var gulp = require('gulp');
 var prettify = require('gulp-prettify');
 var cleanCss = require("gulp-clean-css");
