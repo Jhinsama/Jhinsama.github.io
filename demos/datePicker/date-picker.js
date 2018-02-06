@@ -540,13 +540,14 @@
                     }
                     if (op.min && op.min != "now" && typeof(op.min) == "string" && !op.min.match(/[YMD]\d+(?!\d)/g)) op.min = this.judgeDateStr(op.min, op.format);
                     if (op.max && op.max != "now" && typeof(op.max) == "string" && !op.max.match(/[YMD]\d+(?!\d)/g)) op.max = this.judgeDateStr(op.max, op.format);
-                    if (op.range && op.bind && op.range == "start" || op.range == "end") {
+                    if (op.range && op.bind && (op.range == "start" || op.range == "end")) {
                         if (!objs[op.bind]) objs[op.bind] = {};
                         if (!objs[op.bind][op.range]) objs[op.bind][op.range] = {
                             el: el,
                             op: op
                         }
                     } else {
+                        if (op.range) op.range = "self";
                         this.setInput(el, op);
                     }
                 }
