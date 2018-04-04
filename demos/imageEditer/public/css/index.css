@@ -1,0 +1,69 @@
+#app{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+}
+
+.draw-box *{
+    box-sizing: border-box;
+}
+.draw-box{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    background: #fff;
+    outline: 10000px solid rgba(77, 35, 46, .1);
+}
+.draw-box:hover{
+    background: url(data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkqAAgAAAAAAAAAAAAAAP/sABFEdWNreQABAAQAAABkAAD/7gAOQWRvYmUAZMAAAAAB/9sAhAABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAgICAgICAgICAgIDAwMDAwMDAwMDAQEBAQEBAQIBAQICAgECAgMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwP/wAARCAAUABQDAREAAhEBAxEB/8QAYAABAQEBAAAAAAAAAAAAAAAABgcFCgEBAAAAAAAAAAAAAAAAAAAAABAAAAQDBgcAAAAAAAAAAAAAAAMEBQEREyECElSEpCMUtNQ1BhYRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AO/gBGfbPPr9L0SYAdAIvrH/AD+1RdsAZtLS3vjendHRPzS9VVrn1TyMdA8xOVwk5hJN3CSTdhZdhOU42ziA0fk2DIbpb3ICMgLN6n4BBqutUgEQD//Z);
+}
+.draw-tool{
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+}
+.draw-tool>label{
+    display: block;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+    background-size: 60%;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    fill: #999999;
+}
+.draw-tool>label:hover{
+    background-color: #fff;
+}
+.draw-tool>label.active{
+    background-color: rgb(167, 34, 34);
+}
+.draw-control{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+#draw-image{
+    background-image: url(../images/image.svg);
+}
+#draw-font{
+    background-image: url(../images/font.svg);
+}
+#draw-pen{
+    background-image: url(../images/pen.svg);
+}
+#draw-clean{
+    background-image: url(../images/delete.svg);
+}
+#draw-save{
+    background-image: url(../images/save.svg);
+}
