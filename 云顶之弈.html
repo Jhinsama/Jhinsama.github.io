@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>装备合成图</title>
+    <script>!function(e){var t,i=e.document.documentElement;function l(){var t,n=e.innerWidth;t=(n=n>750?750:n)/10,i.style.fontSize=t+"px";e.rem = t}l(),e.addEventListener("resize",function(){clearTimeout(t),t=setTimeout(l,200)},!1)}(window);</script>
+    <style name="重置样式">
+      * {
+        margin: 0;
+        padding: 0;
+        color: inherit;
+        list-style: none;
+        font-style: normal;
+        text-decoration: none;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-text-size-adjust: none;
+        -ms-text-size-adjust: none;
+      }
+      html {
+        height: 100%;
+      }
+      body {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        color: #333333;
+        font-size: 0;
+        line-height: 1.25;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        background: #f9f9f9;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      ::-webkit-scrollbar,
+      body::-webkit-scrollbar {
+        width: 0 !important;
+        height: 0 !important;
+      }
+      ::-webkit-scrollbar-track,
+      body::-webkit-scrollbar-track {
+        background: transparent !important;
+      }
+      ::-webkit-scrollbar-thumb,
+      body::-webkit-scrollbar-thumb {
+        background-color: transparent !important;
+      }
+    </style>
+    <style name="表格布局">
+        .dis-tab {
+          position: relative;
+          display: table;
+          width: 100%;
+          border-collapse: collapse;
+          table-layout: auto;
+        }
+        .dis-tab.fixed {
+          table-layout: fixed;
+        }
+        .dis-tab.max {
+          height: 100%;
+        }
+        .dis-tab-r {
+          position: relative;
+          display: table-row;
+        }
+        .dis-tab-c {
+          position: relative;
+          display: table-cell;
+          vertical-align: middle;
+        }
+        .dis-tab-c.max {
+          width: 100%;
+        }
+        .dis-tab-c.top {
+          vertical-align: top !important;
+        }
+        .dis-tab-c.middle {
+          vertical-align: middle !important;
+        }
+        .dis-tab-c.bottom {
+          vertical-align: bottom !important;
+        }
+        .dis-tab.top>.dis-tab-c,
+        .dis-tab.top>.dis-tab-r>.dis-tab-c {
+          vertical-align: top;
+        }
+        .dis-tab.bottom>.dis-tab-c,
+        .dis-tab.bottom>.dis-tab-r>.dis-tab-c {
+          vertical-align: top;
+        }
+        .dis-tab.first>.dis-tab-c:first-child,
+        .dis-tab.first>.dis-tab-r>.dis-tab-c:first-child {
+          width: 100%;
+        }
+        .dis-tab.last>.dis-tab-c:last-child,
+        .dis-tab.last>.dis-tab-r>.dis-tab-c:last-child {
+          width: 100%;
+        }
+        .dis-tab.center>.dis-tab-c:nth-child(n+2):not(:last-child),
+        .dis-tab.center>.dis-tab-r>.dis-tab-c:nth-child(n+2):not(:last-child) {
+          width: 100%;
+        }
+    </style>
+    <style name="导航栏">
+      #navbar {
+        position: fixed;
+        top: .4rem;
+        left: 0;
+        right: 0;
+        width: 6rem;
+        height: 1rem;
+        margin: auto;
+        color: #999999;
+        text-align: center;
+        background: #fff;
+        border-radius: .2rem;
+        overflow: hidden;
+        z-index: 10;
+      }
+      #navbar::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 1px solid #f5f5f5;
+        border-radius: .2rem;
+        box-sizing: border-box;
+        z-index: -1;
+      }
+      .nav {
+        position: relative;
+        display: inline-block;
+        width: 2rem;
+        height: 1rem;
+        font-size: .4rem;
+        line-height: 1rem;
+        vertical-align: top;
+      }
+      .nav:nth-child(n+2):after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1px;
+        height: 100%;
+        background: #f5f5f5;
+      }
+      .nav.active {
+        color: #fff;
+        background: #cf9535;
+      }
+    </style>
+    <style name="主要内容">
+      body {
+        overflow: hidden;
+      }
+      #app {
+        width: 10rem;
+        height: 100%;
+        margin: 0 auto;
+        padding-top: 1.8rem;
+        transition: transform .3s;
+        white-space: nowrap;
+      }
+      #table, #list, #detail {
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+        padding: 0 3px 20px;
+        white-space: normal;
+        vertical-align: top;
+        overflow: auto;
+      }
+      #list {
+        padding: 0 .3rem 20px;
+      }
+
+      .tab-box .dis-tab-c:first-child:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: -1px;
+        width: 2px;
+        height: 100%;
+        background: #000;
+      }
+      .tab-box .dis-tab-r:first-child .dis-tab-c {
+        border-bottom: 2px solid #000;
+      }
+      .tab-arms-img {
+        width: 100%;
+        padding: 4%;
+        vertical-align: top;
+      }
+      .tab-arms-img.opacity {
+        opacity: .3;
+      }
+
+      .list-item {
+        margin-bottom: .2rem;
+        border: 1px solid f5f5f5;
+        background: #fff;
+        border-radius: .3rem;
+        box-shadow: 0px 5px 12px 0px rgba(0, 0, 0, 0.1);
+      }
+      .list-arms-img {
+        width: 1.5rem;
+        margin: .3rem;
+        border-radius: .2rem;
+      }
+      .list-arms-name {
+        color: #000;
+        font-size: .4rem;
+        font-weight: 600;
+        line-height: .6rem;
+      }
+      .list-arms-attr {
+        color: #666666;
+        font-size: .3rem;
+        line-height: .6rem;
+      }
+      .list-arms-effect {
+        padding-right: .3rem;
+        font-size: .3rem;
+        line-height: .6rem;
+      }
+
+      .detail-cell {
+        width: 130px;
+        height: 140px;
+        text-align: center;
+      }
+      .detail-arms-img {
+        width: 60px;
+        height: 60px;
+      }
+      .detail-arms-name {
+        color: #000;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 24px;
+      }
+      .detail-arms-effect,
+      .detail-arms-attr {
+        padding: 0 10px;
+        font-size: 12px;
+        text-align: justify;
+        text-align-last: center;
+      }
+    </style>
+    <style name="弹出栏">
+      #popup {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,.05);
+        z-index: 100;
+      }
+      #popup.show {
+        display: table;
+      }
+      #popup-main {
+        display: table-cell;
+        text-align: center;
+        vertical-align: middle;
+      }
+      .pop-main {
+        display: inline-block;
+        width: 8rem;
+        padding: .5rem;
+        border-radius: .3rem;
+        background: #fff;
+        box-shadow: 0px 5px 12px 0px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+      .pop-arms-img {
+        width: 1.6rem;
+        height: 1.6rem;
+        border-radius: .2rem;
+        vertical-align: top;
+      }
+      .pop-arms-name {
+        padding-top: .2rem;
+        color: #000;
+        font-size: .5rem;
+        font-weight: 600;
+      }
+      .pop-arms-attr {
+        padding-top: .2rem;
+        color: #666666;
+        font-size: .35rem;
+      }
+      .pop-arms-effect {
+        padding-top: .2rem;
+        font-size: .35rem;
+        text-align: justify;
+        text-align-last: center;
+      }
+      .pop-title {
+        position: relative;
+        padding: .3rem 0;
+        color: #000;
+        font-size: .5rem;
+        font-weight: 600;
+      }
+      .pop-title:before,
+      .pop-title:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 4em;
+        height: 1px;
+        margin: auto;
+        background: #f0f0f0;
+      }
+      .pop-title:before {
+        left: 0;
+      }
+      .pop-title:after {
+        right: 0;
+      }
+      .pop-arms-min-img {
+        width: 1.4rem;
+        height: 1.4rem;
+        margin: 0 .1rem .2rem;
+        border-radius: .2rem;
+        vertical-align: top;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="navbar">
+      <div class="nav" data-index="0">略缩</div>
+      <div class="nav" data-index="1">列表</div>
+      <div class="nav" data-index="2">总览</div>
+    </div>
+    <div id="app">
+      <div id="table"></div>
+      <div id="list"></div>
+      <div id="detail"></div>
+    </div>
+    <div id="popup">
+      <div id="popup-main"></div>
+    </div>
+    <script name="武器库">
+      var basicArms = {
+        '暴风之剑': {
+          name: '暴风之剑',
+          attr: '+20攻击力',
+          child: ['饮血剑', '守护天使', '海克斯科技枪刃', '无尽之刃', '朔极之矛', '神圣之剑', '幽梦之灵', '基克的先驱']
+        },
+        '反曲之弓': {
+          name: '反曲之弓',
+          attr: '+15%攻击速度',
+          child: ['破败王者之刃', '诅咒之刃', '鬼索的狂暴之刃', '幻影之舞', '疾射火炮', '斯塔缇克电刃', '神圣之剑', '巨型九头蛇']
+        },
+        '无用大棒': {
+          name: '无用大棒',
+          attr: '+20%技能伤害',
+          child: ['鬼索的狂暴之刃', '海克斯科技枪刃', '离子火花', '钢铁烈阳之匣', '卢登的回声', '莫洛雷秘典', '灭世者的死亡之帽', '悠米']
+        },
+        '女神之泪': {
+          name: '女神之泪',
+          attr: '+20法力值',
+          child: ['暗裔', '冰霜之心', '肃静', '卢登的回声', '救赎', '炽天使之拥', '朔极之矛', '斯塔缇克电刃']
+        },
+        '锁子甲': {
+          name: '锁子甲',
+          attr: '+20护甲',
+          child: ['冰霜之心', '守护天使', '骑士之誓', '钢铁烈阳之匣', '幻影之舞', '蜥蜴长老之赐', '折剑者', '荆棘之甲']
+        },
+        '负极斗篷': {
+          name: '负极斗篷',
+          attr: '+20魔法抗性',
+          child: ['饮血剑', '诅咒之刃', '巨龙之爪', '肃静', '离子火花', '卢安娜的飓风', '折剑者', '灵风']
+        },
+        '巨人腰带': {
+          name: '巨人腰带',
+          attr: '+200生命值',
+          child: ['冰霜之锤', '莫洛雷秘典', '蜥蜴长老之赐', '救赎', '巨型九头蛇', '狂徒铠甲', '基克的先驱', '灵风']
+        },
+        '铲子': {
+          name: '铲子',
+          attr: '无属性加成',
+          child: ['自然之力', '破败王者之刃', '暗裔', '冰霜之锤', '骑士之誓', '卢安娜的飓风', '悠米', '幽梦之灵']
+        }
+      }
+      var endArms = {
+        '无尽之刃': {
+          name: '无尽之刃',
+          attr: '+40攻击力',
+          effect: '+100%暴击伤害',
+          parent: ['暴风之剑', '暴风之剑']
+        },
+        '神圣之剑': {
+          name: '神圣之剑',
+          attr: '+20攻击力，+15%攻速',
+          effect: '携带者每秒获得5%的暴击率',
+          parent: ['暴风之剑', '反曲之弓']
+        },
+        '海克斯科技枪刃': {
+          name: '海克斯科技枪刃',
+          attr: '+20攻击力，+20%魔法伤害',
+          effect: '+25%全能吸血',
+          parent: ['暴风之剑', '无用大棒']
+        },
+        '朔极之矛': {
+          name: '朔极之矛',
+          attr: '+20攻击力，+20法力值',
+          effect: '在使用技能后，携带者的每次攻击回复15%最大法力值',
+          parent: ['暴风之剑', '女神之泪']
+        },
+        '守护天使': {
+          name: '守护天使',
+          attr: '+20攻击力，+20护甲',
+          effect: '阵亡可复活,复活后500生命值',
+          parent: ['暴风之剑', '锁子甲']
+        },
+        '饮血剑': {
+          name: '饮血剑',
+          attr: '+20攻击力，+20魔抗',
+          effect: '普攻攻击附带50%吸血',
+          parent: ['暴风之剑', '负极斗篷']
+        },
+        '基克的先驱': {
+          name: '基克的先驱',
+          attr: '+20攻击力，+200生命值',
+          effect: '临近格子的友军获得10%攻击速度',
+          parent: ['暴风之剑', '巨人腰带']
+        },
+        '幽梦之灵': {
+          name: '幽梦之灵',
+          attr: '+20攻击力',
+          effect: '携带者也是刺客单位',
+          parent: ['暴风之剑', '铲子']
+        },
+        '疾射火炮': {
+          name: '疾射火炮',
+          attr: '+30%攻速',
+          effect: '携带者的攻击不会被闪避，攻击距离加倍',
+          parent: ['反曲之弓', '反曲之弓']
+        },
+        '鬼索的狂暴之刃': {
+          name: '鬼索的狂暴之刃',
+          attr: '+20%魔法伤害，+15%攻速',
+          effect: '每次攻击增加3%攻击速度，无上限',
+          parent: ['反曲之弓', '无用大棒']
+        },
+        '斯塔缇克电刃': {
+          name: '斯塔缇克电刃',
+          attr: '+20法力值，+15%攻速',
+          effect: '每3次攻击，造成100点溅射魔法伤害',
+          parent: ['反曲之弓', '女神之泪']
+        },
+        '幻影之舞': {
+          name: '幻影之舞',
+          attr: '+15%攻速，+20护甲',
+          effect: '装备者闪避所有暴击攻击',
+          parent: ['反曲之弓', '锁子甲']
+        },
+        '诅咒之刃': {
+          name: '诅咒之刃',
+          attr: '+20%魔抗，+15%攻速',
+          effect: '普通攻击有概率使敌人缩小1星',
+          parent: ['反曲之弓', '负极斗篷']
+        },
+        '巨型九头蛇': {
+          name: '巨型九头蛇',
+          attr: '+15%攻速，+200生命值',
+          effect: '攻击对敌人造成携带者10%最大生命值的溅射伤害',
+          parent: ['反曲之弓', '巨人腰带']
+        },
+        '破败王者之刃': {
+          name: '破败王者之刃',
+          attr: '+15%攻速',
+          effect: '携带者也是剑士',
+          parent: ['反曲之弓', '铲子']
+        },
+        '灭世者的死亡之帽': {
+          name: '灭世者的死亡之帽',
+          attr: '+40%魔法伤害',
+          effect: '增加50%技能伤害',
+          parent: ['无用大棒', '无用大棒']
+        },
+        '卢登的回声': {
+          name: '卢登的回声',
+          attr: '+20%魔法伤害，+20法力值',
+          effect: '技能对命中目标造成200点溅射伤害',
+          parent: ['无用大棒', '女神之泪']
+        },
+        '钢铁烈阳之匣': {
+          name: '钢铁烈阳之匣',
+          attr: '+20%魔法伤害，+20护甲',
+          effect: '战斗开始前，所有邻近格子的友军获得一个200点护盾',
+          parent: ['无用大棒', '锁子甲']
+        },
+        '离子火花': {
+          name: '离子火花',
+          attr: '+20%魔法伤害，+20%魔抗',
+          effect: '每当敌人使用技能，他们受到200点伤害',
+          parent: ['无用大棒', '负极斗篷']
+        },
+        '莫洛雷秘典': {
+          name: '莫洛雷秘典',
+          attr: '+20%魔法伤害，+200生命值',
+          effect: '技能造成灼烧伤害，每秒伤害为敌人最大生命值的2.5%',
+          parent: ['无用大棒', '巨人腰带']
+        },
+        '悠米': {
+          name: '悠米',
+          attr: '+20%魔法伤害',
+          effect: '携带者也是法师单位',
+          parent: ['无用大棒', '铲子']
+        },
+        '炽天使之拥': {
+          name: '炽天使之拥',
+          attr: '+40法力值',
+          effect: '每次有技能被施放时，回复20%法力值',
+          parent: ['女神之泪', '女神之泪']
+        },
+        '冰霜之心': {
+          name: '冰霜之心',
+          attr: '+20护甲，+20法力值',
+          effect: '邻近格子的敌人降低20%攻击速度',
+          parent: ['女神之泪', '锁子甲']
+        },
+        '肃静': {
+          name: '肃静',
+          attr: '+20法力值，+20法抗',
+          effect: '普通攻击有几率对敌人造成沉默',
+          parent: ['女神之泪', '负极斗篷']
+        },
+        '救赎': {
+          name: '救赎',
+          attr: '+200生命值，+20法力值',
+          effect: '死亡时，治疗附近所有友军1000点生命值',
+          parent: ['女神之泪', '巨人腰带']
+        },
+        '暗裔': {
+          name: '暗裔',
+          attr: '+20法力值',
+          effect: '装备者也视为恶魔',
+          parent: ['女神之泪', '铲子']
+        },
+        '荆棘之甲': {
+          name: '荆棘之甲',
+          attr: '+40物抗',
+          effect: '攻击伤害反弹35%',
+          parent: ['锁子甲', '锁子甲']
+        },
+        '折剑者': {
+          name: '折剑者',
+          attr: '+20物抗，+20魔抗',
+          effect: '普通攻击有几率对敌人造成缴械',
+          parent: ['锁子甲', '负极斗篷']
+        },
+        '蜥蜴长老之赐': {
+          name: '蜥蜴长老之赐',
+          attr: '+20护甲，+200生命值',
+          effect: '攻击造成2.5%的灼烧伤害',
+          parent: ['锁子甲', '巨人腰带']
+        },
+        '骑士之誓': {
+          name: '骑士之誓',
+          attr: '+20物抗',
+          effect: '携带者也是骑士单位',
+          parent: ['锁子甲', '铲子']
+        },
+        '巨龙之爪': {
+          name: '巨龙之爪',
+          attr: '+40物抗',
+          effect: '装备者获得83%魔法抗性',
+          parent: ['负极斗篷', '负极斗篷']
+        },
+        '灵风': {
+          name: '灵风',
+          attr: '+200生命值，+20法抗',
+          effect: '战斗开始时，放逐1个敌人持续5秒',
+          parent: ['负极斗篷', '巨人腰带']
+        },
+        '卢安娜的飓风': {
+          name: '卢安娜的飓风',
+          attr: '+20法抗',
+          effect: '普攻对额外2个目标造成伤害，额外攻击造成50%的伤害',
+          parent: ['负极斗篷', '铲子']
+        },
+        '狂徒铠甲': {
+          name: '狂徒铠甲',
+          attr: '+400生命值',
+          effect: '每秒恢复3%自身最大生命值',
+          parent: ['巨人腰带', '巨人腰带']
+        },
+        '冰霜之锤': {
+          name: '冰霜之锤',
+          attr: '+200生命值',
+          effect: '装备者也视为极地',
+          parent: ['巨人腰带', '铲子']
+        },
+        '自然之力': {
+          name: '自然之力',
+          attr: '无属性加成',
+          effect: '可上阵人数+1',
+          parent: ['铲子', '铲子']
+        }
+      }
+    </script>
+    <script name="数据格式">
+      var arms = Object.assign({}, basicArms, endArms)
+      var resultByIndex = {'00': '0', '01': '1', '02': '2', '03': '3', '04': '4', '05': '5', '06': '6', '07': '7', '10': '1', '11': '8', '12': '9', '13': '10', '14': '11', '15': '12', '16': '13', '17': '14', '20': '2', '21': '9', '22': '15', '23': '16', '24': '17', '25': '18', '26': '19', '27': '20', '30': '3', '31': '10', '32': '16', '33': '21', '34': '22', '35': '23', '36': '24', '37': '25', '40': '4', '41': '11', '42': '17', '43': '22', '44': '26', '45': '27', '46': '28', '47': '29', '50': '5', '51': '12', '52': '18', '53': '23', '54': '27', '55': '30', '56': '31', '57': '32', '60': '6', '61': '13', '62': '19', '63': '24', '64': '28', '65': '31', '66': '33', '67': '34', '70': '7', '71': '14', '72': '20', '73': '25', '74': '29', '75': '32', '76': '34', '77': '35'}
+      var basic = []
+      for (var key in basicArms) {
+        basic.push(basicArms[key])
+        arms[key] = basicArms[key]
+      }
+      var end = []
+      for (var key in endArms) {
+        end.push(endArms[key])
+        arms[key] = endArms[key]
+      }
+      var table = [[null].concat(basic)]
+      for (var a = 0; a < basic.length; a++) {
+        var arr = [basic[a]]
+        for (var b = 0; b < basic.length; b++) arr.push(end[resultByIndex[a + '' + b]])
+        table.push(arr)
+      }
+      var list = [].concat(basic, end)
+    </script>
+    <script name="生成略缩表格">
+      var html = ''
+      html += '<div class="dis-tab fixed tab-box">'
+      for (var a = 0; a < table.length; a++) {
+        html += '<div class="dis-tab-r">'
+        for (var b = 0; b < table[a].length; b++) {
+          html += '<div class="dis-tab-c">'
+          if (table[a][b]) html += '<img show="' + table[a][b].name + '" class="tab-arms-img' + (b !== 0 && a > b ? ' opacity' : ' ') + '" src="http://pic.gxw520.com/lol/arms/' + table[a][b].name + '.png">'
+          html += '</div>'
+        }
+        html += '</div>'
+      }
+      html += '</div>'
+      document.querySelector('#table').innerHTML = html
+    </script>
+    <script name="生成装备列表">
+      var html = ''
+      for (var i = 0; i < list.length; i++) {
+        html += '<div class="dis-tab list-item" show="' + list[i].name + '">'
+        html += '<div class="dis-tab-c">'
+        html += '<img class="list-arms-img" src="http://pic.gxw520.com/lol/arms/' + list[i].name + '.png">'
+        html += '</div>'
+        html += '<div class="dis-tab-c max">'
+        html += '<div class="list-arms-name">' + list[i].name + '</div>'
+        html += '<div class="list-arms-attr">' + list[i].attr + '</div>'
+        if (list[i].effect) html += '<div class="list-arms-effect">' + list[i].effect + '</div>'
+        html += '</div>'
+        html += '</div>'
+      }
+      document.querySelector('#list').innerHTML = html
+    </script>
+    <script name="生成详细表格">
+        var html = ''
+        html += '<div class="dis-tab fixed top">'
+        for (var a = 0; a < table.length; a++) {
+          html += '<div class="dis-tab-r">'
+          for (var b = 0; b < table[a].length; b++) {
+            html += '<div class="dis-tab-c detail-cell">'
+            if (table[a][b]) {
+              html += '<img show="' + table[a][b].name + '" class="detail-arms-img" src="http://pic.gxw520.com/lol/arms/' + table[a][b].name + '.png">'
+              html += '<div class="detail-arms-name">' + table[a][b].name + '</div>'
+              if (!table[a][b].effect) html += '<div class="detail-arms-attr">' + table[a][b].attr + '</div>'
+              else html += '<div class="detail-arms-effect">' + table[a][b].effect + '</div>'
+            }
+            html += '</div>'
+          }
+          html += '</div>'
+        }
+        html += '</div>'
+      document.querySelector('#detail').innerHTML = html
+    </script>
+    <script name="导航栏点击事件">
+      var appElement = document.querySelector('#app')
+      var navbarElement = document.querySelector('#navbar')
+      function toNav (i) {
+        if (i !== undefined) window.localStorage.setItem('navIndex', i)
+        else i = Number(window.localStorage.getItem('navIndex'))
+        if (navbarElement.children[i].className === 'nav active') return false
+        for (var index = 0; index < navbarElement.children.length; index++) navbarElement.children[index].className = 'nav'
+        navbarElement.children[i].className = 'nav active'
+        appElement.style.transform = 'translateX(-' + (100 * i) + '%)'
+      }
+      document.querySelector('#navbar').addEventListener('click', function (e) {
+        var index = e.target.getAttribute('data-index')
+        if (!index) return false
+        toNav(Number(index))
+      }, false)
+      toNav()
+    </script>
+    <script name="装备点击事件">
+      document.addEventListener('click', function (e) {
+        var target = e.target
+        var show
+        while (target && !(show = target.getAttribute('show'))) target = target.parentElement
+        if (show) showArmsDetails(show)
+      }, false)
+
+      var popupElement = document.querySelector('#popup')
+      var popupMainEle = document.querySelector('#popup-main')
+      function showArmsDetails (name) {
+        popupElement.className = 'show'
+
+        var data = arms[name]
+        var html = ''
+        html += '<div class="pop-main">'
+        html += '<img class="pop-arms-img" src="http://pic.gxw520.com/lol/arms/' + data.name + '.png">'
+        html += '<div class="pop-arms-name">' + data.name + '</div>'
+        html += '<div class="pop-arms-attr">' + data.attr + '</div>'
+        if (data.effect) html += '<div class="pop-arms-effect">' + data.effect + '</div>'
+        if (data.parent) {
+          html += '<div class="pop-title">合成路径</div>'
+          for (var i = 0; i < data.parent.length; i++) {
+            html += '<img show="' + arms[data.parent[i]].name + '" class="pop-arms-min-img" src="http://pic.gxw520.com/lol/arms/' + arms[data.parent[i]].name + '.png">'
+          }
+        }
+        if (data.child) {
+          html += '<div class="pop-title">进阶装备</div>'
+          for (var i = 0; i < data.child.length; i++) {
+            html += '<img show="' + arms[data.child[i]].name + '" class="pop-arms-min-img" src="http://pic.gxw520.com/lol/arms/' + arms[data.child[i]].name + '.png">'
+          }
+        }
+        html += '</div>'
+        popupMainEle.innerHTML = html
+      }
+
+      popupElement.addEventListener('click', function (e) {
+        popupElement.className = ''
+      }, false)
+    </script>
+  </body>
+</html>
