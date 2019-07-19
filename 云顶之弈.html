@@ -19,7 +19,9 @@
         -ms-text-size-adjust: none;
       }
       html {
+        user-select: none;
         height: 100%;
+        overflow: hidden;
       }
       body {
         position: relative;
@@ -32,6 +34,7 @@
         background: #f9f9f9;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+        overflow: hidden;
       }
       ::-webkit-scrollbar,
       body::-webkit-scrollbar {
@@ -155,9 +158,6 @@
       }
     </style>
     <style name="主要内容">
-      body {
-        overflow: hidden;
-      }
       #app {
         width: 10rem;
         height: 100%;
