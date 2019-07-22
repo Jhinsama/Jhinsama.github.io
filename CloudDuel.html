@@ -112,7 +112,7 @@
         top: .4rem;
         left: 0;
         right: 0;
-        width: 6rem;
+        width: 4rem;
         height: 1rem;
         margin: auto;
         color: #999999;
@@ -137,7 +137,7 @@
       .nav {
         position: relative;
         display: inline-block;
-        width: 2rem;
+        width: 50%;
         height: 1rem;
         font-size: .4rem;
         line-height: 1rem;
@@ -166,7 +166,7 @@
         transition: transform .3s;
         white-space: nowrap;
       }
-      #table, #list, #detail {
+      #arms, #hero {
         display: inline-block;
         width: 100%;
         height: 100%;
@@ -174,9 +174,6 @@
         white-space: normal;
         vertical-align: top;
         overflow: auto;
-      }
-      #list {
-        padding: 0 .3rem 20px;
       }
 
       .tab-box .dis-tab-c:first-child:before {
@@ -197,59 +194,7 @@
         vertical-align: top;
       }
       .tab-arms-img.opacity {
-        opacity: .3;
-      }
-
-      .list-item {
-        margin-bottom: .2rem;
-        border: 1px solid f5f5f5;
-        background: #fff;
-        border-radius: .3rem;
-        box-shadow: 0px 5px 12px 0px rgba(0, 0, 0, 0.1);
-      }
-      .list-arms-img {
-        width: 1.5rem;
-        margin: .3rem;
-        border-radius: .2rem;
-      }
-      .list-arms-name {
-        color: #000;
-        font-size: .4rem;
-        font-weight: 600;
-        line-height: .6rem;
-      }
-      .list-arms-attr {
-        color: #666666;
-        font-size: .3rem;
-        line-height: .6rem;
-      }
-      .list-arms-effect {
-        padding-right: .3rem;
-        font-size: .3rem;
-        line-height: .6rem;
-      }
-
-      .detail-cell {
-        width: 130px;
-        height: 140px;
-        text-align: center;
-      }
-      .detail-arms-img {
-        width: 60px;
-        height: 60px;
-      }
-      .detail-arms-name {
-        color: #000;
-        font-size: 14px;
-        font-weight: 600;
-        line-height: 24px;
-      }
-      .detail-arms-effect,
-      .detail-arms-attr {
-        padding: 0 10px;
-        font-size: 12px;
-        text-align: justify;
-        text-align-last: center;
+        opacity: .5;
       }
     </style>
     <style name="弹出栏">
@@ -334,22 +279,71 @@
         border-radius: .2rem;
         vertical-align: top;
       }
+
+      .pop-arms-uplist {
+        max-height: 8rem;
+        overflow: auto;
+      }
+      .pop-arms-row {
+        margin-bottom: .2rem;
+      }
+      .pop-arms-row:last-child {
+        margin: 0;
+      }
+      .pop-arms-row-img {
+        width: 1.4rem;
+        height: 1.4rem;
+        margin-right: .2rem;
+        vertical-align: top;
+      }
+      .pop-arms-row-name {
+        color: #000;
+        font-size: .4rem;
+        font-weight: 600;
+        text-align: left;
+      }
+      .pop-arms-row-effect {
+        padding-top: .2rem;
+        font-size: .35rem;
+        text-align: justify;
+        text-align-last: left;
+      }
     </style>
   </head>
   <body>
     <div id="navbar">
-      <div class="nav" data-index="0">略缩</div>
-      <div class="nav" data-index="1">列表</div>
-      <div class="nav" data-index="2">总览</div>
+      <div class="nav" data-index="0">装备</div>
+      <div class="nav" data-index="1">英雄</div>
+      <!-- <div class="nav" data-index="1">列表</div>
+      <div class="nav" data-index="2">总览</div> -->
     </div>
     <div id="app">
-      <div id="table"></div>
-      <div id="list"></div>
-      <div id="detail"></div>
+      <div id="arms"></div>
+      <div id="hero">
+        <div style="font-size: .5rem;font-weight: 600;text-align: center;line-height: 5;">Developing</div>
+      </div>
     </div>
     <div id="popup">
       <div id="popup-main"></div>
     </div>
+    <script name="导航栏点击事件">
+      var appElement = document.querySelector('#app')
+      var navbarElement = document.querySelector('#navbar')
+      function toNav (i) {
+        if (i !== undefined) window.localStorage.setItem('navIndex', i)
+        else i = Number(window.localStorage.getItem('navIndex'))
+        if (navbarElement.children[i].className === 'nav active') return false
+        for (var index = 0; index < navbarElement.children.length; index++) navbarElement.children[index].className = 'nav'
+        navbarElement.children[i].className = 'nav active'
+        appElement.style.transform = 'translateX(-' + (100 * i) + '%)'
+      }
+      document.querySelector('#navbar').addEventListener('click', function (e) {
+        var index = e.target.getAttribute('data-index')
+        if (!index) return false
+        toNav(Number(index))
+      }, false)
+      toNav()
+    </script>
     <script name="武器库">
       var basicArms = {
         '暴风之剑': {
@@ -612,7 +606,7 @@
         }
       }
     </script>
-    <script name="数据格式">
+    <script name="武器数据格式">
       var arms = Object.assign({}, basicArms, endArms)
       var resultByIndex = {'00': '0', '01': '1', '02': '2', '03': '3', '04': '4', '05': '5', '06': '6', '07': '7', '10': '1', '11': '8', '12': '9', '13': '10', '14': '11', '15': '12', '16': '13', '17': '14', '20': '2', '21': '9', '22': '15', '23': '16', '24': '17', '25': '18', '26': '19', '27': '20', '30': '3', '31': '10', '32': '16', '33': '21', '34': '22', '35': '23', '36': '24', '37': '25', '40': '4', '41': '11', '42': '17', '43': '22', '44': '26', '45': '27', '46': '28', '47': '29', '50': '5', '51': '12', '52': '18', '53': '23', '54': '27', '55': '30', '56': '31', '57': '32', '60': '6', '61': '13', '62': '19', '63': '24', '64': '28', '65': '31', '66': '33', '67': '34', '70': '7', '71': '14', '72': '20', '73': '25', '74': '29', '75': '32', '76': '34', '77': '35'}
       var basic = []
@@ -631,7 +625,6 @@
         for (var b = 0; b < basic.length; b++) arr.push(end[resultByIndex[a + '' + b]])
         table.push(arr)
       }
-      var list = [].concat(basic, end)
     </script>
     <script name="生成略缩表格">
       var html = ''
@@ -646,63 +639,17 @@
         html += '</div>'
       }
       html += '</div>'
-      document.querySelector('#table').innerHTML = html
+      document.querySelector('#arms').innerHTML = html
     </script>
-    <script name="生成装备列表">
+    <script name="英雄库">
+
+    </script>
+    <script name="生成英雄图鉴">
       var html = ''
-      for (var i = 0; i < list.length; i++) {
-        html += '<div class="dis-tab list-item" show="' + list[i].name + '">'
-        html += '<div class="dis-tab-c">'
-        html += '<img class="list-arms-img" src="http://pic.gxw520.com/lol/arms/' + list[i].name + '.png">'
-        html += '</div>'
-        html += '<div class="dis-tab-c max">'
-        html += '<div class="list-arms-name">' + list[i].name + '</div>'
-        html += '<div class="list-arms-attr">' + list[i].attr + '</div>'
-        if (list[i].effect) html += '<div class="list-arms-effect">' + list[i].effect + '</div>'
-        html += '</div>'
-        html += '</div>'
-      }
-      document.querySelector('#list').innerHTML = html
+
+      // document.querySelector('#hero').innerHTML = html
     </script>
-    <script name="生成详细表格">
-        var html = ''
-        html += '<div class="dis-tab fixed top">'
-        for (var a = 0; a < table.length; a++) {
-          html += '<div class="dis-tab-r">'
-          for (var b = 0; b < table[a].length; b++) {
-            html += '<div class="dis-tab-c detail-cell">'
-            if (table[a][b]) {
-              html += '<img show="' + table[a][b].name + '" class="detail-arms-img" src="http://pic.gxw520.com/lol/arms/' + table[a][b].name + '.png">'
-              html += '<div class="detail-arms-name">' + table[a][b].name + '</div>'
-              if (!table[a][b].effect) html += '<div class="detail-arms-attr">' + table[a][b].attr + '</div>'
-              else html += '<div class="detail-arms-effect">' + table[a][b].effect + '</div>'
-            }
-            html += '</div>'
-          }
-          html += '</div>'
-        }
-        html += '</div>'
-      document.querySelector('#detail').innerHTML = html
-    </script>
-    <script name="导航栏点击事件">
-      var appElement = document.querySelector('#app')
-      var navbarElement = document.querySelector('#navbar')
-      function toNav (i) {
-        if (i !== undefined) window.localStorage.setItem('navIndex', i)
-        else i = Number(window.localStorage.getItem('navIndex'))
-        if (navbarElement.children[i].className === 'nav active') return false
-        for (var index = 0; index < navbarElement.children.length; index++) navbarElement.children[index].className = 'nav'
-        navbarElement.children[i].className = 'nav active'
-        appElement.style.transform = 'translateX(-' + (100 * i) + '%)'
-      }
-      document.querySelector('#navbar').addEventListener('click', function (e) {
-        var index = e.target.getAttribute('data-index')
-        if (!index) return false
-        toNav(Number(index))
-      }, false)
-      toNav()
-    </script>
-    <script name="装备点击事件">
+    <script name="弹窗">
       document.addEventListener('click', function (e) {
         var target = e.target
         var show
@@ -712,6 +659,7 @@
 
       var popupElement = document.querySelector('#popup')
       var popupMainEle = document.querySelector('#popup-main')
+
       function showArmsDetails (name) {
         popupElement.className = 'show'
 
@@ -730,9 +678,21 @@
         }
         if (data.child) {
           html += '<div class="pop-title">进阶装备</div>'
+          html += '<div class="pop-arms-uplist">'
           for (var i = 0; i < data.child.length; i++) {
-            html += '<img show="' + arms[data.child[i]].name + '" class="pop-arms-min-img" src="http://pic.gxw520.com/lol/arms/' + arms[data.child[i]].name + '.png">'
+            html += '<div class="dis-tab pop-arms-row" show="' + arms[data.child[i]].name + '">'
+            html += '<div class="dis-tab-c">'
+            html += '<img class="pop-arms-row-img" src="http://pic.gxw520.com/lol/arms/' + arms[data.child[i]].name + '.png">'
+            html += '</div>'
+            html += '<div class="dis-tab-c max">'
+            html += '<div class="pop-arms-row-name">' + arms[data.child[i]].name + '</div>'
+            if (arms[data.child[i]].effect) html += '<div class="pop-arms-row-effect">' + arms[data.child[i]].effect + '</div>'
+            html += '</div>'
+            html += '</div>'
+
+            // html += '<img show="' + arms[data.child[i]].name + '" class="pop-arms-min-img" src="http://pic.gxw520.com/lol/arms/' + arms[data.child[i]].name + '.png">'
           }
+          html += '</div>'
         }
         html += '</div>'
         popupMainEle.innerHTML = html
