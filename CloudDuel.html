@@ -36,6 +36,10 @@
         -moz-osx-font-smoothing: grayscale;
         overflow: hidden;
       }
+      img {
+        display: inline-block;
+        vertical-align: top;
+      }
       ::-webkit-scrollbar,
       body::-webkit-scrollbar {
         width: 0 !important;
@@ -157,46 +161,6 @@
         background: #cf9535;
       }
     </style>
-    <style name="主要内容">
-      #app {
-        width: 10rem;
-        height: 100%;
-        margin: 0 auto;
-        padding-top: 1.8rem;
-        transition: transform .3s;
-        white-space: nowrap;
-      }
-      #arms, #hero {
-        display: inline-block;
-        width: 100%;
-        height: 100%;
-        padding: 0 3px 20px;
-        white-space: normal;
-        vertical-align: top;
-        overflow: auto;
-      }
-
-      .tab-box .dis-tab-c:first-child:before {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: -1px;
-        width: 2px;
-        height: 100%;
-        background: #000;
-      }
-      .tab-box .dis-tab-r:first-child .dis-tab-c {
-        border-bottom: 2px solid #000;
-      }
-      .tab-arms-img {
-        width: 100%;
-        padding: 4%;
-        vertical-align: top;
-      }
-      .tab-arms-img.opacity {
-        opacity: .5;
-      }
-    </style>
     <style name="弹出栏">
       #popup {
         display: none;
@@ -229,7 +193,6 @@
         width: 1.6rem;
         height: 1.6rem;
         border-radius: .2rem;
-        vertical-align: top;
       }
       .pop-arms-name {
         padding-top: .2rem;
@@ -277,7 +240,6 @@
         height: 1.4rem;
         margin: 0 .1rem .2rem;
         border-radius: .2rem;
-        vertical-align: top;
       }
 
       .pop-arms-uplist {
@@ -294,7 +256,6 @@
         width: 1.4rem;
         height: 1.4rem;
         margin-right: .2rem;
-        vertical-align: top;
       }
       .pop-arms-row-name {
         color: #000;
@@ -309,13 +270,50 @@
         text-align-last: left;
       }
     </style>
+    <style name="主要内容">
+      #app {
+        width: 10rem;
+        height: 100%;
+        margin: 0 auto;
+        padding-top: 1.8rem;
+        transition: transform .3s;
+        white-space: nowrap;
+      }
+      #arms, #hero {
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+        padding: 0 3px 20px;
+        white-space: normal;
+        vertical-align: top;
+        overflow: auto;
+      }
+
+      .tab-box .dis-tab-c:first-child:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: -1px;
+        width: 2px;
+        height: 100%;
+        background: #000;
+      }
+      .tab-box .dis-tab-r:first-child .dis-tab-c {
+        border-bottom: 2px solid #000;
+      }
+      .tab-arms-img {
+        width: 100%;
+        padding: 4%;
+      }
+      .tab-arms-img.opacity {
+        opacity: .5;
+      }
+    </style>
   </head>
   <body>
     <div id="navbar">
       <div class="nav" data-index="0">装备</div>
       <div class="nav" data-index="1">英雄</div>
-      <!-- <div class="nav" data-index="1">列表</div>
-      <div class="nav" data-index="2">总览</div> -->
     </div>
     <div id="app">
       <div id="arms"></div>
@@ -326,6 +324,9 @@
     <div id="popup">
       <div id="popup-main"></div>
     </div>
+    <script>
+      var basicHost = 'https://pic.gxw520.com'
+    </script>
     <script name="导航栏点击事件">
       var appElement = document.querySelector('#app')
       var navbarElement = document.querySelector('#navbar')
@@ -345,353 +346,1018 @@
       toNav()
     </script>
     <script name="武器库">
-      var basicArms = {
-        '暴风之剑': {
+      var arms = [
+        {
           name: '暴风之剑',
           attr: '+20攻击力',
           child: ['饮血剑', '守护天使', '海克斯科技枪刃', '无尽之刃', '朔极之矛', '神圣之剑', '幽梦之灵', '基克的先驱']
         },
-        '反曲之弓': {
+        {
           name: '反曲之弓',
           attr: '+15%攻击速度',
           child: ['破败王者之刃', '诅咒之刃', '鬼索的狂暴之刃', '幻影之舞', '疾射火炮', '斯塔缇克电刃', '神圣之剑', '巨型九头蛇']
         },
-        '无用大棒': {
+        {
           name: '无用大棒',
           attr: '+20%技能伤害',
           child: ['鬼索的狂暴之刃', '海克斯科技枪刃', '离子火花', '钢铁烈阳之匣', '卢登的回声', '莫洛雷秘典', '灭世者的死亡之帽', '悠米']
         },
-        '女神之泪': {
+        {
           name: '女神之泪',
           attr: '+20法力值',
           child: ['暗裔', '冰霜之心', '肃静', '卢登的回声', '救赎', '炽天使之拥', '朔极之矛', '斯塔缇克电刃']
         },
-        '锁子甲': {
+        {
           name: '锁子甲',
           attr: '+20护甲',
           child: ['冰霜之心', '守护天使', '骑士之誓', '钢铁烈阳之匣', '幻影之舞', '蜥蜴长老之赐', '折剑者', '荆棘之甲']
         },
-        '负极斗篷': {
+        {
           name: '负极斗篷',
           attr: '+20魔法抗性',
           child: ['饮血剑', '诅咒之刃', '巨龙之爪', '肃静', '离子火花', '卢安娜的飓风', '折剑者', '灵风']
         },
-        '巨人腰带': {
+        {
           name: '巨人腰带',
           attr: '+200生命值',
           child: ['冰霜之锤', '莫洛雷秘典', '蜥蜴长老之赐', '救赎', '巨型九头蛇', '狂徒铠甲', '基克的先驱', '灵风']
         },
-        '铲子': {
+        {
           name: '铲子',
           attr: '无属性加成',
           child: ['自然之力', '破败王者之刃', '暗裔', '冰霜之锤', '骑士之誓', '卢安娜的飓风', '悠米', '幽梦之灵']
-        }
-      }
-      var endArms = {
-        '无尽之刃': {
+        },
+        {
           name: '无尽之刃',
           attr: '+40攻击力',
           effect: '+100%暴击伤害',
           parent: ['暴风之剑', '暴风之剑']
         },
-        '神圣之剑': {
+        {
           name: '神圣之剑',
           attr: '+20攻击力，+15%攻速',
           effect: '携带者每秒获得5%的暴击率',
           parent: ['暴风之剑', '反曲之弓']
         },
-        '海克斯科技枪刃': {
+        {
           name: '海克斯科技枪刃',
           attr: '+20攻击力，+20%魔法伤害',
           effect: '+25%全能吸血',
           parent: ['暴风之剑', '无用大棒']
         },
-        '朔极之矛': {
+        {
           name: '朔极之矛',
           attr: '+20攻击力，+20法力值',
           effect: '在使用技能后，携带者的每次攻击回复15%最大法力值',
           parent: ['暴风之剑', '女神之泪']
         },
-        '守护天使': {
+        {
           name: '守护天使',
           attr: '+20攻击力，+20护甲',
           effect: '阵亡可复活,复活后500生命值',
           parent: ['暴风之剑', '锁子甲']
         },
-        '饮血剑': {
+        {
           name: '饮血剑',
           attr: '+20攻击力，+20魔抗',
           effect: '普攻攻击附带50%吸血',
           parent: ['暴风之剑', '负极斗篷']
         },
-        '基克的先驱': {
+        {
           name: '基克的先驱',
           attr: '+20攻击力，+200生命值',
           effect: '临近格子的友军获得10%攻击速度',
           parent: ['暴风之剑', '巨人腰带']
         },
-        '幽梦之灵': {
+        {
           name: '幽梦之灵',
           attr: '+20攻击力',
           effect: '携带者也是刺客单位',
           parent: ['暴风之剑', '铲子']
         },
-        '疾射火炮': {
+        {
           name: '疾射火炮',
           attr: '+30%攻速',
           effect: '携带者的攻击不会被闪避，攻击距离加倍',
           parent: ['反曲之弓', '反曲之弓']
         },
-        '鬼索的狂暴之刃': {
+        {
           name: '鬼索的狂暴之刃',
           attr: '+20%魔法伤害，+15%攻速',
           effect: '每次攻击增加3%攻击速度，无上限',
           parent: ['反曲之弓', '无用大棒']
         },
-        '斯塔缇克电刃': {
+        {
           name: '斯塔缇克电刃',
           attr: '+20法力值，+15%攻速',
           effect: '每3次攻击，造成100点溅射魔法伤害',
           parent: ['反曲之弓', '女神之泪']
         },
-        '幻影之舞': {
+        {
           name: '幻影之舞',
           attr: '+15%攻速，+20护甲',
           effect: '装备者闪避所有暴击攻击',
           parent: ['反曲之弓', '锁子甲']
         },
-        '诅咒之刃': {
+        {
           name: '诅咒之刃',
           attr: '+20%魔抗，+15%攻速',
           effect: '普通攻击有概率使敌人缩小1星',
           parent: ['反曲之弓', '负极斗篷']
         },
-        '巨型九头蛇': {
+        {
           name: '巨型九头蛇',
           attr: '+15%攻速，+200生命值',
           effect: '攻击对敌人造成携带者10%最大生命值的溅射伤害',
           parent: ['反曲之弓', '巨人腰带']
         },
-        '破败王者之刃': {
+        {
           name: '破败王者之刃',
           attr: '+15%攻速',
           effect: '携带者也是剑士',
           parent: ['反曲之弓', '铲子']
         },
-        '灭世者的死亡之帽': {
+        {
           name: '灭世者的死亡之帽',
           attr: '+40%魔法伤害',
           effect: '增加50%技能伤害',
           parent: ['无用大棒', '无用大棒']
         },
-        '卢登的回声': {
+        {
           name: '卢登的回声',
           attr: '+20%魔法伤害，+20法力值',
           effect: '技能对命中目标造成200点溅射伤害',
           parent: ['无用大棒', '女神之泪']
         },
-        '钢铁烈阳之匣': {
+        {
           name: '钢铁烈阳之匣',
           attr: '+20%魔法伤害，+20护甲',
           effect: '战斗开始前，所有邻近格子的友军获得一个200点护盾',
           parent: ['无用大棒', '锁子甲']
         },
-        '离子火花': {
+        {
           name: '离子火花',
           attr: '+20%魔法伤害，+20%魔抗',
           effect: '每当敌人使用技能，他们受到200点伤害',
           parent: ['无用大棒', '负极斗篷']
         },
-        '莫洛雷秘典': {
+        {
           name: '莫洛雷秘典',
           attr: '+20%魔法伤害，+200生命值',
           effect: '技能造成灼烧伤害，每秒伤害为敌人最大生命值的2.5%',
           parent: ['无用大棒', '巨人腰带']
         },
-        '悠米': {
+        {
           name: '悠米',
           attr: '+20%魔法伤害',
           effect: '携带者也是法师单位',
           parent: ['无用大棒', '铲子']
         },
-        '炽天使之拥': {
+        {
           name: '炽天使之拥',
           attr: '+40法力值',
           effect: '每次有技能被施放时，回复20%法力值',
           parent: ['女神之泪', '女神之泪']
         },
-        '冰霜之心': {
+        {
           name: '冰霜之心',
           attr: '+20护甲，+20法力值',
           effect: '邻近格子的敌人降低20%攻击速度',
           parent: ['女神之泪', '锁子甲']
         },
-        '肃静': {
+        {
           name: '肃静',
           attr: '+20法力值，+20法抗',
           effect: '普通攻击有几率对敌人造成沉默',
           parent: ['女神之泪', '负极斗篷']
         },
-        '救赎': {
+        {
           name: '救赎',
           attr: '+200生命值，+20法力值',
           effect: '死亡时，治疗附近所有友军1000点生命值',
           parent: ['女神之泪', '巨人腰带']
         },
-        '暗裔': {
+        {
           name: '暗裔',
           attr: '+20法力值',
           effect: '装备者也视为恶魔',
           parent: ['女神之泪', '铲子']
         },
-        '荆棘之甲': {
+        {
           name: '荆棘之甲',
           attr: '+40物抗',
           effect: '攻击伤害反弹35%',
           parent: ['锁子甲', '锁子甲']
         },
-        '折剑者': {
+        {
           name: '折剑者',
           attr: '+20物抗，+20魔抗',
           effect: '普通攻击有几率对敌人造成缴械',
           parent: ['锁子甲', '负极斗篷']
         },
-        '蜥蜴长老之赐': {
+        {
           name: '蜥蜴长老之赐',
           attr: '+20护甲，+200生命值',
           effect: '攻击造成2.5%的灼烧伤害',
           parent: ['锁子甲', '巨人腰带']
         },
-        '骑士之誓': {
+        {
           name: '骑士之誓',
           attr: '+20物抗',
           effect: '携带者也是骑士单位',
           parent: ['锁子甲', '铲子']
         },
-        '巨龙之爪': {
+        {
           name: '巨龙之爪',
           attr: '+40物抗',
           effect: '装备者获得83%魔法抗性',
           parent: ['负极斗篷', '负极斗篷']
         },
-        '灵风': {
+        {
           name: '灵风',
           attr: '+200生命值，+20法抗',
           effect: '战斗开始时，放逐1个敌人持续5秒',
           parent: ['负极斗篷', '巨人腰带']
         },
-        '卢安娜的飓风': {
+        {
           name: '卢安娜的飓风',
           attr: '+20法抗',
           effect: '普攻对额外2个目标造成伤害，额外攻击造成50%的伤害',
           parent: ['负极斗篷', '铲子']
         },
-        '狂徒铠甲': {
+        {
           name: '狂徒铠甲',
           attr: '+400生命值',
           effect: '每秒恢复3%自身最大生命值',
           parent: ['巨人腰带', '巨人腰带']
         },
-        '冰霜之锤': {
+        {
           name: '冰霜之锤',
           attr: '+200生命值',
           effect: '装备者也视为极地',
           parent: ['巨人腰带', '铲子']
         },
-        '自然之力': {
+        {
           name: '自然之力',
           attr: '无属性加成',
           effect: '可上阵人数+1',
           parent: ['铲子', '铲子']
         }
-      }
+      ]
     </script>
     <script name="武器数据格式">
-      var arms = Object.assign({}, basicArms, endArms)
-      var resultByIndex = {'00': '0', '01': '1', '02': '2', '03': '3', '04': '4', '05': '5', '06': '6', '07': '7', '10': '1', '11': '8', '12': '9', '13': '10', '14': '11', '15': '12', '16': '13', '17': '14', '20': '2', '21': '9', '22': '15', '23': '16', '24': '17', '25': '18', '26': '19', '27': '20', '30': '3', '31': '10', '32': '16', '33': '21', '34': '22', '35': '23', '36': '24', '37': '25', '40': '4', '41': '11', '42': '17', '43': '22', '44': '26', '45': '27', '46': '28', '47': '29', '50': '5', '51': '12', '52': '18', '53': '23', '54': '27', '55': '30', '56': '31', '57': '32', '60': '6', '61': '13', '62': '19', '63': '24', '64': '28', '65': '31', '66': '33', '67': '34', '70': '7', '71': '14', '72': '20', '73': '25', '74': '29', '75': '32', '76': '34', '77': '35'}
-      var basic = []
-      for (var key in basicArms) {
-        basic.push(basicArms[key])
-        arms[key] = basicArms[key]
-      }
-      var end = []
-      for (var key in endArms) {
-        end.push(endArms[key])
-        arms[key] = endArms[key]
-      }
-      var table = [[null].concat(basic)]
-      for (var a = 0; a < basic.length; a++) {
-        var arr = [basic[a]]
-        for (var b = 0; b < basic.length; b++) arr.push(end[resultByIndex[a + '' + b]])
-        table.push(arr)
-      }
+      var armsData = {}
+      var basicArms = []
+      var resultArms = []
+      var composeData = {}
+
+      arms.forEach(item => {
+        armsData[item.name] = item
+        if (item.parent) {
+          resultArms.push(item)
+          composeData[item.parent[0] + ',' + item.parent[1]] = item
+          composeData[item.parent[1] + ',' + item.parent[0]] = item
+        } else {
+          basicArms.push(item)
+        }
+      })
+
+      var tableData = [[null].concat(basicArms)]
+      basicArms.forEach(a => {
+        var arr = [a]
+        basicArms.forEach(b => arr.push(composeData[a.name + ',' + b.name]))
+        tableData.push(arr)
+      })
     </script>
     <script name="生成略缩表格">
       var html = ''
       html += '<div class="dis-tab fixed tab-box">'
-      for (var a = 0; a < table.length; a++) {
+      tableData.forEach((row, a) => {
         html += '<div class="dis-tab-r">'
-        for (var b = 0; b < table[a].length; b++) {
+        row.forEach((item, b) => {
           html += '<div class="dis-tab-c">'
-          if (table[a][b]) html += '<img show="' + table[a][b].name + '" class="tab-arms-img' + (b !== 0 && a > b ? ' opacity' : ' ') + '" src="http://pic.gxw520.com/lol/arms/' + table[a][b].name + '.png">'
+          if (item) html += '<img show="' + item.name + '" show-type="arms" class="tab-arms-img' + (b !== 0 && a > b ? ' opacity' : ' ') + '" src="' + basicHost + '/lol/arms/' + item.name + '.png">'
           html += '</div>'
-        }
+        })
         html += '</div>'
-      }
+      })
       html += '</div>'
       document.querySelector('#arms').innerHTML = html
     </script>
     <script name="英雄库">
-
+      var heros = [
+        {
+          name: '虚空行者',
+          race: '虚空',
+          pro: '法师',
+          price: '1金币',
+          skill: {
+            name: '虚空之刃',
+            desc: '卡萨丁的攻击可从敌人那里偷取法力值，并将其转化成一层护盾。',
+            step: []
+          }
+        },
+        {
+          name: '仙灵女巫',
+          race: '约德尔人',
+          pro: '法师',
+          price: '2金币',
+          skill: {
+            name: '狂野生长',
+            desc: '璐璐为一名友军提供额外生命值，并击飞该友军附近的敌人。',
+            step: []
+          }
+        },
+        {
+          name: '九尾妖狐',
+          race: '狂野',
+          pro: '法师',
+          price: '2金币',
+          skill: {
+            name: '欺诈宝珠',
+            desc: '阿狸沿直线发射一颗会折返的法球，对沿途的敌人造成伤害。',
+            step: []
+          }
+        },
+        {
+          name: '邪恶小法师',
+          race: '约德尔人',
+          pro: '法师',
+          price: '3金币',
+          skill: {
+            name: '能量爆裂',
+            desc: '维迦用魔法能量来轰击一名敌人。如果敌人的星级低于维迦，那么这个技能会将其立刻击杀。',
+            step: []
+          }
+        },
+        {
+          name: '堕落天使',
+          race: '恶魔',
+          pro: '法师',
+          price: '3金币',
+          skill: {
+            name: '灵魂镣铐',
+            desc: '莫甘娜对附近的敌人放置于枷锁，在短暂的延迟后，如果敌人仍在附近，则莫甘娜会对他们造成伤害和晕眩效果。',
+            step: []
+          }
+        },
+        {
+          name: '铸星龙王',
+          race: '龙',
+          pro: '法师',
+          price: '4金币',
+          skill: {
+            name: '星弦高落',
+            desc: '奥瑞利安 · 索尔沿直线喷出一道龙息，来对敌人造成伤害。',
+            step: []
+          }
+        },
+        {
+          name: '死亡颂唱者',
+          race: '暗影',
+          pro: '法师',
+          price: '5金币',
+          skill: {
+            name: '安魂曲',
+            desc: '卡尔萨斯在一段长时间的引导后对随机数量的敌人造成伤害。',
+            step: []
+          }
+        },
+        {
+          name: '虚空掠夺者',
+          race: '虚空',
+          pro: '刺客',
+          price: '1金币',
+          skill: {
+            name: '品尝恐惧',
+            desc: '卡兹克斩击距离最近的敌人，并可对孤立无援的敌人造成额外伤害。',
+            step: []
+          }
+        },
+        {
+          name: '影流之主',
+          race: '忍者',
+          pro: '刺客',
+          price: '2金币',
+          skill: {
+            name: '影奥义！诸刃',
+            desc: '劫沿直线扔出一枚手里剑，对沿途的敌人造成伤害。',
+            step: []
+          }
+        },
+        {
+          name: '血港魅影',
+          race: '海盗',
+          pro: '刺客',
+          price: '2金币',
+          skill: {
+            name: '魅影浪洄',
+            desc: '派克突进到距离最远的敌人身后，创造一道残影来晕眩沿途的敌人。',
+            step: []
+          }
+        },
+        {
+          name: '傲之追猎者',
+          race: '狂野',
+          pro: '刺客',
+          price: '3金币',
+          skill: {
+            name: '残忍无情',
+            desc: '雷恩加尔跃向最弱的敌人，并对其造成额外伤害。造成伤害后雷恩加尔会获得攻击速度和暴击几率。',
+            step: []
+          }
+        },
+        {
+          name: '痛苦之拥',
+          race: '恶魔',
+          pro: '刺客',
+          price: '3金币',
+          skill: {
+            name: '最终抚慰',
+            desc: '伊芙琳对距离最近的3名敌人造成伤害，同时自身传送到远处。',
+            step: []
+          }
+        },
+        {
+          name: '不祥之刃',
+          race: '帝国',
+          pro: '刺客',
+          price: '3金币',
+          skill: {
+            name: '死亡莲华',
+            desc: '卡塔琳娜引导并朝附近的若干敌人投掷匕首，对他们造成伤害并减少治疗效果。',
+            step: []
+          }
+        },
+        {
+          name: '离群之刺',
+          race: '忍者',
+          pro: '刺客',
+          price: '4金币',
+          skill: {
+            name: '我流奥义！寒影',
+            desc: '阿卡丽朝她前方掷出手里剑，造成伤害。',
+            step: []
+          }
+        },
+        {
+          name: '无双剑姬',
+          race: '贵族',
+          pro: '剑士',
+          price: '1金币',
+          skill: {
+            name: '劳伦特心眼刀',
+            desc: '菲奥娜变得免疫伤害和技能。在短暂的延迟后，她会对距离最近的敌人造成伤害和晕眩效果。',
+            step: []
+          }
+        },
+        {
+          name: '暮光之眼',
+          race: '忍者',
+          pro: '剑士',
+          price: '2金币',
+          skill: {
+            name: '奥义！魂佑',
+            desc: '慎创造一个领域来环绕自身，允许友军闪避所有攻击。',
+            step: []
+          }
+        },
+        {
+          name: '海洋之灾',
+          race: '海盗',
+          pro: '剑士,枪手',
+          price: '3金币',
+          skill: {
+            name: '炸药桶',
+            desc: '普朗克周期性地制造火药桶。在施放时，普朗克会引爆火药桶来伤害附近的敌人。',
+            step: []
+          }
+        },
+        {
+          name: '暗裔剑魔',
+          race: '恶魔',
+          pro: '剑士',
+          price: '3金币',
+          skill: {
+            name: '暗裔之刃',
+            desc: '亚托克斯顺劈他面前的区域，对区域内的敌人造成伤害。',
+            step: []
+          }
+        },
+        {
+          name: '荣耀行刑官',
+          race: '帝国',
+          pro: '剑士',
+          price: '4金币',
+          skill: {
+            name: '旋转飞斧',
+            desc: '德莱文获得额外攻击特效伤害和攻击速度。至多可叠加2次。',
+            step: []
+          }
+        },
+        {
+          name: '疾风剑豪',
+          race: '浪人',
+          pro: '剑士',
+          price: '5金币',
+          skill: {
+            name: '斩钢闪',
+            desc: '亚索向前戳刺来造成伤害。在第三次施放时，亚索会吹出一道龙卷风，来对一条直线上的敌人造成伤害和击飞效果。',
+            step: []
+          }
+        },
+        {
+          name: '祖安怒兽',
+          race: '狂野',
+          pro: '斗士',
+          price: '1金币',
+          skill: {
+            name: '无尽束缚',
+            desc: '沃里克扑向生命值最低的敌人，造成伤害和晕眩效果。',
+            step: []
+          }
+        },
+        {
+          name: '虚空遁地兽',
+          race: '虚空',
+          pro: '斗士',
+          price: '2金币',
+          skill: {
+            name: '遁地',
+            desc: '雷克塞遁入地底一小段时间，来变得无法被选取并治疗自身。当雷克塞破土而出时，她会造成伤害并击飞距离最近的敌人。',
+            step: []
+          }
+        },
+        {
+          name: '蒸汽机器人',
+          race: '机器人',
+          pro: '斗士',
+          price: '2金币',
+          skill: {
+            name: '机器人飞爪',
+            desc: '布里茨将距离最远的敌人拉到他面前。',
+            step: []
+          }
+        },
+        {
+          name: '雷霆咆哮',
+          race: '极地',
+          pro: '斗士',
+          price: '3金币',
+          skill: {
+            name: '雷霆怒爪',
+            desc: '沃利贝尔的攻击会在敌人之间弹射。',
+            step: []
+          }
+        },
+        {
+          name: '虚空恐惧',
+          race: '虚空',
+          pro: '斗士',
+          price: '4金币',
+          skill: {
+            name: '破裂',
+            desc: '科加斯碎裂一片区域，对区域内的敌人造成伤害和晕眩效果。',
+            step: []
+          }
+        },
+        {
+          name: '冰霜女巫',
+          race: '极地',
+          pro: '元素使',
+          price: '2金币',
+          skill: {
+            name: '冰封陵墓',
+            desc: '丽桑卓将目标封入冰块，并对附近的敌人造成伤害。在半血以下时，丽桑卓会将自己封入冰块，并变得无法被选取。',
+            step: []
+          }
+        },
+        {
+          name: '狂暴之心',
+          race: '约德尔人,忍者',
+          pro: '元素使',
+          price: '3金币',
+          skill: {
+            name: '秘奥义！万雷天牢引',
+            desc: '凯南召唤一阵风暴来环绕自身，对其内的敌人造成伤害和晕眩效果。',
+            step: []
+          }
+        },
+        {
+          name: '复仇焰魂',
+          race: '恶魔',
+          pro: '元素使',
+          price: '4金币',
+          skill: {
+            name: '烈焰风暴',
+            desc: '布兰德发射一团会弹射的火球，对命中的所有敌人造成伤害。',
+            step: []
+          }
+        },
+        {
+          name: '冰晶凤凰',
+          race: '极地',
+          pro: '元素使',
+          price: '5金币',
+          skill: {
+            name: '冰川风暴',
+            desc: '艾尼维亚引导一次大型冰风暴，对其中的敌人造成伤害。',
+            step: []
+          }
+        },
+        {
+          name: '弗雷尔卓德之心',
+          race: '极地',
+          pro: '护卫',
+          price: '2金币',
+          skill: {
+            name: '坚不可摧',
+            desc: '布隆创造一道屏障来格挡所有即将到来的伤害。',
+            step: []
+          }
+        },
+        {
+          name: '曙光女神',
+          race: '贵族',
+          pro: '护卫',
+          price: '4金币',
+          skill: {
+            name: '日炎耀斑',
+            desc: '蕾欧娜召唤一道天降的太阳光束，对其中心的敌人造成晕眩效果并对其内的敌人造成伤害。',
+            step: []
+          }
+        },
+        {
+          name: '麦林炮手',
+          race: '约德尔人',
+          pro: '枪手',
+          price: '1金币',
+          skill: {
+            name: '爆炸火花',
+            desc: '崔丝塔娜将一颗炸弹放置到她的当前目标的身上，并在3次攻击后引爆该炸弹，来伤害附近的敌人。',
+            step: []
+          }
+        },
+        {
+          name: '法外狂徒',
+          race: '海盗',
+          pro: '枪手',
+          price: '1金币',
+          skill: {
+            name: '大号铅弹',
+            desc: '格雷福斯的攻击对附近的敌人造成溅射伤害。',
+            step: []
+          }
+        },
+        {
+          name: '圣枪游侠',
+          race: '贵族',
+          pro: '枪手',
+          price: '2金币',
+          skill: {
+            name: '冷酷追击',
+            desc: '卢锡安突进到安全处，并攻击一名敌人两次，一次造成攻击伤害，另一次造成技能伤害。',
+            step: []
+          }
+        },
+        {
+          name: '赏金猎人',
+          race: '海盗',
+          pro: '枪手',
+          price: '5金币',
+          skill: {
+            name: '弹幕时间',
+            desc: '厄运小姐呈锥形引导并发射若干波子弹。',
+            step: []
+          }
+        },
+        {
+          name: '铁铠冥魂',
+          race: '暗影',
+          pro: '骑士',
+          price: '1金币',
+          skill: {
+            name: '破灭之锤',
+            desc: '莫德凯撒朝他前方挥舞他的权杖，沿直线造成伤害。',
+            step: []
+          }
+        },
+        {
+          name: '德玛西亚之力',
+          race: '贵族',
+          pro: '骑士',
+          price: '1金币',
+          skill: {
+            name: '审判',
+            desc: '盖伦快速地围绕自身旋转他的剑刃，变得免疫魔法伤害，同时会对附近的敌人造成伤害。',
+            step: []
+          }
+        },
+        {
+          name: '诺克萨斯之手',
+          race: '帝国',
+          pro: '骑士',
+          price: '1金币',
+          skill: {
+            name: '大杀四方',
+            desc: '德莱厄斯挥舞他的斧头，对附近的敌人造成伤害并基于他的已损失生命值来治疗自身。',
+            step: []
+          }
+        },
+        {
+          name: '圣锤之毅',
+          race: '约德尔人',
+          pro: '骑士',
+          price: '3金币',
+          skill: {
+            name: '持卫的裁决',
+            desc: '波比砸下她的铁锤，来震开附近的敌人。',
+            step: []
+          }
+        },
+        {
+          name: '北地之怒',
+          race: '极地',
+          pro: '骑士',
+          price: '4金币',
+          skill: {
+            name: '极冰寒狱',
+            desc: '瑟庄妮创造一团大型的冰川风暴，在短暂的延迟后，对其内的敌人造成晕眩效果。',
+            step: []
+          }
+        },
+        {
+          name: '正义天使',
+          race: '贵族',
+          pro: '骑士',
+          price: '5金币',
+          skill: {
+            name: '圣裁之刻',
+            desc: '凯尔为一名友军提供护盾来使该友军免疫伤害。',
+            step: []
+          }
+        },
+        {
+          name: '暗影猎手',
+          race: '贵族',
+          pro: '游侠',
+          price: '1金币',
+          skill: {
+            name: '圣银弩箭',
+            desc: '薇恩每第三次攻击造成基于目标最大生命值的额外真实伤害。',
+            step: []
+          }
+        },
+        {
+          name: '惩戒之箭',
+          race: '恶魔',
+          pro: '游侠',
+          price: '2金币',
+          skill: {
+            name: '破甲箭',
+            desc: '韦鲁斯引导并射出一支箭，对一条直线上的所有敌人造成伤害。',
+            step: []
+          }
+        },
+        {
+          name: '寒冰射手',
+          race: '极地',
+          pro: '游侠',
+          price: '3金币',
+          skill: {
+            name: '魔法水晶箭',
+            desc: '艾希发射一支箭来横穿地图。在一段长久的延迟后，它会对一名随机敌人造成伤害和晕眩效果。',
+            step: []
+          }
+        },
+        {
+          name: '永猎双子',
+          race: '暗影',
+          pro: '游侠',
+          price: '4金币',
+          skill: {
+            name: '羊灵生息',
+            desc: '千珏创造一个领域来环绕自身，可预防友军阵亡。',
+            step: []
+          }
+        },
+        {
+          name: '狂野女猎手',
+          race: '狂野',
+          pro: '换形师',
+          price: '1金币',
+          skill: {
+            name: '狂野奔腾',
+            desc: '奈德丽治疗自身和伤势最重的友军，然后变形。',
+            step: []
+          }
+        },
+        {
+          name: '蜘蛛女皇',
+          race: '恶魔',
+          pro: '换形师',
+          price: '2金币',
+          skill: {
+            name: '蜘蛛形态',
+            desc: '伊莉丝召唤出小蜘蛛、变形并获得生命吸取',
+            step: []
+          }
+        },
+        {
+          name: '龙血武姬',
+          race: '龙',
+          pro: '换形师',
+          price: '3金币',
+          skill: {
+            name: '魔龙降世',
+            desc: '希瓦娜突进到远处并变形。在变形状态下，希瓦娜的攻击变为远程并且会使地面燃烧。',
+            step: []
+          }
+        },
+        {
+          name: '迷失之牙',
+          race: '狂野,约德尔人',
+          pro: '换形师',
+          price: '4金币',
+          skill: {
+            name: '呐啊！',
+            desc: '纳尔变形并跳到距离最远的敌人身后，同时伤害并将敌人向后猛推。',
+            step: []
+          }
+        },
+        {
+          name: '诺克萨斯统领',
+          race: '恶魔,帝国',
+          pro: '换形师',
+          price: '5金币',
+          skill: {
+            name: '恶魔耀光',
+            desc: '斯维因变形，可从附近的所有敌人那里吸取生命值。',
+            step: []
+          }
+        }
+      ]
+    </script>
+    <script name="种族职业效果">
+      var gather = [
+        {
+          name: '法师',
+          desc: '法师从攻击中获得的法力值高于正常水平。部署多个法师可以使你的队伍获得法术强度，随着法师数量的增加，获得的法术强度也会提升。',
+          step: []
+        },
+        {
+          name: '刺客',
+          desc: '刺客在作战开始时会潜伏穿越战场，前往其初始位置的对面。部署多个刺客英雄可以增加他们的暴击伤害，随着刺客数量的增加，暴击伤害也会提升。',
+          step: []
+        },
+        {
+          name: '剑士',
+          desc: '部署多个剑士英雄可以使他们的攻击有一定几率进行多次额外攻击，随着剑士英雄数量的增加，这个几率也会提升。',
+          step: []
+        },
+        {
+          name: '斗士',
+          desc: '部署多个斗士英雄可以使他们获得额外的生命值，随着斗士数量的增加，额外生命值也会提升。',
+          step: []
+        },
+        {
+          name: '元素使',
+          desc: '元素使从攻击中获得的法力值高于正常水平。	部署足够多的元素使会在作战开始时召唤出一个元素为你作战。',
+          step: []
+        },
+        {
+          name: '护卫',
+          desc: '部署全部两个护卫可以使其自身以及周围相邻的友军在开始作战时获得护甲。',
+          step: []
+        },
+        {
+          name: '枪手',
+          desc: '部署多个枪手可以使他们的攻击有一定几率命中额外的目标，随着枪手数量的增加，这个几率也会提升。',
+          step: []
+        },
+        {
+          name: '骑士',
+          desc: '部署多个骑士可以使他们格挡即将遭受的攻击伤害，随着骑士数量的增加，格挡的伤害也会提升。',
+          step: []
+        },
+        {
+          name: '游侠',
+          desc: '部署多个游侠可以使他们有一定几率获得攻击速度激增的效果，随着游侠数量的增加，这个几率也会提升。',
+          step: []
+        },
+        {
+          name: '换形师',
+          desc: '部署足够多的换形师可以使他们在变形时获得生命值。',
+          step: []
+        },
+        {
+          name: '恶魔',
+          desc: '部署多个恶魔英雄可以使他们获得一定几率燃烧目标法力值，并根据所燃烧的法力值造成伤害的效果。随着恶魔数量的增加，这个几率也会提升。',
+          step: []
+        },
+        {
+          name: '龙',
+          desc: '部署全部两条龙可以使他们免疫技能伤害。',
+          step: []
+        },
+        {
+          name: '浪人',
+          desc: '作战开始时，如果浪人的周围没有其他英雄，他会带着护盾开始作战。',
+          step: []
+        },
+        {
+          name: '极地',
+          desc: '部署多个极地英雄可以使他们获得一定几率眩晕目标的效果，随着极地英雄数量的增加，这个几率也会提升。',
+          step: []
+        },
+        {
+          name: '帝国',
+          desc: '部署多个帝国英雄可以使一个随机帝国英雄获得攻击力和法术强度。部署所有不同帝国英雄可以使这些帝国英雄获得额外的攻击力和法术强度。',
+          step: []
+        },
+        {
+          name: '忍者',
+          desc: '部署且仅部署一个忍者英雄可以使其获得攻击力。部署所有不同忍者英雄可以使这些忍者英雄获得更多的攻击力。',
+          step: []
+        },
+        {
+          name: '贵族',
+          desc: '部署多个贵族英雄可以使一个随机贵族英雄获得护甲和攻击附带的治疗效果。部署所有不同贵族英雄可以使你的全队获得护甲和攻击附带的治疗效果。',
+          step: []
+        },
+        {
+          name: '暗影',
+          desc: '部署足够多的暗影单位可以在战斗开始时诅咒一个随机敌人，降低其初始生命值。',
+          step: []
+        },
+        {
+          name: '海盗',
+          desc: '部署足够多的海盗可以使你在每回合结束时获得额外的金币。',
+          step: []
+        },
+        {
+          name: '机器人',
+          desc: '机器人开始作战时会有满额的法力值。',
+          step: []
+        },
+        {
+          name: '虚空',
+          desc: '部署足够多的虚空英雄可以使你的队伍忽略目标的部分护甲。',
+          step: []
+        },
+        {
+          name: '狂野',
+          desc: '部署多个狂野英雄使他们在攻击时获得攻击速度。部署足够多的狂野英雄可以使你的全队在攻击时获得攻击速度。',
+          step: []
+        },
+        {
+          name: '约德尔人',
+          desc: '部署多个约德尔人可以使针对他们的攻击偶尔出现“未命中”，随着约德尔人数量的增加，“未命中”的几率也会提升。',
+          step: []
+        }
+      ]
     </script>
     <script name="生成英雄图鉴">
-      var html = ''
 
-      // document.querySelector('#hero').innerHTML = html
+      function showHeroDetails (name) {
+
+      }
+
     </script>
-    <script name="弹窗">
-      document.addEventListener('click', function (e) {
-        var target = e.target
-        var show
-        while (target && !(show = target.getAttribute('show'))) target = target.parentElement
-        if (show) showArmsDetails(show)
-      }, false)
-
+    <script name="装备详情弹窗">
       var popupElement = document.querySelector('#popup')
       var popupMainEle = document.querySelector('#popup-main')
 
       function showArmsDetails (name) {
         popupElement.className = 'show'
 
-        var data = arms[name]
+        var data = armsData[name]
         var html = ''
         html += '<div class="pop-main">'
-        html += '<img class="pop-arms-img" src="http://pic.gxw520.com/lol/arms/' + data.name + '.png">'
+        html += '<img class="pop-arms-img" src="' + basicHost + '/lol/arms/' + data.name + '.png">'
         html += '<div class="pop-arms-name">' + data.name + '</div>'
         html += '<div class="pop-arms-attr">' + data.attr + '</div>'
         if (data.effect) html += '<div class="pop-arms-effect">' + data.effect + '</div>'
         if (data.parent) {
           html += '<div class="pop-title">合成路径</div>'
-          for (var i = 0; i < data.parent.length; i++) {
-            html += '<img show="' + arms[data.parent[i]].name + '" class="pop-arms-min-img" src="http://pic.gxw520.com/lol/arms/' + arms[data.parent[i]].name + '.png">'
-          }
+          data.parent.forEach(item => {
+            html += '<img show="' + armsData[item].name + '" show-type="arms" class="pop-arms-min-img" src="' + basicHost + '/lol/arms/' + armsData[item].name + '.png">'
+          })
         }
         if (data.child) {
           html += '<div class="pop-title">进阶装备</div>'
           html += '<div class="pop-arms-uplist">'
-          for (var i = 0; i < data.child.length; i++) {
-            html += '<div class="dis-tab pop-arms-row" show="' + arms[data.child[i]].name + '">'
+          data.child.forEach(item => {
+            html += '<div class="dis-tab pop-arms-row" show="' + armsData[item].name + '" show-type="arms">'
             html += '<div class="dis-tab-c">'
-            html += '<img class="pop-arms-row-img" src="http://pic.gxw520.com/lol/arms/' + arms[data.child[i]].name + '.png">'
+            html += '<img class="pop-arms-row-img" src="' + basicHost + '/lol/arms/' + armsData[item].name + '.png">'
             html += '</div>'
             html += '<div class="dis-tab-c max">'
-            html += '<div class="pop-arms-row-name">' + arms[data.child[i]].name + '</div>'
-            if (arms[data.child[i]].effect) html += '<div class="pop-arms-row-effect">' + arms[data.child[i]].effect + '</div>'
+            html += '<div class="pop-arms-row-name">' + armsData[item].name + '</div>'
+            if (armsData[item].effect) html += '<div class="pop-arms-row-effect">' + armsData[item].effect + '</div>'
             html += '</div>'
             html += '</div>'
-
-            // html += '<img show="' + arms[data.child[i]].name + '" class="pop-arms-min-img" src="http://pic.gxw520.com/lol/arms/' + arms[data.child[i]].name + '.png">'
-          }
+          })
           html += '</div>'
         }
         html += '</div>'
@@ -700,6 +1366,20 @@
 
       popupElement.addEventListener('click', function (e) {
         popupElement.className = ''
+      }, false)
+    </script>
+    <script name="全局点击事件">
+      document.addEventListener('click', function (e) {
+        var target = e.target
+        var show
+        while (target && !(show = target.getAttribute('show'))) target = target.parentElement
+        if (!show) return false
+        var type = target.getAttribute('show-type')
+        if (!type) console.log('缺少类别')
+        switch (type) {
+          case 'arms': showArmsDetails(show); break
+          case 'hero': showHeroDetails(show); break
+        }
       }, false)
     </script>
   </body>
