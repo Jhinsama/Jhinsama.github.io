@@ -406,7 +406,6 @@
         position: relative;
         width: 100%;
         height: 100%;
-        padding-bottom: 5.6rem;
       }
 
       #hero-list {
@@ -446,13 +445,18 @@
         height: 100%;
       }
 
-      #hero-detail {
+      #other-box {
         position: absolute;
         left: 0;
         bottom: .95rem;
         width: 100%;
+      }
+      #solder,
+      #hero-detail {
+        position: relative;
         padding: .2rem;
       }
+      #solder:after,
       #hero-detail:after {
         content: '';
         position: absolute;
@@ -462,6 +466,22 @@
         height: 1px;
         background: #f0f0f0;
       }
+      .solder-desc {
+        color: #666666;
+        font-size: .3rem;
+        text-align: justify;
+        text-align-last: left;
+      }
+      .solder-step-num {
+        padding-right: .2rem;
+        color: #000;
+        font-size: .3rem;
+      }
+      .solder-step-txt {
+        color: #333333;
+        font-size: .3rem;
+      }
+
       .hero-avatar,
       .hero-art-img {
         width: 1.6rem;
@@ -552,7 +572,10 @@
         <div id="left-nav"></div>
         <div id="right-main">
           <div id="hero-list"></div>
-          <div id="hero-detail"></div>
+          <div id="other-box">
+            <div id="hero-detail"></div>
+            <div id="solder"></div>
+          </div>
           <div id="secondary-nav"></div>
         </div>
       </div>
@@ -1444,120 +1467,120 @@
       var skill = [
         {
           name: '法师',
-          desc: '法师从攻击中获得的法力值高于正常水平。部署多个法师可以使你的队伍获得法术强度，随着法师数量的增加，获得的法术强度也会提升。',
-          step: []
+          desc: '法师的攻击会获得双倍法力値，足够多的法师可以使你的队伍获得技能伤害加成。',
+          step: [[3, '友军+35%技能伤害'], [6, '友军+100%技能伤害']]
         },
         {
           name: '刺客',
-          desc: '刺客在作战开始时会潜伏穿越战场，前往其初始位置的对面。部署多个刺客英雄可以增加他们的暴击伤害，随着刺客数量的增加，暴击伤害也会提升。',
-          step: []
+          desc: '刺客在每场战斗开始前会跃至距离最远的敌人处，足够多的刺客英雄可以增加他们的暴击伤害。',
+          step: [[3, '刺客+150%的暴击伤害'], [6, '刺客+350%的暴击伤害']]
         },
         {
           name: '剑士',
-          desc: '部署多个剑士英雄可以使他们的攻击有一定几率进行多次额外攻击，随着剑士英雄数量的增加，这个几率也会提升。',
-          step: []
+          desc: '足够多的剑士英雄可以使他们的攻击有一定几率进行多次额外攻击。',
+          step: [[3, '剑士普攻有35%几率打出1次额外攻击'], [6, '剑士普攻有35%几率打出2次额外攻击']]
         },
         {
           name: '斗士',
-          desc: '部署多个斗士英雄可以使他们获得额外的生命值，随着斗士数量的增加，额外生命值也会提升。',
-          step: []
+          desc: '多个斗士英雄可以使他们获得额外的生命值。',
+          step: [[2, '斗士+300生命值'], [4, '斗士+700生命值']]
         },
         {
           name: '元素使',
-          desc: '元素使从攻击中获得的法力值高于正常水平。	部署足够多的元素使会在作战开始时召唤出一个元素为你作战。',
-          step: []
+          desc: '元素使从攻击中获得的法力值高于正常水平，足够多的元素使会在作战开始时召唤出一个元素为你作战。',
+          step: [[3, '战斗开始时召唤一个魔像']]
         },
         {
           name: '护卫',
-          desc: '部署全部两个护卫可以使其自身以及周围相邻的友军在开始作战时获得护甲。',
-          step: []
+          desc: '多个护卫可以使其自身以及周围相邻的友军在开始作战时获得护甲。',
+          step: [[2, '护卫和相邻友军+30护甲']]
         },
         {
           name: '枪手',
-          desc: '部署多个枪手可以使他们的攻击有一定几率命中额外的目标，随着枪手数量的增加，这个几率也会提升。',
-          step: []
+          desc: '多个枪手可以使他们的攻击有一定几率命中额外的目标。',
+          step: [[2, '枪手+50%几率攻击1名随机敌人'], [4, '枪手+50%几率攻击距离内所有敌人']]
         },
         {
           name: '骑士',
-          desc: '部署多个骑士可以使他们格挡即将遭受的攻击伤害，随着骑士数量的增加，格挡的伤害也会提升。',
-          step: []
+          desc: '多个骑士可以使他们格挡即将遭受的攻击伤害。',
+          step: [[2, '骑士+20格挡'], [4, '骑士+40格挡'], [6, '骑士+80格挡']]
         },
         {
           name: '游侠',
-          desc: '部署多个游侠可以使他们有一定几率获得攻击速度激增的效果，随着游侠数量的增加，这个几率也会提升。',
-          step: []
+          desc: '多个游侠可以使他们有一定几率获得攻击速度激增的效果。',
+          step: [[2, '游侠每隔3秒有25%几率获得持续3秒的攻速翻倍'], [4, '游侠每隔3秒有65%几率获得持续3秒的攻速翻倍']]
         },
         {
           name: '换形师',
-          desc: '部署足够多的换形师可以使他们在变形时获得生命值。',
-          step: []
+          desc: '足够多的换形师可以使他们在变形时获得生命值。',
+          step: [[3, '换形师变形时+100%最大生命值']]
         }
       ]
       var race = [
         {
           name: '恶魔',
-          desc: '部署多个恶魔英雄可以使他们获得一定几率燃烧目标法力值，并根据所燃烧的法力值造成伤害的效果。随着恶魔数量的增加，这个几率也会提升。',
-          step: []
+          desc: '多个恶魔英雄可以使他们获得一定几率燃烧目标法力值，并根据所燃烧的法力值造成伤害的效果。',
+          step: [[2, '恶魔普攻有40%几率灼烧法力值'], [4, '恶魔普攻有60%几率灼烧法力值'], [6, '恶魔普攻有80%几率灼烧法力值']]
         },
         {
           name: '龙',
-          desc: '部署全部两条龙可以使他们免疫技能伤害。',
-          step: []
+          desc: '全部两条龙可以使他们免疫技能伤害。',
+          step: [[2, '龙免疫魔法伤害']]
         },
         {
           name: '浪人',
           desc: '作战开始时，如果浪人的周围没有其他英雄，他会带着护盾开始作战。',
-          step: []
+          step: [[1, '浪人获得等同生命值的护盾']]
         },
         {
           name: '极地',
-          desc: '部署多个极地英雄可以使他们获得一定几率眩晕目标的效果，随着极地英雄数量的增加，这个几率也会提升。',
-          step: []
+          desc: '多个极地英雄可以使他们获得一定几率眩晕目标的效果',
+          step: [[2, '极地普攻有25%几率造成晕眩'], [4, '极地普攻有35%几率造成晕眩'], [6, '极地普攻有45%几率造成晕眩']]
         },
         {
           name: '帝国',
-          desc: '部署多个帝国英雄可以使一个随机帝国英雄获得攻击力和法术强度。部署所有不同帝国英雄可以使这些帝国英雄获得额外的攻击力和法术强度。',
-          step: []
+          desc: '多个帝国英雄可以使一个随机帝国英雄获得攻击力和法术强度，足够多的帝国英雄可以使所有帝国英雄获得额外的攻击力和法术强度。',
+          step: [[2, '一名随机的帝国造成双倍伤害'], [4, '所有帝国造成双倍伤害']]
         },
         {
           name: '忍者',
-          desc: '部署且仅部署一个忍者英雄可以使其获得攻击力。部署所有不同忍者英雄可以使这些忍者英雄获得更多的攻击力。',
-          step: []
+          desc: '且仅一个忍者英雄可以使其获得攻击力，足够多的忍者英雄可以使所有忍者英雄获得更多的攻击力。',
+          step: [[1, '忍者＋40%攻击伤害'], [4, '所有忍者＋80%攻击伤害']]
         },
         {
           name: '贵族',
-          desc: '部署多个贵族英雄可以使一个随机贵族英雄获得护甲和攻击附带的治疗效果。部署所有不同贵族英雄可以使你的全队获得护甲和攻击附带的治疗效果。',
-          step: []
+          desc: '多个贵族英雄可以使一个随机贵族英雄获得护甲和攻击附带的治疗效果，足够多的贵族英雄可以使你的全队获得护甲和攻击附带的治疗效果。',
+          step: [[3, '一名随机友军＋100护甲且普攻+35生命值'], [6, '所有友军＋100护甲且普攻+35生命值']]
         },
         {
           name: '暗影',
-          desc: '部署足够多的暗影单位可以在战斗开始时诅咒一个随机敌人，降低其初始生命值。',
-          step: []
+          desc: '多个暗影英雄可以在战斗开始时诅咒一个随机敌人，降低其初始生命值。',
+          step: [[2, '在战斗开始名随机的敌人生命值降至100']]
         },
         {
           name: '海盗',
-          desc: '部署足够多的海盗可以使你在每回合结束时获得额外的金币。',
-          step: []
+          desc: '足够多的海盗可以使你在每回合结束时获得额外的金币。',
+          step: [[3, '与玩家作战后最多可赚取4枚额外的金币']]
         },
         {
           name: '机器人',
           desc: '机器人开始作战时会有满额的法力值。',
-          step: []
+          step: [[1, '机器人在开始战斗时满法力值']]
         },
         {
           name: '虚空',
-          desc: '部署足够多的虚空英雄可以使你的队伍忽略目标的部分护甲。',
-          step: []
+          desc: '足够多的虚空英雄可以使你的队伍忽略目标的部分护甲。',
+          step: [[3, '虚空普攻无视敌人50%的护甲']]
         },
         {
           name: '狂野',
-          desc: '部署多个狂野英雄使他们在攻击时获得攻击速度。部署足够多的狂野英雄可以使你的全队在攻击时获得攻击速度。',
-          step: []
+          desc: '多个狂野英雄使他们在攻击时获得攻击速度。足够多的狂野英雄可以使你的全队在攻击时获得攻击速度。',
+          step: [[2, '狂野每次普攻+8攻速，最高5层'], [4, '所有友军每次普攻+8攻速，最高5层']]
         },
         {
           name: '约德尔人',
-          desc: '部署多个约德尔人可以使针对他们的攻击偶尔出现“未命中”，随着约德尔人数量的增加，“未命中”的几率也会提升。',
-          step: []
+          desc: '多个约德尔人可以使针对他们的攻击偶尔出现“未命中”。',
+          step: [[3, '约德尔人+20%闪避'], [6, '约德尔人+50%闪避']]
         }
       ]
     </script>
@@ -1565,21 +1588,29 @@
       var leftNavEle = document.querySelector('#left-nav')
       var heroListEle = document.querySelector('#hero-list')
       var heroDetailEle = document.querySelector('#hero-detail')
+      var solderElement = document.querySelector('#solder')
       var secondNavEle = document.querySelector('#secondary-nav')
 
       var tipsElement = document.querySelector('#tips')
       var tipsMainEle = document.querySelector('#tips-main')
 
+      var solderData = {}
       var currentHeroList
       function showLeftNav () {
         var html = ''
         html += '<div class="left-nav-group">'
         html += '<div class="left-nav-title">职业</div>'
-        skill.forEach(item => (html += '<div class="left-nav-item" data-type="skill">' + item.name + '</div>'))
+        skill.forEach(item => {
+          html += '<div class="left-nav-item" data-type="skill">' + item.name + '</div>'
+          solderData[item.name] = item
+        })
         html += '</div>'
         html += '<div class="left-nav-group">'
         html += '<div class="left-nav-title">种族</div>'
-        race.forEach(item => (html += '<div class="left-nav-item" data-type="race">' + item.name + '</div>'))
+        race.forEach(item => {
+          html += '<div class="left-nav-item" data-type="race">' + item.name + '</div>'
+          solderData[item.name] = item
+        })
         html += '</div>'
         leftNavEle.innerHTML = html
       }
@@ -1612,6 +1643,7 @@
         currentHeroList = arr
         leftNavListEle.forEach(dom => dom.className = dom.innerText === name ? 'left-nav-item active' : 'left-nav-item')
         showSecondNav(secArr, secType)
+        showSolder(name)
       }
       function showHeroList (filter, type) {
         var arr = []
@@ -1673,6 +1705,18 @@
         html += '</div>'
         html += '</div>'
         heroDetailEle.innerHTML = html
+      }
+      function showSolder (name) {
+        var data = solderData[name]
+        var html = ''
+        html += '<div class="solder-desc">' + data.desc + '</div>'
+        data.step.forEach(item => {
+          html += '<div class="dis-tab">'
+          html += '<div class="dis-tab-c solder-step-num">' + item[0] + '</div>'
+          html += '<div class="dis-tab-c solder-step-txt max">' + item[1] + '</div>'
+          html += '</div>'
+        })
+        solderElement.innerHTML = html
       }
       function showSecondNav (arr, type) {
         var html = ''
