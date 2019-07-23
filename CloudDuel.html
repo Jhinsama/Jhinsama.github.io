@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>装备合成图</title>
+    <title>云顶之弈资料</title>
     <script>!function(e){var t,i=e.document.documentElement;function l(){var t,n=e.innerWidth;t=(n=n>750?750:n)/10,i.style.fontSize=t+"px";e.rem = t}l(),e.addEventListener("resize",function(){clearTimeout(t),t=setTimeout(l,200)},!1)}(window);</script>
     <style name="重置样式">
       * {
@@ -302,7 +302,6 @@
         height: 100%;
         margin: 0 auto;
         padding-top: 1.8rem;
-        transition: transform .3s;
         white-space: nowrap;
       }
       #arms, #hero {
@@ -514,6 +513,7 @@
         background: #f0f0f0;
       }
       .sec-nav-item {
+        position: relative;
         display: inline-block;
         width: .55rem;
         height: .55rem;
@@ -528,6 +528,15 @@
         color: #fff;
         background: #cf9535;
         border-color: #cf9535;
+      }
+      .sec-nav-item:after {
+        content: '';
+        position: absolute;
+        top: -.1rem;
+        left: -.1rem;
+        width: .75rem;
+        height: .75rem;
+        margin: auto;
       }
     </style>
   </head>
@@ -566,6 +575,7 @@
         for (var index = 0; index < navbarElement.children.length; index++) navbarElement.children[index].className = 'nav'
         navbarElement.children[i].className = 'nav active'
         appElement.style.transform = 'translateX(-' + (100 * i) + '%)'
+        appElement.style.transition = 'transform .3s'
       }
       document.querySelector('#navbar').addEventListener('click', function (e) {
         var index = e.target.getAttribute('data-index')
@@ -1558,8 +1568,6 @@
 
       var tipsElement = document.querySelector('#tips')
       var tipsMainEle = document.querySelector('#tips-main')
-      var secondNavTouchedTimer = null
-      var secondNavTouched = false
 
       var currentHeroList
       function showLeftNav () {
@@ -1700,30 +1708,58 @@
         }, false)
       }
       function secondNavEvent () {
-        secondNavEle.addEventListener('click', function (e) {
-          if (e.stopPropagation) e.stopPropagation()
-          if (e.target.className !== 'sec-nav-item') return false
-          secondNavActive(e.target.getAttribute('data-name'), e.target.getAttribute('data-type'))
-          return false
-        }, false)
-        secondNavEle.addEventListener('touchstart', function (e) {
-          if (e.target.className.indexOf('sec-nav-item') < 0) return false
-          secondNavTouched = true
-          secondNavTouchedTimer = setTimeout(function () {
-            tipsMainEle.innerText = e.target.getAttribute('data-name')
-            tipsElement.className = 'show'
-          }, 150)
-        }, false)
-        document.addEventListener('touchend', function (e) {
-          if (secondNavTouched) secondNavTouched = false
-          clearTimeout(secondNavTouchedTimer)
+        secondNavEle.addEventListener('touchstart', secNavTouchStart, false)
+        secondNavEle.addEventListener('touchmove', secNavTouchMove, false)
+        document.addEventListener('touchend', secNavTouchEnd, false)
+        document.addEventListener('touchcancel', secNavTouchEnd, false)
+      }
+
+      var showTips = false
+      var secNavTouchTimer = null
+      var secNavTouched = false
+      var secNavTarget = null
+      var secNavList = null
+      var offsetLeft = null
+      var touchedId = null
+      function secNavTouchStart (e) {
+        if (touchedId !== null) return false
+        if (e.target.className.indexOf('sec-nav-item') < 0) return false
+        secNavTouched = true
+        secNavTarget = e.target.className.indexOf('sec-nav-item') < 0 ? null : e.target
+        touchedId = e.touches[0].identifier
+        if (!secNavList) secNavList = [].slice.call(secNavTarget.parentElement.childNodes)
+        secNavTouchTimer = setTimeout(function () {
+          showTips = true
+          offsetLeft = leftNavEle.offsetWidth - secondNavEle.scrollLeft
+          tipsMainEle.innerText = e.target.getAttribute('data-name')
+          tipsElement.className = 'show'
+        }, 150)
+      }
+      function secNavTouchMove (e) {
+        if (!secNavTouched || !showTips || e.changedTouches[0].identifier !== touchedId) return false
+        clearTimeout(secNavTouchTimer)
+        e.preventDefault()
+        var x = e.touches[0].clientX
+        for (var i = 0; i < secNavList.length; i++) {
+          if (secNavList[i].offsetLeft + offsetLeft < x && secNavList[i].offsetLeft + offsetLeft + secNavList[i].offsetWidth > x) {
+            tipsMainEle.innerText = secNavList[i].getAttribute('data-name')
+            secNavTarget = secNavList[i]
+          }
+        }
+      }
+      function secNavTouchEnd (e) {
+        if (!secNavTouched || e.changedTouches[0].identifier !== touchedId) return false
+        clearTimeout(secNavTouchTimer)
+        secNavTouched = false
+        touchedId = null
+        if (showTips) {
           tipsElement.className = ''
-        }, false)
-        document.addEventListener('touchcancel', function (e) {
-          if (secondNavTouched) secondNavTouched = false
-          clearTimeout(secondNavTouchedTimer)
-          tipsElement.className = ''
-        }, false)
+          showTips = false
+        }
+        if (secNavTarget && secNavTarget.className === 'sec-nav-item') {
+          secondNavActive(secNavTarget.getAttribute('data-name'), secNavTarget.getAttribute('data-type'))
+          secNavTarget = null
+        }
       }
 
       showLeftNav()
@@ -1790,6 +1826,7 @@
           case 'hero': showHeroDetails(show); break
         }
       }, false)
+      document.oncontextmenu = function (e) { e.preventDefault() }
     </script>
   </body>
 </html>
