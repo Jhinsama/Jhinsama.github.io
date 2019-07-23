@@ -397,7 +397,7 @@
         position: relative;
         width: 100%;
         height: 100%;
-        padding-bottom: 4.75rem;
+        padding-bottom: 5.6rem;
       }
 
       #hero-list {
@@ -442,7 +442,6 @@
         left: 0;
         bottom: .95rem;
         width: 100%;
-        height: 3.8rem;
         padding: .2rem;
       }
       #hero-detail:after {
@@ -485,10 +484,12 @@
         margin-top: .2rem;
       }
       .hero-art-desc {
-        height: 1.1rem;
+        max-height: 2rem;
         padding-top: .2rem;
         font-size: .3rem;
         line-height: .45rem;
+        text-align: justify;
+        text-align-last: left;
         overflow: auto;
       }
 
@@ -927,7 +928,7 @@
           price: '3金币',
           art: {
             name: '灵魂镣铐',
-            desc: '莫甘娜对附近的敌人放置于枷锁，在短暂的延迟后，如果敌人仍在附近，则莫甘娜会对他们造成伤害和晕眩效果。',
+            desc: '莫甘娜对附近的敌人放置枷锁，在短暂的延迟后，如果敌人仍在附近，则会对他们造成伤害和晕眩效果。',
             step: []
           }
         },
@@ -1654,7 +1655,7 @@
         html += '</div>'
         html += '</div>'
         html += '<div class="dis-tab hero-art">'
-        html += '<div class="dis-tab-c">'
+        html += '<div class="dis-tab-c top">'
         html += '<img src="' + basicHost + '/lol/skill/' + data.art.name + '.png" class="hero-art-img">'
         html += '</div>'
         html += '<div class="dis-tab-c max">'
