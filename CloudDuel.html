@@ -575,7 +575,7 @@
         for (var index = 0; index < navbarElement.children.length; index++) navbarElement.children[index].className = 'nav'
         navbarElement.children[i].className = 'nav active'
         appElement.style.transform = 'translateX(-' + (100 * i) + '%)'
-        appElement.style.transition = 'transform .3s'
+        if (!appElement.style.transition) setTimeout(function () { appElement.style.transition = 'transform .3s' }, 0)
       }
       document.querySelector('#navbar').addEventListener('click', function (e) {
         var index = e.target.getAttribute('data-index')
