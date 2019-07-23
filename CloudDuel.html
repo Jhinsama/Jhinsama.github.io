@@ -349,6 +349,25 @@
       #hero {
         position: relative;
         padding: 0 0 0 2.4rem;
+        overflow: hidden;
+      }
+      #hero:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 2.4rem;
+        width: 1px;
+        height: 100%;
+        background: #f0f0f0;
+      }
+      #hero:after {
+        content: '';
+        position: absolute;
+        left: 2.4rem;
+        bottom: .95rem;
+        width: 100%;
+        height: 1px;
+        background: #f0f0f0;
       }
       #left-nav {
         position: absolute;
@@ -357,15 +376,6 @@
         width: 2.4rem;
         height: 100%;
         overflow: auto;
-      }
-      #left-nav:after {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 1px;
-        height: 100%;
-        background: #f0f0f0;
       }
       .left-nav-group {
         margin-bottom: .5rem;
@@ -503,15 +513,6 @@
         overflow-x: auto;
         overflow-y: hidden;
       }
-      #secondary-nav:after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 1px;
-        background: #f0f0f0;
-      }
       .sec-nav-item {
         position: relative;
         display: inline-block;
@@ -575,7 +576,7 @@
         for (var index = 0; index < navbarElement.children.length; index++) navbarElement.children[index].className = 'nav'
         navbarElement.children[i].className = 'nav active'
         appElement.style.transform = 'translateX(-' + (100 * i) + '%)'
-        if (!appElement.style.transition) setTimeout(function () { appElement.style.transition = 'transform .3s' }, 0)
+        if (!appElement.style.transition) setTimeout(function () { appElement.style.transition = 'transform .3s' }, 300)
       }
       document.querySelector('#navbar').addEventListener('click', function (e) {
         var index = e.target.getAttribute('data-index')
