@@ -1727,7 +1727,7 @@
         secNavTouched = true
         secNavTarget = e.target.className.indexOf('sec-nav-item') < 0 ? null : e.target
         touchedId = e.touches[0].identifier
-        if (!secNavList) secNavList = [].slice.call(secNavTarget.parentElement.childNodes)
+        secNavList = [].slice.call(secNavTarget.parentElement.childNodes)
         secNavTouchTimer = setTimeout(function () {
           showTips = true
           offsetLeft = leftNavEle.offsetWidth - secondNavEle.scrollLeft
@@ -1751,6 +1751,8 @@
         if (!secNavTouched || e.changedTouches[0].identifier !== touchedId) return false
         clearTimeout(secNavTouchTimer)
         secNavTouched = false
+        secNavList = null
+        offsetLeft = null
         touchedId = null
         if (showTips) {
           tipsElement.className = ''
