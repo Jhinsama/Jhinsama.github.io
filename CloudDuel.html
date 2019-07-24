@@ -1640,7 +1640,7 @@
           })
           secType = 'skill'
         }
-        currentHeroList = arr
+        currentHeroList = arr.sort(function (a, b) { return a.price.substring(0, 1) - b.price.substring(0, 1) })
         leftNavListEle.forEach(dom => dom.className = dom.innerText === name ? 'left-nav-item active' : 'left-nav-item')
         showSecondNav(secArr, secType)
         showSolder(name)
